@@ -158,7 +158,7 @@ Partial Class Home
         PictureBox6.Anchor = AnchorStyles.Top
         PictureBox6.BackColor = SystemColors.Window
         PictureBox6.Image = CType(resources.GetObject("PictureBox6.Image"), Image)
-        PictureBox6.Location = New Point(177, 262)
+        PictureBox6.Location = New Point(177, 261)
         PictureBox6.Name = "PictureBox6"
         PictureBox6.Size = New Size(54, 45)
         PictureBox6.SizeMode = PictureBoxSizeMode.Zoom
