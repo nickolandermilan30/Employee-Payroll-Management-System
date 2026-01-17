@@ -65,7 +65,7 @@ Public Class Homepage
 
         If result = DialogResult.Yes Then
             Me.Close()
-            Form1.Show()
+            LogIn.Show()
         End If
     End Sub
 

@@ -46,7 +46,7 @@ Partial Class Home
         PictureBox10 = New PictureBox()
         PictureBox11 = New PictureBox()
         deletecount = New Label()
-        deteletedate = New Label()
+        historydate = New Label()
         Label13 = New Label()
         PictureBox12 = New PictureBox()
         Addemployee = New Button()
@@ -345,18 +345,18 @@ Partial Class Home
         deletecount.TabIndex = 28
         deletecount.Text = "0%"
         ' 
-        ' deteletedate
+        ' historydate
         ' 
-        deteletedate.Anchor = AnchorStyles.Top
-        deteletedate.AutoSize = True
-        deteletedate.BackColor = SystemColors.Window
-        deteletedate.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        deteletedate.ForeColor = Color.Green
-        deteletedate.Location = New Point(912, 406)
-        deteletedate.Name = "deteletedate"
-        deteletedate.Size = New Size(86, 16)
-        deteletedate.TabIndex = 27
-        deteletedate.Text = "Date Added"
+        historydate.Anchor = AnchorStyles.Top
+        historydate.AutoSize = True
+        historydate.BackColor = SystemColors.Window
+        historydate.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        historydate.ForeColor = Color.Green
+        historydate.Location = New Point(912, 406)
+        historydate.Name = "historydate"
+        historydate.Size = New Size(86, 16)
+        historydate.TabIndex = 27
+        historydate.Text = "Date Added"
         ' 
         ' Label13
         ' 
@@ -366,9 +366,9 @@ Partial Class Home
         Label13.Font = New Font("Century Gothic", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label13.Location = New Point(865, 376)
         Label13.Name = "Label13"
-        Label13.Size = New Size(119, 23)
+        Label13.Size = New Size(120, 23)
         Label13.TabIndex = 26
-        Label13.Text = "Total Delete"
+        Label13.Text = "Total History"
         ' 
         ' PictureBox12
         ' 
@@ -417,7 +417,7 @@ Partial Class Home
         Button2.Padding = New Padding(0, 40, 0, 0)
         Button2.Size = New Size(369, 185)
         Button2.TabIndex = 32
-        Button2.Text = vbCrLf & "Account Settings" & vbCrLf & "Chnage or update your Account"
+        Button2.Text = "Button"
         Button2.UseVisualStyleBackColor = False
         ' 
         ' Panel2
@@ -439,7 +439,7 @@ Partial Class Home
         Controls.Add(PictureBox10)
         Controls.Add(PictureBox11)
         Controls.Add(deletecount)
-        Controls.Add(deteletedate)
+        Controls.Add(historydate)
         Controls.Add(Label13)
         Controls.Add(PictureBox12)
         Controls.Add(PictureBox7)
@@ -506,7 +506,7 @@ Partial Class Home
     Friend WithEvents PictureBox10 As PictureBox
     Friend WithEvents PictureBox11 As PictureBox
     Friend WithEvents deletecount As Label
-    Friend WithEvents deteletedate As Label
+    Friend WithEvents historydate As Label
     Friend WithEvents Label13 As Label
     Friend WithEvents PictureBox12 As PictureBox
     Friend WithEvents Addemployee As Button

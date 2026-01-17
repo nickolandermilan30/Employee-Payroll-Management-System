@@ -26,7 +26,7 @@ Partial Class Payslip
         Panel1 = New Panel()
         Label2 = New Label()
         Panel2 = New Panel()
-        Button2 = New Button()
+        PrintPayslip = New Button()
         Panel3 = New Panel()
         name = New Label()
         Deduction = New Label()
@@ -94,23 +94,23 @@ Partial Class Payslip
         ' 
         Panel2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         Panel2.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
-        Panel2.Controls.Add(Button2)
+        Panel2.Controls.Add(PrintPayslip)
         Panel2.Location = New Point(-2, 650)
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(802, 79)
         Panel2.TabIndex = 1
         ' 
-        ' Button2
+        ' PrintPayslip
         ' 
-        Button2.BackColor = Color.FromArgb(CByte(208), CByte(39), CByte(82))
-        Button2.FlatStyle = FlatStyle.Flat
-        Button2.ForeColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
-        Button2.Image = CType(resources.GetObject("Button2.Image"), Image)
-        Button2.Location = New Point(679, 12)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(47, 46)
-        Button2.TabIndex = 12
-        Button2.UseVisualStyleBackColor = False
+        PrintPayslip.BackColor = Color.FromArgb(CByte(208), CByte(39), CByte(82))
+        PrintPayslip.FlatStyle = FlatStyle.Flat
+        PrintPayslip.ForeColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
+        PrintPayslip.Image = CType(resources.GetObject("PrintPayslip.Image"), Image)
+        PrintPayslip.Location = New Point(679, 12)
+        PrintPayslip.Name = "PrintPayslip"
+        PrintPayslip.Size = New Size(47, 46)
+        PrintPayslip.TabIndex = 12
+        PrintPayslip.UseVisualStyleBackColor = False
         ' 
         ' Panel3
         ' 
@@ -508,7 +508,7 @@ Partial Class Payslip
         ' 
         ' Payslip
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(787, 720)
         Controls.Add(Panel3)
@@ -560,7 +560,7 @@ Partial Class Payslip
     Friend WithEvents Label16 As Label
     Friend WithEvents Panel6 As Panel
     Friend WithEvents Label19 As Label
-    Friend WithEvents Button2 As Button
+    Friend WithEvents PrintPayslip As Button
     Friend WithEvents NetSalary As Label
     Friend WithEvents name As Label
 End Class

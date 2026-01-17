@@ -40,7 +40,9 @@ Partial Class EditEmployee
         Label8 = New Label()
         email = New TextBox()
         Panel3 = New Panel()
+        Status = New ComboBox()
         showpassword = New CheckBox()
+        Label17 = New Label()
         Label16 = New Label()
         Passwordemployee = New TextBox()
         Label7 = New Label()
@@ -194,7 +196,7 @@ Partial Class EditEmployee
         ' Panel4
         ' 
         Panel4.Controls.Add(save)
-        Panel4.Location = New Point(358, 221)
+        Panel4.Location = New Point(394, 236)
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(148, 56)
         Panel4.TabIndex = 24
@@ -234,7 +236,9 @@ Partial Class EditEmployee
         ' Panel3
         ' 
         Panel3.BorderStyle = BorderStyle.FixedSingle
+        Panel3.Controls.Add(Status)
         Panel3.Controls.Add(showpassword)
+        Panel3.Controls.Add(Label17)
         Panel3.Controls.Add(Label16)
         Panel3.Controls.Add(Passwordemployee)
         Panel3.Controls.Add(Label15)
@@ -255,6 +259,14 @@ Partial Class EditEmployee
         Panel3.Size = New Size(574, 314)
         Panel3.TabIndex = 21
         ' 
+        ' Status
+        ' 
+        Status.FormattingEnabled = True
+        Status.Location = New Point(318, 195)
+        Status.Name = "Status"
+        Status.Size = New Size(222, 23)
+        Status.TabIndex = 33
+        ' 
         ' showpassword
         ' 
         showpassword.AutoSize = True
@@ -264,6 +276,18 @@ Partial Class EditEmployee
         showpassword.TabIndex = 30
         showpassword.Text = "Show password"
         showpassword.UseVisualStyleBackColor = True
+        ' 
+        ' Label17
+        ' 
+        Label17.AutoSize = True
+        Label17.BackColor = SystemColors.Control
+        Label17.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label17.ForeColor = Color.Black
+        Label17.Location = New Point(318, 173)
+        Label17.Name = "Label17"
+        Label17.Size = New Size(45, 16)
+        Label17.TabIndex = 32
+        Label17.Text = "Status"
         ' 
         ' Label16
         ' 
@@ -501,4 +525,6 @@ Partial Class EditEmployee
     Friend WithEvents Label16 As Label
     Friend WithEvents Passwordemployee As TextBox
     Friend WithEvents showpassword As CheckBox
+    Friend WithEvents Status As ComboBox
+    Friend WithEvents Label17 As Label
 End Class

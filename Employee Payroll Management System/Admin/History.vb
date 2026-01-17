@@ -22,14 +22,26 @@ Public Class History
         payrollhistorylist.AutoScroll = True
         payrollhistorylist.BackColor = Color.White
 
-        ' Load data and apply search filter
+        payrollhistorylist.TabStop = False   ' 🔥 SKIP TAB FOCUS
+        payrollhistorylist.Enabled = True    ' still clickable
+
+        search.TabIndex = 0
+        ' next controls here if meron
+
         LoadPayrollHistory()
         ApplySearch()
 
-        ' Handle form and panel resizing
         AddHandler Me.Resize, AddressOf Form_Resized
         AddHandler payrollhistorylist.Resize, AddressOf Panel_Resized
     End Sub
+
+    Private Sub search_KeyDown(sender As Object, e As KeyEventArgs) Handles search.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            payrollhistorylist.Focus()
+        End If
+    End Sub
+
 
     ' LOAD DATA
     Private Sub LoadPayrollHistory()

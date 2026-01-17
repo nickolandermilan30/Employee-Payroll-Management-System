@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="Cooldown.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="PictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="PictureBox2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAAAABGdBTUEAALGPC/xhBQAA/8dJREFUeF7s
         nQV0nNe1/e9omFksi8y2JMu2zEyJ43DicMMNc8PQJmmoSZukaZiZzWyZbZkZEjsxM4ulGWmk33/d+2ls
@@ -5554,16 +5557,6 @@
         w+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4
         HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofz
         35H/Bcz9OlGoqxeGAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="logout.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAANdJREFUOE+11LFNA0EQhWF3gezMFZCAiS1BDgEREVQCXViGCmgFUsipwYRIHxrp
-        dOLGe9wuMr/0krm3v3aDm9nsv8ECV7ieSHQW+fwAnOFTPdFdZU8PnrribeFGOdEJHrOnB8/RyPMx8Ib7
-        PO9pFU5SK8QRjvN8jwbhBl+4yd8GNAiX+JiUZiEu8ILXQkIYhHQ9NHUUhOcHFY7x5yePge2kLGgQxv9+
-        kud71AqraRXiHQ953vNjOdwVlkFOdIJfl8MKu65YQ3RPs2cA5rgs3CgnOvN8/uB8A0LLFzx10Zg8AAAA
-        AElFTkSuQmCC
 </value>
   </data>
 </root>

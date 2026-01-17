@@ -46,4 +46,21 @@
 
     Private Sub name_Click(sender As Object, e As EventArgs) Handles name.Click
     End Sub
+
+    Private Sub PrintPayslip_Click(sender As Object, e As EventArgs) Handles PrintPayslip.Click
+
+        Dim frmPrint As New Print(
+            name.Text,
+            Position.Text,
+            MonthandYear.Text,
+            Integer.Parse(Presentdays.Text),
+            Decimal.Parse(Basesalary.Text),
+            Decimal.Parse(Deduction.Text),
+            Decimal.Parse(NetSalary.Text.Replace("₱", "").Trim())
+        )
+
+        frmPrint.ShowDialog()
+
+    End Sub
+
 End Class

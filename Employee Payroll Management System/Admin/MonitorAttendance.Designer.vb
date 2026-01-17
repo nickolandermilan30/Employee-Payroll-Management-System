@@ -514,7 +514,7 @@ Partial Class MonitorAttendance
         ' 
         ' viewemployeedata
         ' 
-        viewemployeedata.Anchor = AnchorStyles.Top
+        viewemployeedata.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         viewemployeedata.Location = New Point(53, 551)
         viewemployeedata.Name = "viewemployeedata"
         viewemployeedata.Size = New Size(965, 166)

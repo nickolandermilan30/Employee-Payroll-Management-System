@@ -40,6 +40,8 @@ Partial Class AddEmployee
         Label4 = New Label()
         Label8 = New Label()
         Panel3 = New Panel()
+        Status = New ComboBox()
+        Label16 = New Label()
         showpassword = New CheckBox()
         Password = New Label()
         Passwordemployee = New TextBox()
@@ -242,6 +244,8 @@ Partial Class AddEmployee
         ' Panel3
         ' 
         Panel3.BorderStyle = BorderStyle.FixedSingle
+        Panel3.Controls.Add(Status)
+        Panel3.Controls.Add(Label16)
         Panel3.Controls.Add(showpassword)
         Panel3.Controls.Add(Password)
         Panel3.Controls.Add(Passwordemployee)
@@ -262,6 +266,26 @@ Partial Class AddEmployee
         Panel3.Name = "Panel3"
         Panel3.Size = New Size(574, 339)
         Panel3.TabIndex = 13
+        ' 
+        ' Status
+        ' 
+        Status.FormattingEnabled = True
+        Status.Location = New Point(320, 212)
+        Status.Name = "Status"
+        Status.Size = New Size(222, 23)
+        Status.TabIndex = 31
+        ' 
+        ' Label16
+        ' 
+        Label16.AutoSize = True
+        Label16.BackColor = SystemColors.Control
+        Label16.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label16.ForeColor = Color.Black
+        Label16.Location = New Point(320, 190)
+        Label16.Name = "Label16"
+        Label16.Size = New Size(45, 16)
+        Label16.TabIndex = 30
+        Label16.Text = "Status"
         ' 
         ' showpassword
         ' 
@@ -320,7 +344,7 @@ Partial Class AddEmployee
         ' Panel4
         ' 
         Panel4.Controls.Add(save)
-        Panel4.Location = New Point(358, 221)
+        Panel4.Location = New Point(394, 262)
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(148, 56)
         Panel4.TabIndex = 24
@@ -344,7 +368,7 @@ Partial Class AddEmployee
         ' sex
         ' 
         sex.FormattingEnabled = True
-        sex.Location = New Point(320, 156)
+        sex.Location = New Point(320, 149)
         sex.Name = "sex"
         sex.Size = New Size(222, 23)
         sex.TabIndex = 21
@@ -375,7 +399,7 @@ Partial Class AddEmployee
         Label9.BackColor = SystemColors.Control
         Label9.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label9.ForeColor = Color.Black
-        Label9.Location = New Point(320, 134)
+        Label9.Location = New Point(320, 127)
         Label9.Name = "Label9"
         Label9.Size = New Size(29, 16)
         Label9.TabIndex = 19
@@ -501,4 +525,6 @@ Partial Class AddEmployee
     Friend WithEvents Label14 As Label
     Friend WithEvents Password As Label
     Friend WithEvents showpassword As CheckBox
+    Friend WithEvents Status As ComboBox
+    Friend WithEvents Label16 As Label
 End Class

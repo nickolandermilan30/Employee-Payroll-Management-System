@@ -71,7 +71,7 @@ Partial Class Homepage
         ' Panel7
         ' 
         Panel7.Controls.Add(Attendance)
-        Panel7.Location = New Point(-5, 396)
+        Panel7.Location = New Point(3, 341)
         Panel7.Name = "Panel7"
         Panel7.Size = New Size(193, 47)
         Panel7.TabIndex = 8
@@ -83,7 +83,7 @@ Partial Class Homepage
         Attendance.ForeColor = Color.White
         Attendance.Image = CType(resources.GetObject("Attendance.Image"), Image)
         Attendance.ImageAlign = ContentAlignment.MiddleLeft
-        Attendance.Location = New Point(-5, -11)
+        Attendance.Location = New Point(-13, -11)
         Attendance.Name = "Attendance"
         Attendance.Padding = New Padding(25, 0, 35, 0)
         Attendance.Size = New Size(207, 64)
@@ -142,7 +142,7 @@ Partial Class Homepage
         ' Panel4
         ' 
         Panel4.Controls.Add(Payroll)
-        Panel4.Location = New Point(6, 338)
+        Panel4.Location = New Point(0, 400)
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(182, 44)
         Panel4.TabIndex = 6
@@ -154,7 +154,7 @@ Partial Class Homepage
         Payroll.ForeColor = Color.White
         Payroll.Image = CType(resources.GetObject("Payroll.Image"), Image)
         Payroll.ImageAlign = ContentAlignment.MiddleLeft
-        Payroll.Location = New Point(-14, -10)
+        Payroll.Location = New Point(-8, -13)
         Payroll.Name = "Payroll"
         Payroll.Padding = New Padding(25, 0, 35, 0)
         Payroll.Size = New Size(203, 64)

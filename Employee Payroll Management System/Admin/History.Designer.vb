@@ -37,9 +37,9 @@ Partial Class History
         Label2.ForeColor = SystemColors.ControlDarkDark
         Label2.Location = New Point(29, 79)
         Label2.Name = "Label2"
-        Label2.Size = New Size(490, 19)
+        Label2.Size = New Size(627, 19)
         Label2.TabIndex = 10
-        Label2.Text = "Ensure timely and precise payroll processing for all employees."
+        Label2.Text = "Maintain a complete and organized record of all employee payroll transactions."
         Label2.TextAlign = ContentAlignment.TopCenter
         ' 
         ' Label1
@@ -49,9 +49,9 @@ Partial Class History
         Label1.Font = New Font("Century Gothic", 20.25F, FontStyle.Bold)
         Label1.Location = New Point(27, 37)
         Label1.Name = "Label1"
-        Label1.Size = New Size(208, 32)
+        Label1.Size = New Size(195, 32)
         Label1.TabIndex = 9
-        Label1.Text = "Process Payroll"
+        Label1.Text = "History Payroll"
         ' 
         ' payrollhistorylist
         ' 

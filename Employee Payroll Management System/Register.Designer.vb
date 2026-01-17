@@ -38,12 +38,8 @@ Partial Class Register
         Password = New TextBox()
         Label6 = New Label()
         confirmpassword = New TextBox()
-        PictureBox3 = New PictureBox()
-        Label7 = New Label()
-        Roledropdown = New ComboBox()
         CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
-        CType(PictureBox3, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' Showpassword1
@@ -51,7 +47,7 @@ Partial Class Register
         Showpassword1.Anchor = AnchorStyles.Top
         Showpassword1.AutoSize = True
         Showpassword1.BackColor = SystemColors.Window
-        Showpassword1.Location = New Point(568, 537)
+        Showpassword1.Location = New Point(690, 511)
         Showpassword1.Name = "Showpassword1"
         Showpassword1.Size = New Size(108, 19)
         Showpassword1.TabIndex = 21
@@ -65,9 +61,9 @@ Partial Class Register
         Signup.FlatStyle = FlatStyle.Flat
         Signup.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Signup.ForeColor = Color.White
-        Signup.Location = New Point(773, 239)
+        Signup.Location = New Point(625, 561)
         Signup.Name = "Signup"
-        Signup.Size = New Size(253, 53)
+        Signup.Size = New Size(173, 51)
         Signup.TabIndex = 20
         Signup.Text = "Sign up"
         Signup.UseVisualStyleBackColor = False
@@ -79,11 +75,11 @@ Partial Class Register
         BackSignin.FlatStyle = FlatStyle.Flat
         BackSignin.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         BackSignin.ForeColor = Color.White
-        BackSignin.Location = New Point(773, 303)
+        BackSignin.Location = New Point(388, 559)
         BackSignin.Name = "BackSignin"
-        BackSignin.Size = New Size(253, 53)
+        BackSignin.Size = New Size(200, 53)
         BackSignin.TabIndex = 19
-        BackSignin.Text = "Sign in "
+        BackSignin.Text = "Back to Sign in "
         BackSignin.UseVisualStyleBackColor = False
         ' 
         ' Label4
@@ -93,7 +89,7 @@ Partial Class Register
         Label4.BackColor = SystemColors.Window
         Label4.Font = New Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label4.ForeColor = SystemColors.InfoText
-        Label4.Location = New Point(266, 300)
+        Label4.Location = New Point(388, 274)
         Label4.Name = "Label4"
         Label4.Size = New Size(42, 17)
         Label4.TabIndex = 18
@@ -107,7 +103,7 @@ Partial Class Register
         Label3.BackColor = SystemColors.Window
         Label3.Font = New Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label3.ForeColor = SystemColors.InfoText
-        Label3.Location = New Point(266, 219)
+        Label3.Location = New Point(388, 193)
         Label3.Name = "Label3"
         Label3.Size = New Size(69, 17)
         Label3.TabIndex = 17
@@ -121,7 +117,7 @@ Partial Class Register
         Email.BorderStyle = BorderStyle.FixedSingle
         Email.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Email.ForeColor = SystemColors.InfoText
-        Email.Location = New Point(266, 320)
+        Email.Location = New Point(388, 294)
         Email.Multiline = True
         Email.Name = "Email"
         Email.Size = New Size(410, 36)
@@ -134,7 +130,7 @@ Partial Class Register
         Username.BorderStyle = BorderStyle.FixedSingle
         Username.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Username.ForeColor = SystemColors.InfoText
-        Username.Location = New Point(266, 239)
+        Username.Location = New Point(388, 213)
         Username.Margin = New Padding(3, 4, 3, 3)
         Username.Multiline = True
         Username.Name = "Username"
@@ -147,7 +143,7 @@ Partial Class Register
         Label1.AutoSize = True
         Label1.BackColor = SystemColors.Window
         Label1.Font = New Font("Segoe UI Variable Display", 20.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        Label1.Location = New Point(257, 124)
+        Label1.Location = New Point(379, 98)
         Label1.Name = "Label1"
         Label1.Size = New Size(209, 36)
         Label1.TabIndex = 13
@@ -159,7 +155,7 @@ Partial Class Register
         PictureBox2.Anchor = AnchorStyles.Top
         PictureBox2.BackColor = SystemColors.Window
         PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), Image)
-        PictureBox2.Location = New Point(636, 124)
+        PictureBox2.Location = New Point(758, 98)
         PictureBox2.Name = "PictureBox2"
         PictureBox2.Size = New Size(66, 65)
         PictureBox2.SizeMode = PictureBoxSizeMode.Zoom
@@ -171,9 +167,9 @@ Partial Class Register
         PictureBox1.Anchor = AnchorStyles.Top
         PictureBox1.BackColor = SystemColors.Control
         PictureBox1.Image = My.Resources.Resources.Box
-        PictureBox1.Location = New Point(219, 62)
+        PictureBox1.Location = New Point(341, 36)
         PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(540, 573)
+        PictureBox1.Size = New Size(540, 625)
         PictureBox1.SizeMode = PictureBoxSizeMode.StretchImage
         PictureBox1.TabIndex = 11
         PictureBox1.TabStop = False
@@ -185,7 +181,7 @@ Partial Class Register
         Label2.BackColor = SystemColors.Window
         Label2.Font = New Font("Segoe UI Variable Display", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label2.ForeColor = SystemColors.ControlDarkDark
-        Label2.Location = New Point(257, 166)
+        Label2.Location = New Point(379, 140)
         Label2.Name = "Label2"
         Label2.Size = New Size(78, 26)
         Label2.TabIndex = 22
@@ -199,7 +195,7 @@ Partial Class Register
         Label5.BackColor = SystemColors.Window
         Label5.Font = New Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label5.ForeColor = SystemColors.InfoText
-        Label5.Location = New Point(266, 383)
+        Label5.Location = New Point(388, 357)
         Label5.Name = "Label5"
         Label5.Size = New Size(66, 17)
         Label5.TabIndex = 24
@@ -213,7 +209,7 @@ Partial Class Register
         Password.BorderStyle = BorderStyle.FixedSingle
         Password.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Password.ForeColor = SystemColors.InfoText
-        Password.Location = New Point(266, 403)
+        Password.Location = New Point(388, 377)
         Password.Multiline = True
         Password.Name = "Password"
         Password.Size = New Size(410, 36)
@@ -226,7 +222,7 @@ Partial Class Register
         Label6.BackColor = SystemColors.Window
         Label6.Font = New Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label6.ForeColor = SystemColors.InfoText
-        Label6.Location = New Point(266, 463)
+        Label6.Location = New Point(388, 437)
         Label6.Name = "Label6"
         Label6.Size = New Size(120, 17)
         Label6.TabIndex = 27
@@ -240,55 +236,17 @@ Partial Class Register
         confirmpassword.BorderStyle = BorderStyle.FixedSingle
         confirmpassword.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         confirmpassword.ForeColor = SystemColors.InfoText
-        confirmpassword.Location = New Point(266, 483)
+        confirmpassword.Location = New Point(388, 457)
         confirmpassword.Multiline = True
         confirmpassword.Name = "confirmpassword"
         confirmpassword.Size = New Size(410, 36)
         confirmpassword.TabIndex = 26
-        ' 
-        ' PictureBox3
-        ' 
-        PictureBox3.Anchor = AnchorStyles.Top
-        PictureBox3.BackColor = SystemColors.Control
-        PictureBox3.Image = My.Resources.Resources.Box
-        PictureBox3.Location = New Point(773, 100)
-        PictureBox3.Name = "PictureBox3"
-        PictureBox3.Size = New Size(256, 112)
-        PictureBox3.SizeMode = PictureBoxSizeMode.StretchImage
-        PictureBox3.TabIndex = 28
-        PictureBox3.TabStop = False
-        ' 
-        ' Label7
-        ' 
-        Label7.Anchor = AnchorStyles.Top
-        Label7.AutoSize = True
-        Label7.BackColor = SystemColors.Window
-        Label7.Font = New Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        Label7.ForeColor = SystemColors.InfoText
-        Label7.Location = New Point(791, 124)
-        Label7.Name = "Label7"
-        Label7.Size = New Size(35, 17)
-        Label7.TabIndex = 30
-        Label7.Text = "Role"
-        Label7.TextAlign = ContentAlignment.TopCenter
-        ' 
-        ' Roledropdown
-        ' 
-        Roledropdown.Anchor = AnchorStyles.Top
-        Roledropdown.FormattingEnabled = True
-        Roledropdown.Location = New Point(791, 155)
-        Roledropdown.Name = "Roledropdown"
-        Roledropdown.Size = New Size(220, 23)
-        Roledropdown.TabIndex = 31
         ' 
         ' Register
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1222, 719)
-        Controls.Add(Roledropdown)
-        Controls.Add(Label7)
-        Controls.Add(PictureBox3)
         Controls.Add(Label6)
         Controls.Add(confirmpassword)
         Controls.Add(Label5)
@@ -308,7 +266,6 @@ Partial Class Register
         Text = "Register"
         CType(PictureBox2, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
-        CType(PictureBox3, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -328,7 +285,4 @@ Partial Class Register
     Friend WithEvents Password As TextBox
     Friend WithEvents Label6 As Label
     Friend WithEvents confirmpassword As TextBox
-    Friend WithEvents PictureBox3 As PictureBox
-    Friend WithEvents Label7 As Label
-    Friend WithEvents Roledropdown As ComboBox
 End Class
