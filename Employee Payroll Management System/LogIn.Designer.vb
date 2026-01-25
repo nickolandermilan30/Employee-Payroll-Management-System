@@ -39,6 +39,7 @@ Partial Class LogIn
         Label1 = New Label()
         PictureBox2 = New PictureBox()
         PictureBox1 = New PictureBox()
+        Forgotemail = New Button()
         CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -50,9 +51,9 @@ Partial Class LogIn
         forget.FlatStyle = FlatStyle.Flat
         forget.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         forget.ForeColor = Color.White
-        forget.Location = New Point(209, 572)
+        forget.Location = New Point(315, 575)
         forget.Name = "forget"
-        forget.Size = New Size(201, 56)
+        forget.Size = New Size(212, 56)
         forget.TabIndex = 27
         forget.Text = "Forgot Password"
         forget.UseVisualStyleBackColor = False
@@ -228,12 +229,27 @@ Partial Class LogIn
         PictureBox1.TabIndex = 14
         PictureBox1.TabStop = False
         ' 
+        ' Forgotemail
+        ' 
+        Forgotemail.Anchor = AnchorStyles.Bottom
+        Forgotemail.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
+        Forgotemail.FlatStyle = FlatStyle.Flat
+        Forgotemail.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Forgotemail.ForeColor = Color.White
+        Forgotemail.Location = New Point(94, 575)
+        Forgotemail.Name = "Forgotemail"
+        Forgotemail.Size = New Size(201, 56)
+        Forgotemail.TabIndex = 28
+        Forgotemail.Text = "Forgot Email"
+        Forgotemail.UseVisualStyleBackColor = False
+        ' 
         ' LogIn
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.ControlLight
         ClientSize = New Size(621, 719)
+        Controls.Add(Forgotemail)
         Controls.Add(forget)
         Controls.Add(Timer)
         Controls.Add(Timercooldown)
@@ -250,6 +266,7 @@ Partial Class LogIn
         Controls.Add(PictureBox1)
         Name = "LogIn"
         Text = "Log In"
+        WindowState = FormWindowState.Maximized
         CType(PictureBox2, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
@@ -270,5 +287,6 @@ Partial Class LogIn
     Friend WithEvents Label1 As Label
     Friend WithEvents PictureBox2 As PictureBox
     Friend WithEvents PictureBox1 As PictureBox
+    Friend WithEvents Forgotemail As Button
 
 End Class

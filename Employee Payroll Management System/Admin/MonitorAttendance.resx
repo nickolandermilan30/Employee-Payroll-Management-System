@@ -209,4 +209,13 @@
         8skkAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="Notification.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DwAACw8BkvkDpQAAAMJJREFUSEvlzzEOwWAchvFuJI7A2MNwGGLtUayOQojEwszEGVgfadJG8zT6V12E
+        X9Lp6/v0a5L8DSAFzsWT+rwzIOMp8/nHgB4wK25eOgHT/MzvtwKMgGMlbAdg6N1bips3xUv5R9r/CTB3
+        qcHM+xCwd6XBzvsQcHelwc37kAsR70MORLwPORDxPuRAxPuQAxHvQw5EvH8J6AMLB96wBAbu1QBbL1vY
+        uFcDrL1qYeXe9wCulZtefN4ZMMnDxTP2+e96AACGExuGZrT9AAAAAElFTkSuQmCC
+</value>
+  </data>
 </root>

@@ -11,10 +11,14 @@
 
   <ItemGroup>
     <None Remove="Image\delete.png" />
+    <None Remove="Image\Logo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Image\delete.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

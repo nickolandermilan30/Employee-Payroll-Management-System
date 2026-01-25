@@ -39,10 +39,10 @@ Public Class Home
         Try
             OpenConnection()
             Using cmd As New MySqlCommand("SELECT COUNT(*) FROM employees", Conn)
-                employeecount.Text = cmd.ExecuteScalar().ToString() & "%"
+                employeecount.Text = cmd.ExecuteScalar().ToString()
             End Using
         Catch
-            employeecount.Text = "0%"
+            employeecount.Text = "0"
         Finally
             CloseConnection()
         End Try
@@ -74,10 +74,10 @@ Public Class Home
         Try
             OpenConnection()
             Using cmd As New MySqlCommand("SELECT COUNT(*) FROM users WHERE role='Admin'", Conn)
-                Admincount.Text = cmd.ExecuteScalar().ToString() & "%"
+                Admincount.Text = cmd.ExecuteScalar().ToString()
             End Using
         Catch
-            Admincount.Text = "0%"
+            Admincount.Text = "0"
         Finally
             CloseConnection()
         End Try

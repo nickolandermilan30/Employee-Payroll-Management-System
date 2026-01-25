@@ -25,9 +25,11 @@ Partial Class Print
         Panel2 = New Panel()
         Label1 = New Label()
         Panel1 = New Panel()
+        btn_Save = New Button()
         btn_Print = New Button()
         PrintPreviewControl1 = New PrintPreviewControl()
         prntDoc_ANNEX_A = New Printing.PrintDocument()
+        Preview = New Button()
         Panel2.SuspendLayout()
         Panel1.SuspendLayout()
         SuspendLayout()
@@ -57,6 +59,8 @@ Partial Class Print
         ' 
         ' Panel1
         ' 
+        Panel1.Controls.Add(Preview)
+        Panel1.Controls.Add(btn_Save)
         Panel1.Controls.Add(btn_Print)
         Panel1.Dock = DockStyle.Bottom
         Panel1.Location = New Point(0, 552)
@@ -65,16 +69,30 @@ Partial Class Print
         Panel1.Size = New Size(988, 43)
         Panel1.TabIndex = 3
         ' 
+        ' btn_Save
+        ' 
+        btn_Save.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
+        btn_Save.Dock = DockStyle.Right
+        btn_Save.FlatStyle = FlatStyle.Flat
+        btn_Save.ForeColor = Color.White
+        btn_Save.Location = New Point(675, 0)
+        btn_Save.Margin = New Padding(2)
+        btn_Save.Name = "btn_Save"
+        btn_Save.Size = New Size(158, 43)
+        btn_Save.TabIndex = 1
+        btn_Save.Text = "Save"
+        btn_Save.UseVisualStyleBackColor = False
+        ' 
         ' btn_Print
         ' 
         btn_Print.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
         btn_Print.Dock = DockStyle.Right
         btn_Print.FlatStyle = FlatStyle.Flat
         btn_Print.ForeColor = Color.White
-        btn_Print.Location = New Point(0, 0)
+        btn_Print.Location = New Point(833, 0)
         btn_Print.Margin = New Padding(2)
         btn_Print.Name = "btn_Print"
-        btn_Print.Size = New Size(988, 43)
+        btn_Print.Size = New Size(155, 43)
         btn_Print.TabIndex = 0
         btn_Print.Text = "Print"
         btn_Print.UseVisualStyleBackColor = False
@@ -90,6 +108,20 @@ Partial Class Print
         PrintPreviewControl1.Size = New Size(988, 595)
         PrintPreviewControl1.TabIndex = 5
         PrintPreviewControl1.Zoom = 1.09R
+        ' 
+        ' Preview
+        ' 
+        Preview.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
+        Preview.Dock = DockStyle.Left
+        Preview.FlatStyle = FlatStyle.Flat
+        Preview.ForeColor = Color.White
+        Preview.Location = New Point(0, 0)
+        Preview.Margin = New Padding(2)
+        Preview.Name = "Preview"
+        Preview.Size = New Size(158, 43)
+        Preview.TabIndex = 2
+        Preview.Text = "Preview"
+        Preview.UseVisualStyleBackColor = False
         ' 
         ' Print
         ' 
@@ -116,4 +148,6 @@ Partial Class Print
     Friend WithEvents btn_Print As Button
     Friend WithEvents PrintPreviewControl1 As PrintPreviewControl
     Friend WithEvents prntDoc_ANNEX_A As Printing.PrintDocument
+    Friend WithEvents btn_Save As Button
+    Friend WithEvents Preview As Button
 End Class

@@ -6,17 +6,60 @@ Public Class Register
     ' FORM LOAD
     ' =========================
     Private Sub Register_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
         ' Password mask
         Password.PasswordChar = "*"c
         confirmpassword.PasswordChar = "*"c
 
-        ' ===== TAB ORDER =====
+        ' ===== TAB ORDER (KEYBOARD TAB FLOW) =====
         Username.TabIndex = 0
         Email.TabIndex = 1
         Password.TabIndex = 2
         confirmpassword.TabIndex = 3
-        Signup.TabIndex = 4
-        BackSignin.TabIndex = 5
+        Phonenumber.TabIndex = 4
+        birthday.TabIndex = 5
+        gender.TabIndex = 6
+        age.TabIndex = 7
+        Signup.TabIndex = 8
+        BackSignin.TabIndex = 9
+
+        ' ===== GENDER COMBOBOX =====
+        gender.DropDownStyle = ComboBoxStyle.DropDownList
+        gender.Items.Clear()
+        gender.Items.Add("Male")
+        gender.Items.Add("Female")
+
+        ' ===== AGE TEXTBOX =====
+        age.ReadOnly = True
+
+        ' ===== BIRTHDAY FORMAT =====
+        birthday.Format = DateTimePickerFormat.Custom
+        birthday.CustomFormat = "MMMM dd yyyy"   ' 👉 June 30 2002
+        birthday.MaxDate = Date.Today
+    End Sub
+
+    ' =========================
+    ' PHONE NUMBER (NUMBERS ONLY)
+    ' =========================
+    Private Sub Phonenumber_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Phonenumber.KeyPress
+        If Not Char.IsDigit(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) Then
+            e.Handled = True
+        End If
+    End Sub
+
+    ' =========================
+    ' AUTO COMPUTE AGE
+    ' =========================
+    Private Sub birthday_ValueChanged(sender As Object, e As EventArgs) Handles birthday.ValueChanged
+        Dim today As Date = Date.Today
+        Dim bday As Date = birthday.Value
+
+        Dim computedAge As Integer = today.Year - bday.Year
+        If bday > today.AddYears(-computedAge) Then
+            computedAge -= 1
+        End If
+
+        age.Text = computedAge.ToString()
     End Sub
 
     ' =========================
@@ -41,37 +84,50 @@ Public Class Register
     End Sub
 
     ' =========================
-    ' SIGN UP BUTTON
+    ' SIGN UP
     ' =========================
     Private Sub Signup_Click(sender As Object, e As EventArgs) Handles Signup.Click
 
-        ' VALIDATION
-        If Username.Text = "" Or Email.Text = "" Or Password.Text = "" Or confirmpassword.Text = "" Then
-            MessageBox.Show("Please fill up all fields", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        If Username.Text = "" Or Email.Text = "" Or
+           Password.Text = "" Or confirmpassword.Text = "" Or
+           Phonenumber.Text = "" Or
+           gender.SelectedIndex = -1 Or age.Text = "" Then
+
+            MessageBox.Show("Please fill up all fields", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
 
         If Password.Text <> confirmpassword.Text Then
-            MessageBox.Show("Password does not match", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Password does not match", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
 
         Try
             OpenConnection()
 
-            ' Role fixed as "Admin"
-            Dim query As String = "INSERT INTO users (username, email, password, role) VALUES (@username, @email, @password, 'Admin')"
+            Dim query As String =
+                "INSERT INTO users
+                (username, email, gender, phone_number, birthday, age, password, role)
+                VALUES
+                (@username, @email, @gender, @phone, @birthday, @age, @password, 'Admin')"
+
             Dim cmd As New MySqlCommand(query, Conn)
 
             cmd.Parameters.AddWithValue("@username", Username.Text)
             cmd.Parameters.AddWithValue("@email", Email.Text)
-            cmd.Parameters.AddWithValue("@password", Password.Text) ' pwede i-hash later
+            cmd.Parameters.AddWithValue("@gender", gender.SelectedItem.ToString())
+            cmd.Parameters.AddWithValue("@phone", Phonenumber.Text)
+            cmd.Parameters.AddWithValue("@birthday", birthday.Value.Date) ' DB safe
+            cmd.Parameters.AddWithValue("@age", Convert.ToInt32(age.Text))
+            cmd.Parameters.AddWithValue("@password", Password.Text)
 
             cmd.ExecuteNonQuery()
 
-            MessageBox.Show("Registration Successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Registration Successful!", "Success",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-            ' balik sa login
             LogIn.Show()
             Me.Close()
 
@@ -81,25 +137,6 @@ Public Class Register
             CloseConnection()
         End Try
 
-    End Sub
-
-    ' =========================
-    ' TEXT CHANGED EVENTS
-    ' =========================
-    Private Sub Username_TextChanged(sender As Object, e As EventArgs) Handles Username.TextChanged
-        ' optional logic
-    End Sub
-
-    Private Sub Email_TextChanged(sender As Object, e As EventArgs) Handles Email.TextChanged
-        ' optional logic
-    End Sub
-
-    Private Sub Password_TextChanged(sender As Object, e As EventArgs) Handles Password.TextChanged
-        ' optional logic
-    End Sub
-
-    Private Sub confirmpassword_TextChanged(sender As Object, e As EventArgs) Handles confirmpassword.TextChanged
-        ' optional logic
     End Sub
 
 End Class

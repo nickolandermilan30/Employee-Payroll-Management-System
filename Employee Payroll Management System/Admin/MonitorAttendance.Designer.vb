@@ -63,6 +63,7 @@ Partial Class MonitorAttendance
         viewemployeedata = New Panel()
         save = New Button()
         Panel9 = New Panel()
+        Notification = New Button()
         Panel1.SuspendLayout()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         Panel5.SuspendLayout()
@@ -540,16 +541,30 @@ Partial Class MonitorAttendance
         ' 
         Panel9.Anchor = AnchorStyles.Top
         Panel9.Controls.Add(save)
-        Panel9.Location = New Point(796, 127)
+        Panel9.Location = New Point(796, 136)
         Panel9.Name = "Panel9"
         Panel9.Size = New Size(218, 61)
         Panel9.TabIndex = 23
+        ' 
+        ' Notification
+        ' 
+        Notification.Anchor = AnchorStyles.Top
+        Notification.BackColor = Color.FromArgb(CByte(208), CByte(39), CByte(82))
+        Notification.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Notification.ForeColor = SystemColors.Window
+        Notification.Image = CType(resources.GetObject("Notification.Image"), Image)
+        Notification.Location = New Point(546, 142)
+        Notification.Name = "Notification"
+        Notification.Size = New Size(54, 47)
+        Notification.TabIndex = 7
+        Notification.UseVisualStyleBackColor = False
         ' 
         ' MonitorAttendance
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1108, 723)
+        Controls.Add(Notification)
         Controls.Add(Panel9)
         Controls.Add(viewemployeedata)
         Controls.Add(Panel7)
@@ -632,4 +647,5 @@ Partial Class MonitorAttendance
     Friend WithEvents save As Button
     Friend WithEvents Panel9 As Panel
     Friend WithEvents monthofdate As DateTimePicker
+    Friend WithEvents Notification As Button
 End Class

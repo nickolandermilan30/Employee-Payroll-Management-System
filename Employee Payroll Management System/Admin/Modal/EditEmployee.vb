@@ -47,12 +47,7 @@ Public Class EditEmployee
         close.TabIndex = 13
 
         ' ===== POSITION LEVEL DROPDOWN =====
-        ComboBox1.Items.AddRange(New String() {
-            "Intern Level", "Entry Level", "Junior Level",
-            "Mid Level", "Senior Level", "Lead Level",
-            "Supervisor Level", "Manager Level",
-            "Senior Manager Level", "Executive Level"
-        })
+        ComboBox1.Items.AddRange(New String() {"Regular", "Extra", "Faculties"})
 
         ' ===== SEX DROPDOWN =====
         sex.Items.AddRange(New String() {"Male", "Female", "Other"})

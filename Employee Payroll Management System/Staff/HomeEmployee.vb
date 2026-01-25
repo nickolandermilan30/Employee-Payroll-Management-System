@@ -46,15 +46,18 @@ Public Class HomeEmployee
         LoadAttendanceCounts()   ' ✅ balik count
         LoadAttendanceData()     ' panel data
         attendancePanel.Invalidate()
+
+        ' Initialize ComboBoxes
+        InitializeTimeComboBoxes()
+        InitializeStatusComboBox()
     End Sub
 
-    ' =========================================================
-    ' LOAD ATTENDANCE COUNTS (PRESENT / ABSENT / HALF / LATE)
-    ' =========================================================
+    ' =========================
+    ' LOAD ATTENDANCE COUNTS
+    ' =========================
     Private Sub LoadAttendanceCounts()
         Try
             conn.Open()
-
             Dim sql As String =
                 "SELECT 
                     SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) AS PresentCount,
@@ -66,7 +69,6 @@ Public Class HomeEmployee
 
             Using cmd As New MySqlCommand(sql, conn)
                 cmd.Parameters.AddWithValue("@fullname", EmployeeName)
-
                 Using r = cmd.ExecuteReader()
                     If r.Read() Then
                         presentday.Text = If(IsDBNull(r("PresentCount")), "0", r("PresentCount").ToString())
@@ -76,7 +78,6 @@ Public Class HomeEmployee
                     End If
                 End Using
             End Using
-
         Catch ex As Exception
             MessageBox.Show("Error loading counts: " & ex.Message)
         Finally
@@ -90,7 +91,6 @@ Public Class HomeEmployee
     Private Sub LoadAttendanceData()
         Try
             conn.Open()
-
             Dim sql As String =
                 "SELECT fullname, attendance_date, status
                  FROM attendance
@@ -102,7 +102,6 @@ Public Class HomeEmployee
 
             attendanceTable = New DataTable()
             adapter.Fill(attendanceTable)
-
         Catch ex As Exception
             MessageBox.Show("Error loading attendance: " & ex.Message)
         Finally
@@ -114,13 +113,13 @@ Public Class HomeEmployee
     ' PAINT ATTENDANCE PANEL
     ' =========================
     Private Sub attendancePanel_Paint(sender As Object, e As PaintEventArgs) Handles attendancePanel.Paint
-        Dim g As Graphics = e.Graphics
+        Dim g = e.Graphics
         g.SmoothingMode = SmoothingMode.AntiAlias
         g.Clear(Color.White)
 
         If attendanceTable Is Nothing Then Return
 
-        Dim panelWidth As Integer = attendancePanel.Width
+        Dim panelWidth = attendancePanel.Width
         Dim fontHeader As New Font("Segoe UI", 10, FontStyle.Bold)
         Dim fontRow As New Font("Segoe UI", 9)
 
@@ -137,18 +136,16 @@ Public Class HomeEmployee
         g.DrawString("Employee Status", fontHeader, Brushes.Black, colName + colDate + colStatus + padding, 10)
 
         ' ROWS
-        For i As Integer = 0 To attendanceTable.Rows.Count - 1
-            Dim y As Integer = headerHeight + i * rowHeight
-
+        For i = 0 To attendanceTable.Rows.Count - 1
+            Dim y = headerHeight + i * rowHeight
             g.FillRectangle(If(i Mod 2 = 0, Brushes.WhiteSmoke, Brushes.White),
                             0, y, panelWidth, rowHeight)
 
             Dim row = attendanceTable.Rows(i)
-            Dim fullname As String = row("fullname").ToString()
-            Dim d As Date = CDate(row("attendance_date"))
-            Dim status As String = row("status").ToString()
-
-            Dim empStatus As String = If(status = "Absent", "Inactive", "Active")
+            Dim fullname = row("fullname").ToString
+            Dim d As Date = row("attendance_date")
+            Dim status = row("status").ToString
+            Dim empStatus = If(status = "Absent", "Inactive", "Active")
 
             g.DrawString(fullname, fontRow, Brushes.Black, padding, y + 8)
             g.DrawString(d.ToString("MMMM d, yyyy"), fontRow, Brushes.Black, colName + padding, y + 8)
@@ -162,10 +159,9 @@ Public Class HomeEmployee
                 25
             )
 
-            Dim badgeColor As Color =
-                If(empStatus = "Active",
-                   Color.FromArgb(46, 204, 113),
-                   Color.FromArgb(231, 76, 60))
+            Dim badgeColor = If(empStatus = "Active",
+                                 Color.FromArgb(46, 204, 113),
+                                 Color.FromArgb(231, 76, 60))
 
             Using path = RoundedRect(badgeRect, 12)
                 Using br As New SolidBrush(badgeColor)
@@ -192,5 +188,92 @@ Public Class HomeEmployee
         path.CloseFigure()
         Return path
     End Function
+
+    ' =========================
+    ' INITIALIZE DROPDOWNS
+    ' =========================
+    Private Sub InitializeTimeComboBoxes()
+        ' Make dropdown-only
+        TimeIn.DropDownStyle = ComboBoxStyle.DropDownList
+        TimeOut.DropDownStyle = ComboBoxStyle.DropDownList
+
+        TimeIn.Items.Clear()
+        TimeOut.Items.Clear()
+
+        For h = 0 To 23
+            Dim ampm As String = If(h < 12, "AM", "PM")
+            Dim hour = If(h Mod 12 = 0, 12, h Mod 12)
+            Dim t As String = hour.ToString("00") & ":00 " & ampm
+            TimeIn.Items.Add(t)
+            TimeOut.Items.Add(t)
+        Next
+        TimeIn.SelectedIndex = 0
+        TimeOut.SelectedIndex = 0
+    End Sub
+
+    Private Sub InitializeStatusComboBox()
+        ' Make dropdown-only
+        Status.DropDownStyle = ComboBoxStyle.DropDownList
+
+        Status.Items.Clear()
+        Status.Items.AddRange(New String() {"Present", "Absent", "Half Day", "Late"})
+        Status.SelectedIndex = 0
+    End Sub
+
+    ' =========================
+    ' DROPDOWN EVENTS
+    ' =========================
+    Private Sub TimeIn_SelectedIndexChanged(sender As Object, e As EventArgs) Handles TimeIn.SelectedIndexChanged
+    End Sub
+
+    Private Sub TimeOut_SelectedIndexChanged(sender As Object, e As EventArgs) Handles TimeOut.SelectedIndexChanged
+    End Sub
+
+    ' === SET TIME TO 00:00 IF ABSENT ===
+    Private Sub Status_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Status.SelectedIndexChanged
+        If Status.SelectedItem.ToString() = "Absent" Then
+            ' Find index of "12:00 AM" in TimeIn/TimeOut
+            Dim zeroIndex As Integer = TimeIn.Items.IndexOf("12:00 AM")
+            If zeroIndex >= 0 Then
+                TimeIn.SelectedIndex = zeroIndex
+                TimeOut.SelectedIndex = zeroIndex
+            End If
+        End If
+    End Sub
+
+    Private Sub DateTimePicker1_ValueChanged(sender As Object, e As EventArgs) Handles DateTimePicker1.ValueChanged
+    End Sub
+
+    ' =========================
+    ' SAVE SCHEDULE TO DATABASE
+    ' =========================
+    Private Sub Setscedule_Click(sender As Object, e As EventArgs) Handles Setscedule.Click
+        Try
+            conn.Open()
+
+            Dim sql As String =
+                "INSERT INTO set_schedule (fullname, schedule_date, status, time_in, time_out)
+                 VALUES (@fullname, @schedule_date, @status, @time_in, @time_out)"
+
+            Using cmd As New MySqlCommand(sql, conn)
+                cmd.Parameters.AddWithValue("@fullname", EmployeeName)
+                cmd.Parameters.AddWithValue("@schedule_date", DateTimePicker1.Value.Date)
+                cmd.Parameters.AddWithValue("@status", Status.SelectedItem.ToString())
+                cmd.Parameters.AddWithValue("@time_in", TimeIn.SelectedItem.ToString())
+                cmd.Parameters.AddWithValue("@time_out", TimeOut.SelectedItem.ToString())
+
+                Dim result = cmd.ExecuteNonQuery()
+                If result > 0 Then
+                    MessageBox.Show("Schedule saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Else
+                    MessageBox.Show("Failed to save schedule.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End If
+            End Using
+        Catch ex As Exception
+            MessageBox.Show("Error saving schedule: " & ex.Message)
+        Finally
+            If conn.State = ConnectionState.Open Then conn.Close()
+        End Try
+    End Sub
 
 End Class

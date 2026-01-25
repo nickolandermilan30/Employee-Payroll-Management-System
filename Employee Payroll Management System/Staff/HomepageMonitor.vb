@@ -52,7 +52,7 @@
     ' OTHER BUTTONS (optional)
     ' =========================
     Private Sub Salary_Click(sender As Object, e As EventArgs) Handles Salary.Click
-        LoadTransactionHistory()
+        LoadTransactionHistory
     End Sub
 
     ' =========================

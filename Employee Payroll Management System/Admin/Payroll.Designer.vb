@@ -59,6 +59,10 @@ Partial Class Payroll
         Present = New Label()
         Label17 = New Label()
         PictureBox6 = New PictureBox()
+        daysdate = New TextBox()
+        Label10 = New Label()
+        deductionbtn = New Button()
+        Listofdeduction = New ListBox()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
@@ -149,7 +153,7 @@ Partial Class Payroll
         Month.Anchor = AnchorStyles.Top
         Month.Location = New Point(108, 348)
         Month.Name = "Month"
-        Month.Size = New Size(234, 23)
+        Month.Size = New Size(114, 23)
         Month.TabIndex = 12
         ' 
         ' Label5
@@ -171,7 +175,7 @@ Partial Class Payroll
         Year.Anchor = AnchorStyles.Top
         Year.Location = New Point(108, 414)
         Year.Name = "Year"
-        Year.Size = New Size(234, 23)
+        Year.Size = New Size(173, 23)
         Year.TabIndex = 15
         Year.Text = "DomainUpDown1"
         ' 
@@ -497,11 +501,63 @@ Partial Class Payroll
         PictureBox6.TabIndex = 12
         PictureBox6.TabStop = False
         ' 
+        ' daysdate
+        ' 
+        daysdate.Anchor = AnchorStyles.Top
+        daysdate.BorderStyle = BorderStyle.FixedSingle
+        daysdate.Location = New Point(238, 348)
+        daysdate.Name = "daysdate"
+        daysdate.Size = New Size(85, 23)
+        daysdate.TabIndex = 39
+        ' 
+        ' Label10
+        ' 
+        Label10.Anchor = AnchorStyles.Top
+        Label10.AutoSize = True
+        Label10.BackColor = SystemColors.Window
+        Label10.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
+        Label10.ForeColor = SystemColors.ActiveCaptionText
+        Label10.Location = New Point(238, 323)
+        Label10.Name = "Label10"
+        Label10.Size = New Size(56, 19)
+        Label10.TabIndex = 40
+        Label10.Text = "Date *"
+        Label10.TextAlign = ContentAlignment.TopCenter
+        ' 
+        ' deductionbtn
+        ' 
+        deductionbtn.Anchor = AnchorStyles.Top
+        deductionbtn.BackColor = Color.OrangeRed
+        deductionbtn.FlatStyle = FlatStyle.Flat
+        deductionbtn.ForeColor = Color.White
+        deductionbtn.Location = New Point(747, 368)
+        deductionbtn.Name = "deductionbtn"
+        deductionbtn.Size = New Size(80, 35)
+        deductionbtn.TabIndex = 41
+        deductionbtn.Text = "Deduction"
+        deductionbtn.UseVisualStyleBackColor = False
+        ' 
+        ' Listofdeduction
+        ' 
+        Listofdeduction.Anchor = AnchorStyles.Top
+        Listofdeduction.BorderStyle = BorderStyle.None
+        Listofdeduction.ForeColor = Color.ForestGreen
+        Listofdeduction.FormattingEnabled = True
+        Listofdeduction.ItemHeight = 15
+        Listofdeduction.Location = New Point(833, 368)
+        Listofdeduction.Name = "Listofdeduction"
+        Listofdeduction.Size = New Size(160, 75)
+        Listofdeduction.TabIndex = 42
+        ' 
         ' Payroll
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1092, 684)
+        Controls.Add(Listofdeduction)
+        Controls.Add(deductionbtn)
+        Controls.Add(Label10)
+        Controls.Add(daysdate)
         Controls.Add(Panel5)
         Controls.Add(Panel4)
         Controls.Add(Panel2)
@@ -583,4 +639,8 @@ Partial Class Payroll
     Friend WithEvents Present As Label
     Friend WithEvents Label17 As Label
     Friend WithEvents PictureBox6 As PictureBox
+    Friend WithEvents daysdate As TextBox
+    Friend WithEvents Label10 As Label
+    Friend WithEvents deductionbtn As Button
+    Friend WithEvents Listofdeduction As ListBox
 End Class

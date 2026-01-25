@@ -15,94 +15,46 @@ Public Class Payroll
     ' =========================
     Private Sub Payroll_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.KeyPreview = True
-
         LoadEmployees()
 
-        ' ===== TAB ORDER =====
         employee.TabIndex = 0
         Month.TabIndex = 1
         Year.TabIndex = 2
         Salary.TabIndex = 3
         Deduction.TabIndex = 4
         Notes.TabIndex = 5
-        Pay.TabIndex = 6
+        daysdate.TabIndex = 6
+        Pay.TabIndex = 7
 
-        ' ===== EMPLOYEE DROPDOWN =====
         employee.DropDownStyle = ComboBoxStyle.DropDownList
 
-        ' ===== MONTH PICKER (MONTH ONLY) =====
         Month.Format = DateTimePickerFormat.Custom
         Month.CustomFormat = "MMMM"
         Month.ShowUpDown = True
 
-        ' ===== YEAR DOMAINUPDOWN =====
         Year.Items.Clear()
         Dim currentYear As Integer = DateTime.Now.Year
-        For y As Integer = currentYear - 20 To currentYear + 1
+        For y As Integer = currentYear - 50 To currentYear + 1
             Year.Items.Add(y.ToString())
         Next
         Year.SelectedItem = currentYear.ToString()
-        Year.ReadOnly = True      ' ❌ no typing
-        Year.Wrap = True          ' optional (scroll loop)
+        Year.ReadOnly = True
+        Year.Wrap = True
 
         Salary.Clear()
-        Deduction.Text = ""
+        Deduction.Clear()
+        daysdate.Clear()
     End Sub
 
     ' =========================
-    ' KEYBEHAVIOR: ENTER AS TAB
-    ' =========================
-    Private Sub Year_KeyDown(sender As Object, e As KeyEventArgs) Handles Year.KeyDown
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-            Me.SelectNextControl(Year, True, True, True, True)
-        End If
-    End Sub
-
-    Private Sub TextBox_EnterAsTab(sender As Object, e As KeyEventArgs) _
-    Handles Salary.KeyDown, Deduction.KeyDown, Notes.KeyDown
-
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-            Me.SelectNextControl(DirectCast(sender, Control), True, True, True, True)
-        End If
-    End Sub
-
-    Private Sub Control_EnterBehavior(sender As Object, e As KeyEventArgs) _
-    Handles employee.KeyDown, Year.KeyDown, Month.KeyDown
-
-        If e.KeyCode <> Keys.Enter Then Exit Sub
-        e.SuppressKeyPress = True
-
-        ' ComboBox behavior
-        If TypeOf sender Is ComboBox Then
-            Dim cb As ComboBox = CType(sender, ComboBox)
-            If Not cb.DroppedDown Then
-                cb.DroppedDown = True
-            Else
-                Me.SelectNextControl(cb, True, True, True, True)
-            End If
-        ElseIf TypeOf sender Is DateTimePicker Then
-            Me.SelectNextControl(CType(sender, Control), True, True, True, True)
-        End If
-    End Sub
-
-    Private Sub Pay_KeyDown(sender As Object, e As KeyEventArgs) Handles Pay.KeyDown
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-            Pay.PerformClick()
-        End If
-    End Sub
-
-    ' =========================
-    ' LOAD EMPLOYEES (ACTIVE ONLY)
+    ' LOAD EMPLOYEES
     ' =========================
     Private Sub LoadEmployees()
         Try
             Dim sql As String =
                 "SELECT id, fullname, salary, job_position 
                  FROM employees 
-                 WHERE status = 'Active'
+                 WHERE status='Active'
                  ORDER BY fullname"
 
             Dim adapter As New MySqlDataAdapter(sql, conn)
@@ -113,7 +65,6 @@ Public Class Payroll
             For Each row As DataRow In employeesTable.Rows
                 employee.Items.Add(row("fullname").ToString())
             Next
-
         Catch ex As Exception
             ShowToast("⚠ Error loading employees: " & ex.Message, Color.Red)
         End Try
@@ -123,7 +74,7 @@ Public Class Payroll
     ' EMPLOYEE SELECTED
     ' =========================
     Private Sub employee_SelectedIndexChanged(sender As Object, e As EventArgs) Handles employee.SelectedIndexChanged
-        If employee.SelectedIndex = -1 Or Year.SelectedItem Is Nothing Then Exit Sub
+        If employee.SelectedIndex = -1 OrElse Year.SelectedItem Is Nothing Then Exit Sub
 
         Dim empName As String = employee.SelectedItem.ToString()
         UpdateAttendanceCounts(empName)
@@ -138,15 +89,11 @@ Public Class Payroll
     ' MONTH / YEAR CHANGED
     ' =========================
     Private Sub Month_ValueChanged(sender As Object, e As EventArgs) Handles Month.ValueChanged
-        If employee.SelectedIndex <> -1 Then
-            UpdateAttendanceCounts(employee.SelectedItem.ToString())
-        End If
+        If employee.SelectedIndex <> -1 Then UpdateAttendanceCounts(employee.SelectedItem.ToString())
     End Sub
 
     Private Sub Year_SelectedItemChanged(sender As Object, e As EventArgs) Handles Year.SelectedItemChanged
-        If employee.SelectedIndex <> -1 Then
-            UpdateAttendanceCounts(employee.SelectedItem.ToString())
-        End If
+        If employee.SelectedIndex <> -1 Then UpdateAttendanceCounts(employee.SelectedItem.ToString())
     End Sub
 
     ' =========================
@@ -154,40 +101,25 @@ Public Class Payroll
     ' =========================
     Private Sub UpdateAttendanceCounts(employeeName As String)
         Try
-            Dim monthNum As Integer = Month.Value.Month
-            Dim yearNum As Integer = CInt(Year.SelectedItem)
-
             Dim sql As String =
-            "SELECT
-                SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) AS PresentCount,
-                SUM(CASE WHEN status='Absent' THEN 1 ELSE 0 END) AS AbsentCount,
-                SUM(CASE WHEN status='Half Day' THEN 1 ELSE 0 END) AS HalfdayCount,
-                SUM(CASE WHEN status='Late' THEN 1 ELSE 0 END) AS LateCount
-             FROM attendance
-             WHERE fullname=@name
-             AND MONTH(attendance_date)=@m
-             AND YEAR(attendance_date)=@y"
+                "SELECT
+                    SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) AS PresentCount
+                 FROM attendance
+                 WHERE fullname=@name
+                 AND MONTH(attendance_date)=@m
+                 AND YEAR(attendance_date)=@y"
 
             Using cmd As New MySqlCommand(sql, conn)
                 cmd.Parameters.AddWithValue("@name", employeeName)
-                cmd.Parameters.AddWithValue("@m", monthNum)
-                cmd.Parameters.AddWithValue("@y", yearNum)
+                cmd.Parameters.AddWithValue("@m", Month.Value.Month)
+                cmd.Parameters.AddWithValue("@y", CInt(Year.SelectedItem))
 
                 conn.Open()
-                Using r = cmd.ExecuteReader()
-                    If r.Read() Then
-                        Present.Text = If(IsDBNull(r("PresentCount")), "0", r("PresentCount").ToString())
-                        Absent.Text = If(IsDBNull(r("AbsentCount")), "0", r("AbsentCount").ToString())
-                        Halfday.Text = If(IsDBNull(r("HalfdayCount")), "0", r("HalfdayCount").ToString())
-                        late.Text = If(IsDBNull(r("LateCount")), "0", r("LateCount").ToString())
-                    End If
-                End Using
+                Present.Text = cmd.ExecuteScalar().ToString()
                 conn.Close()
             End Using
-
-        Catch ex As Exception
+        Catch
             If conn.State = ConnectionState.Open Then conn.Close()
-            ShowToast("❌ Attendance error: " & ex.Message, Color.Red)
         End Try
     End Sub
 
@@ -195,17 +127,37 @@ Public Class Payroll
     ' PAY BUTTON
     ' =========================
     Private Sub Pay_Click(sender As Object, e As EventArgs) Handles Pay.Click
+        ' =========================
+        ' VALIDATIONS
+        ' =========================
         If employee.SelectedIndex = -1 Then
             ShowToast("⚠ Select employee", Color.Red)
             Exit Sub
         End If
 
+        ' Default present days to 0 if empty or invalid
+        Dim presentDays As Integer = 0
+        If Not String.IsNullOrWhiteSpace(Present.Text) Then
+            Integer.TryParse(Present.Text, presentDays)
+        End If
+
+        ' Default salary to 0 if empty or invalid
+        Dim salaryAmount As Decimal = 0D
+        If Not String.IsNullOrWhiteSpace(Salary.Text) Then
+            Decimal.TryParse(Salary.Text.Replace(",", ""), salaryAmount)
+        End If
+
+        ' Default deduction to 0 if empty or invalid
+        Dim deductionAmount As Decimal = 0D
+        If Not String.IsNullOrWhiteSpace(Deduction.Text) Then
+            Decimal.TryParse(Deduction.Text.Replace(",", ""), deductionAmount)
+        End If
+
+        ' Default notes
+        Dim notesText As String = If(String.IsNullOrWhiteSpace(Notes.Text), "N/A", Notes.Text)
+
         Dim employeeName As String = employee.SelectedItem.ToString()
         Dim monthText As String = Month.Value.ToString("MMMM") & " " & Year.SelectedItem.ToString()
-        Dim presentDays As Integer = CInt(Present.Text)
-
-        Dim salaryAmount As Decimal = CDec(Salary.Text.Replace(",", ""))
-        Dim deductionAmount As Decimal = CDec(Deduction.Text.Replace(",", ""))
 
         Dim row = employeesTable.Select("fullname='" & employeeName.Replace("'", "''") & "'").FirstOrDefault()
         Dim position As String = If(row IsNot Nothing, row("job_position").ToString(), "")
@@ -218,10 +170,10 @@ Public Class Payroll
             Using cmd As New MySqlCommand(sql, conn)
                 cmd.Parameters.AddWithValue("@n", employeeName)
                 cmd.Parameters.AddWithValue("@m", Month.Value.Month)
-                cmd.Parameters.AddWithValue("@y", CInt(Year.SelectedItem))
+                cmd.Parameters.AddWithValue("@y", If(Year.SelectedItem IsNot Nothing, CInt(Year.SelectedItem), DateTime.Now.Year))
                 cmd.Parameters.AddWithValue("@s", salaryAmount)
                 cmd.Parameters.AddWithValue("@d", deductionAmount)
-                cmd.Parameters.AddWithValue("@no", Notes.Text)
+                cmd.Parameters.AddWithValue("@no", notesText)
 
                 conn.Open()
                 cmd.ExecuteNonQuery()
@@ -240,34 +192,10 @@ Public Class Payroll
         End Try
     End Sub
 
-    ' =========================
-    ' TOAST
-    ' =========================
-    Private Async Sub ShowToast(msg As String, bg As Color)
-        Dim p As New Panel With {.Size = New Size(360, 45), .BackColor = bg,
-            .Location = New Point(Me.Width - 380, 10)}
-
-        Dim l As New Label With {.Text = msg, .Dock = DockStyle.Fill,
-            .ForeColor = Color.White, .Font = New Font("Segoe UI", 10, FontStyle.Bold),
-            .TextAlign = ContentAlignment.MiddleLeft, .Padding = New Padding(10, 0, 0, 0)}
-
-        p.Controls.Add(l)
-        Me.Controls.Add(p)
-        Await Task.Delay(3000)
-        Me.Controls.Remove(p)
-    End Sub
 
     ' =========================
-    ' NUMBER ONLY + AUTO THOUSAND SEPARATOR
+    ' NUMBER FORMATTING
     ' =========================
-    Private Sub Salary_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Salary.KeyPress
-        If Not Char.IsDigit(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) Then e.Handled = True
-    End Sub
-
-    Private Sub Deduction_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Deduction.KeyPress
-        If Not Char.IsDigit(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) Then e.Handled = True
-    End Sub
-
     Private Sub Salary_TextChanged(sender As Object, e As EventArgs) Handles Salary.TextChanged
         FormatTextboxWithSeparator(Salary)
     End Sub
@@ -276,26 +204,36 @@ Public Class Payroll
         FormatTextboxWithSeparator(Deduction)
     End Sub
 
-    ' =========================
-    ' HELPER FUNCTION: FORMAT NUMBER
-    ' =========================
     Private Sub FormatTextboxWithSeparator(tb As TextBox)
         If String.IsNullOrEmpty(tb.Text) Then Exit Sub
-
-        Dim selStart As Integer = tb.SelectionStart
-        Dim value As String = tb.Text.Replace(",", "").Replace(".", "")
+        Dim value As String = tb.Text.Replace(",", "")
         Dim number As Decimal
         If Decimal.TryParse(value, number) Then
-            tb.Text = String.Format(CultureInfo.InvariantCulture, "{0:N0}", number)
-            tb.SelectionStart = Math.Min(selStart + 1, tb.Text.Length)
+            tb.Text = number.ToString("N0")
+            tb.SelectionStart = tb.Text.Length
         End If
     End Sub
 
-    ' =========================
-    ' FORMAT DECIMAL NUMBER
-    ' =========================
     Private Function FormatNumberForTextbox(value As Decimal) As String
-        Return String.Format(CultureInfo.InvariantCulture, "{0:N0}", value)
+        Return value.ToString("N0")
     End Function
 
+    ' =========================
+    ' TOAST MESSAGE
+    ' =========================
+    Private Async Sub ShowToast(msg As String, bg As Color)
+        Dim p As New Panel With {.Size = New Size(360, 45), .BackColor = bg,
+            .Location = New Point(Me.Width - 380, 10)}
+        Dim l As New Label With {.Text = msg, .Dock = DockStyle.Fill,
+            .ForeColor = Color.White, .Font = New Font("Segoe UI", 10, FontStyle.Bold),
+            .TextAlign = ContentAlignment.MiddleLeft, .Padding = New Padding(10, 0, 0, 0)}
+        p.Controls.Add(l)
+        Me.Controls.Add(p)
+        Await Task.Delay(3000)
+        Me.Controls.Remove(p)
+    End Sub
+
+    Private Sub deductionbtn_Click(sender As Object, e As EventArgs) Handles deductionbtn.Click
+
+    End Sub
 End Class

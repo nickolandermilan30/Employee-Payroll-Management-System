@@ -214,9 +214,15 @@ Public Class LogIn
     ' =========================
     Private Sub forget_Click(sender As Object, e As EventArgs) Handles forget.Click
         ' Open ForgotPassword form
-        Dim forgotForm As New ForgotPassword()
-        forgotForm.Show()
-        Me.Hide() ' hide login form
+        Dim forgotForm As New ForgotPassword
+        forgotForm.Show
+        Hide ' hide login form
     End Sub
 
+    Private Sub Forgotemail_Click(sender As Object, e As EventArgs) Handles Forgotemail.Click
+        ' Open ForgotPassword form
+        Dim forgotForm As New ForgotEmail
+        forgotForm.Show()
+        Hide() ' hide login form
+    End Sub
 End Class

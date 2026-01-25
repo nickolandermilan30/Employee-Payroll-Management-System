@@ -27,13 +27,9 @@ Public Class AddEmployee
         save.TabIndex = 12
         close.TabIndex = 13
 
-        ' ===== POSITION LEVEL =====
+        ' ===== POSITION LEVEL (NOW ONLY REGULAR / EXTRA FACULTIES) =====
         ComboBox1.Items.Clear()
-        ComboBox1.Items.AddRange(New String() {
-        "Intern Level", "Entry Level", "Junior Level", "Mid Level",
-        "Senior Level", "Lead Level", "Supervisor Level", "Manager Level",
-        "Senior Manager Level", "Executive Level"
-        })
+        ComboBox1.Items.AddRange(New String() {"Regular", "Extra", "Faculties"})
 
         ' ===== SEX =====
         sex.Items.Clear()
@@ -124,7 +120,7 @@ Public Class AddEmployee
                 cmd.Parameters.AddWithValue("@email", email.Text)
                 cmd.Parameters.AddWithValue("@password", Passwordemployee.Text)
                 cmd.Parameters.AddWithValue("@birthday", birthday.Value.ToString("yyyy-MM-dd"))
-                cmd.Parameters.AddWithValue("@position_level", ComboBox1.Text)
+                cmd.Parameters.AddWithValue("@position_level", ComboBox1.Text) ' ONLY "Regular" / "Extra Faculties"
                 cmd.Parameters.AddWithValue("@job_position", position.Text)
                 ' REMOVE FORMATTING BEFORE SAVING
                 cmd.Parameters.AddWithValue("@salary", Convert.ToDecimal(salary.Text.Replace(",", "")))
@@ -244,7 +240,6 @@ Public Class AddEmployee
         If String.IsNullOrEmpty(salary.Text) Then Exit Sub
 
         Dim selStart As Integer = salary.SelectionStart
-        Dim selLength As Integer = salary.SelectionLength
 
         ' Remove commas and format
         Dim value As String = salary.Text.Replace(",", "")
