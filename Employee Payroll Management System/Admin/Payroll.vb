@@ -9,6 +9,7 @@ Public Class Payroll
 
     Private conn As New MySqlConnection("Server=127.0.0.1;Database=payroll_system;Uid=root;Pwd=;")
     Private employeesTable As DataTable
+    Private deductionDetails As New List(Of String)
 
     ' =========================
     ' FORM LOAD
@@ -127,33 +128,20 @@ Public Class Payroll
     ' PAY BUTTON
     ' =========================
     Private Sub Pay_Click(sender As Object, e As EventArgs) Handles Pay.Click
-        ' =========================
-        ' VALIDATIONS
-        ' =========================
         If employee.SelectedIndex = -1 Then
             ShowToast("⚠ Select employee", Color.Red)
             Exit Sub
         End If
 
-        ' Default present days to 0 if empty or invalid
         Dim presentDays As Integer = 0
-        If Not String.IsNullOrWhiteSpace(Present.Text) Then
-            Integer.TryParse(Present.Text, presentDays)
-        End If
+        If Not String.IsNullOrWhiteSpace(Present.Text) Then Integer.TryParse(Present.Text, presentDays)
 
-        ' Default salary to 0 if empty or invalid
         Dim salaryAmount As Decimal = 0D
-        If Not String.IsNullOrWhiteSpace(Salary.Text) Then
-            Decimal.TryParse(Salary.Text.Replace(",", ""), salaryAmount)
-        End If
+        If Not String.IsNullOrWhiteSpace(Salary.Text) Then Decimal.TryParse(Salary.Text.Replace(",", ""), salaryAmount)
 
-        ' Default deduction to 0 if empty or invalid
         Dim deductionAmount As Decimal = 0D
-        If Not String.IsNullOrWhiteSpace(Deduction.Text) Then
-            Decimal.TryParse(Deduction.Text.Replace(",", ""), deductionAmount)
-        End If
+        If Not String.IsNullOrWhiteSpace(Deduction.Text) Then Decimal.TryParse(Deduction.Text.Replace(",", ""), deductionAmount)
 
-        ' Default notes
         Dim notesText As String = If(String.IsNullOrWhiteSpace(Notes.Text), "N/A", Notes.Text)
 
         Dim employeeName As String = employee.SelectedItem.ToString()
@@ -181,9 +169,20 @@ Public Class Payroll
             End Using
 
             Dim net As Decimal = salaryAmount - deductionAmount
-            Dim payslip As New Payslip(employeeName, position, monthText, presentDays, salaryAmount, deductionAmount, net)
-            payslip.ShowDialog()
 
+            ' PAYSLIP - PASS DEDUCTION DETAILS
+            Dim payslip As New Payslip(
+                employeeName,
+                position,
+                monthText,
+                presentDays,
+                salaryAmount,
+                deductionAmount,
+                net,
+                deductionDetails
+            )
+
+            payslip.ShowDialog()
             ShowToast("✅ Payroll generated!", Color.Green)
 
         Catch ex As Exception
@@ -191,7 +190,6 @@ Public Class Payroll
             ShowToast("❌ Payroll error: " & ex.Message, Color.Red)
         End Try
     End Sub
-
 
     ' =========================
     ' NUMBER FORMATTING
@@ -233,7 +231,35 @@ Public Class Payroll
         Me.Controls.Remove(p)
     End Sub
 
+    ' =========================
+    ' DEDUCTION BUTTON
+    ' =========================
     Private Sub deductionbtn_Click(sender As Object, e As EventArgs) Handles deductionbtn.Click
+        Using d As New Deduction()
+            If d.ShowDialog() = DialogResult.OK Then
+                Deduction.Text = d.TotalDeduction.ToString("N0")
 
+                Listofdeduction.Items.Clear()
+                deductionDetails.Clear()
+
+                For Each item In d.DeductionDetails
+                    Listofdeduction.Items.Add(item)
+                    deductionDetails.Add(item) ' ← STORE FOR PAYSLIP
+                Next
+            End If
+        End Using
     End Sub
+
+    ' =========================
+    ' SELECT DEDUCTION ITEM
+    ' =========================
+    Private Sub Listofdeduction_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Listofdeduction.SelectedIndexChanged
+        If Listofdeduction.SelectedIndex <> -1 Then
+            MessageBox.Show(Listofdeduction.SelectedItem.ToString(),
+                            "Deduction Detail",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+        End If
+    End Sub
+
 End Class

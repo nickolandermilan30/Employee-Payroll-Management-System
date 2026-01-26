@@ -56,6 +56,7 @@ Partial Class Payslip
         Panel5 = New Panel()
         PictureBox2 = New PictureBox()
         PictureBox1 = New PictureBox()
+        DeductionSlips = New Panel()
         Panel1.SuspendLayout()
         Panel2.SuspendLayout()
         Panel3.SuspendLayout()
@@ -74,7 +75,7 @@ Partial Class Payslip
         Panel1.Controls.Add(Label2)
         Panel1.Location = New Point(-2, -4)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(802, 79)
+        Panel1.Size = New Size(944, 79)
         Panel1.TabIndex = 0
         ' 
         ' Label2
@@ -85,9 +86,9 @@ Partial Class Payslip
         Label2.ForeColor = Color.White
         Label2.Location = New Point(26, 26)
         Label2.Name = "Label2"
-        Label2.Size = New Size(101, 32)
+        Label2.Size = New Size(212, 32)
         Label2.TabIndex = 11
-        Label2.Text = "Payroll"
+        Label2.Text = "Payslip Process"
         Label2.TextAlign = ContentAlignment.TopCenter
         ' 
         ' Panel2
@@ -97,7 +98,7 @@ Partial Class Payslip
         Panel2.Controls.Add(PrintPayslip)
         Panel2.Location = New Point(-2, 650)
         Panel2.Name = "Panel2"
-        Panel2.Size = New Size(802, 79)
+        Panel2.Size = New Size(944, 79)
         Panel2.TabIndex = 1
         ' 
         ' PrintPayslip
@@ -106,7 +107,7 @@ Partial Class Payslip
         PrintPayslip.FlatStyle = FlatStyle.Flat
         PrintPayslip.ForeColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
         PrintPayslip.Image = CType(resources.GetObject("PrintPayslip.Image"), Image)
-        PrintPayslip.Location = New Point(679, 12)
+        PrintPayslip.Location = New Point(859, 12)
         PrintPayslip.Name = "PrintPayslip"
         PrintPayslip.Size = New Size(47, 46)
         PrintPayslip.TabIndex = 12
@@ -134,7 +135,7 @@ Partial Class Payslip
         Panel3.Controls.Add(Panel4)
         Panel3.Controls.Add(PictureBox2)
         Panel3.Controls.Add(PictureBox1)
-        Panel3.Location = New Point(62, 103)
+        Panel3.Location = New Point(33, 109)
         Panel3.Name = "Panel3"
         Panel3.Size = New Size(662, 511)
         Panel3.TabIndex = 2
@@ -506,14 +507,26 @@ Partial Class Payslip
         PictureBox1.TabIndex = 0
         PictureBox1.TabStop = False
         ' 
+        ' DeductionSlips
+        ' 
+        DeductionSlips.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        DeductionSlips.BackColor = Color.White
+        DeductionSlips.ForeColor = Color.Black
+        DeductionSlips.Location = New Point(709, 109)
+        DeductionSlips.Name = "DeductionSlips"
+        DeductionSlips.Size = New Size(208, 511)
+        DeductionSlips.TabIndex = 12
+        ' 
         ' Payslip
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(787, 720)
+        ClientSize = New Size(929, 720)
+        Controls.Add(DeductionSlips)
         Controls.Add(Panel3)
         Controls.Add(Panel2)
         Controls.Add(Panel1)
+
         Text = "Payslip"
         Panel1.ResumeLayout(False)
         Panel1.PerformLayout()
@@ -563,4 +576,5 @@ Partial Class Payslip
     Friend WithEvents PrintPayslip As Button
     Friend WithEvents NetSalary As Label
     Friend WithEvents name As Label
+    Friend WithEvents DeductionSlips As Panel
 End Class

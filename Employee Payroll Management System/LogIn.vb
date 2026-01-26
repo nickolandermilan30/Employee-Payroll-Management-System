@@ -14,9 +14,9 @@ Public Class LogIn
     ' =========================
     ' LOGIN CONTROL VARIABLES
     ' =========================
-    Private failedAttempts As Integer = 0          ' Counts failed login attempts
-    Private lockoutAttempts As Integer = 0         ' Counts how many times user got locked out
-    Private cooldownSeconds As Integer = 15        ' Seconds to wait after lockout
+    Private failedAttempts As Integer = 0
+    Private lockoutAttempts As Integer = 0
+    Private cooldownSeconds As Integer = 15
 
     ' =========================
     ' TIMER CONTROL
@@ -26,15 +26,37 @@ Public Class LogIn
     ' =========================
     ' FORM LOAD
     ' =========================
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub LogIn_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ClearFields()
+
         Password.UseSystemPasswordChar = True
         Email.Select()
 
-        ' Setup timer
-        TimerLogin.Interval = 1000 ' 1 second
+        TimerLogin.Interval = 1000
         TimerLogin.Enabled = False
+        Timer.Text = ""
+    End Sub
 
-        ' Clear Timer label initially
+    ' =========================
+    ' FORM ACTIVATED (WHEN RETURNING)
+    ' =========================
+    Private Sub LogIn_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        ClearFields()
+    End Sub
+
+    ' =========================
+    ' CLEAR TEXTBOXES
+    ' =========================
+    Private Sub ClearFields()
+        Email.Text = ""
+        Password.Text = ""
+        Showpassword.Checked = False
+
+        Signin.Enabled = True
+        Email.Enabled = True
+        Password.Enabled = True
+
+        TimerLogin.Enabled = False
         Timer.Text = ""
     End Sub
 
@@ -82,9 +104,10 @@ Public Class LogIn
     ' SIGNIN CLICK
     ' =========================
     Private Sub Signin_Click(sender As Object, e As EventArgs) Handles Signin.Click
-        ' Disable button if timer is running
+
         If TimerLogin.Enabled Then
-            MessageBox.Show("Please wait for the cooldown to finish.", "Locked Out", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            MessageBox.Show("Please wait for the cooldown to finish.", "Locked Out",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
@@ -92,7 +115,8 @@ Public Class LogIn
         Dim passwordInput As String = Password.Text.Trim()
 
         If emailInput = "" Or passwordInput = "" Then
-            MessageBox.Show("Please enter your email and password.", "Login Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            MessageBox.Show("Please enter your email and password.", "Login Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
@@ -100,8 +124,11 @@ Public Class LogIn
             Conn.Open()
 
             ' ========== ADMIN LOGIN ==========
-            Using cmdAdmin As New MySqlCommand("SELECT username, password FROM users WHERE email=@Email LIMIT 1", Conn)
+            Using cmdAdmin As New MySqlCommand(
+                "SELECT username, password FROM users WHERE email=@Email LIMIT 1", Conn)
+
                 cmdAdmin.Parameters.AddWithValue("@Email", emailInput)
+
                 Using readerAdmin = cmdAdmin.ExecuteReader()
                     If readerAdmin.Read() Then
                         If passwordInput = readerAdmin("password").ToString() Then
@@ -119,12 +146,17 @@ Public Class LogIn
             End Using
 
             ' ========== EMPLOYEE LOGIN ==========
-            Using cmdEmp As New MySqlCommand("SELECT fullname, password, status FROM employees WHERE email=@Email LIMIT 1", Conn)
+            Using cmdEmp As New MySqlCommand(
+                "SELECT fullname, password, status FROM employees WHERE email=@Email LIMIT 1", Conn)
+
                 cmdEmp.Parameters.AddWithValue("@Email", emailInput)
+
                 Using readerEmp = cmdEmp.ExecuteReader()
                     If readerEmp.Read() Then
+
                         If readerEmp("status").ToString() = "Inactive" Then
-                            MessageBox.Show("Your account is inactive. Please contact admin.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                            MessageBox.Show("Your account is inactive. Please contact admin.",
+                                            "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                             Return
                         End If
 
@@ -139,7 +171,8 @@ Public Class LogIn
                             Return
                         End If
                     Else
-                        MessageBox.Show("Email not found.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBox.Show("Email not found.", "Login Failed",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error)
                         HandleFailedAttempt()
                     End If
                 End Using
@@ -157,23 +190,27 @@ Public Class LogIn
     ' =========================
     Private Sub HandleFailedAttempt()
         failedAttempts += 1
+
         If failedAttempts >= 3 Then
             lockoutAttempts += 1
             failedAttempts = 0
 
             If lockoutAttempts >= 3 Then
-                MessageBox.Show("Too many failed attempts. System will close.", "System Lockout", MessageBoxButtons.OK, MessageBoxIcon.Stop)
+                MessageBox.Show("Too many failed attempts. System will close.",
+                                "System Lockout", MessageBoxButtons.OK, MessageBoxIcon.Stop)
                 Application.Exit()
             Else
                 cooldownSeconds = 15
                 Timer.Text = "Cooldown: " & cooldownSeconds & "s"
                 TimerLogin.Enabled = True
+
                 Signin.Enabled = False
                 Email.Enabled = False
                 Password.Enabled = False
             End If
         Else
-            MessageBox.Show("Incorrect email or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Incorrect email or password.", "Login Failed",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
@@ -210,19 +247,18 @@ Public Class LogIn
     End Sub
 
     ' =========================
-    ' FORGOT PASSWORD CLICK
+    ' FORGOT PASSWORD
     ' =========================
     Private Sub forget_Click(sender As Object, e As EventArgs) Handles forget.Click
-        ' Open ForgotPassword form
-        Dim forgotForm As New ForgotPassword
-        forgotForm.Show
-        Hide ' hide login form
+        Dim forgotForm As New ForgotPassword()
+        forgotForm.Show()
+        Me.Hide()
     End Sub
 
     Private Sub Forgotemail_Click(sender As Object, e As EventArgs) Handles Forgotemail.Click
-        ' Open ForgotPassword form
-        Dim forgotForm As New ForgotEmail
+        Dim forgotForm As New ForgotEmail()
         forgotForm.Show()
-        Hide() ' hide login form
+        Me.Hide()
     End Sub
+
 End Class
