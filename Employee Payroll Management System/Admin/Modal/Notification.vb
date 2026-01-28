@@ -6,196 +6,161 @@ Imports System.Data
 
 Public Class Notification
 
-    ' =========================
-    ' DATABASE CONNECTION
-    ' =========================
     Private conn As New MySqlConnection(
         "Server=127.0.0.1;Database=payroll_system;Uid=root;Pwd=;"
     )
 
-    ' =========================
-    ' SCHEDULE TABLE
-    ' =========================
     Private scheduleTable As DataTable
-    Private filteredTable As DataTable ' For search/filtering
+    Private filteredTable As DataTable
 
-    ' =========================
-    ' UI SETTINGS
-    ' =========================
     Private headerHeight As Integer = 40
     Private rowHeight As Integer = 35
     Private padding As Integer = 10
 
-    ' =========================
-    ' FORM LOAD
-    ' =========================
     Private Sub Notification_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadScheduleData()
         filteredTable = scheduleTable.Copy()
         ListNotif.Invalidate()
     End Sub
 
-    ' =========================
-    ' LOAD DATA FROM DATABASE
-    ' =========================
     Private Sub LoadScheduleData()
         Try
             conn.Open()
-            Dim sql As String = "SELECT id, fullname, schedule_date, status, time_in, time_out FROM set_schedule ORDER BY schedule_date DESC"
-            Dim adapter As New MySqlDataAdapter(sql, conn)
+
+            Dim sql As String =
+                "SELECT s.id, s.fullname, s.schedule_date, s.status,
+                        s.time_in, s.time_out,
+                 CASE 
+                    WHEN EXISTS (
+                        SELECT 1 FROM attendance a
+                        WHERE a.fullname = s.fullname
+                        AND a.attendance_date = s.schedule_date
+                    ) THEN 1 ELSE 0
+                 END AS is_set
+                 FROM set_schedule s
+                 ORDER BY s.schedule_date DESC"
+
+            Dim da As New MySqlDataAdapter(sql, conn)
             scheduleTable = New DataTable()
-            adapter.Fill(scheduleTable)
+            da.Fill(scheduleTable)
+
         Catch ex As Exception
-            MessageBox.Show("Error loading schedule: " & ex.Message)
+            MessageBox.Show(ex.Message)
         Finally
-            If conn.State = ConnectionState.Open Then conn.Close()
+            conn.Close()
         End Try
     End Sub
 
-    ' =========================
-    ' SEARCH FUNCTION
-    ' =========================
-    Private Sub search_TextChanged(sender As Object, e As EventArgs) Handles search.TextChanged
-        If scheduleTable Is Nothing Then Return
-        Dim query = search.Text.Trim().ToLower()
-        If query = "" Then
-            filteredTable = scheduleTable.Copy()
-        Else
-            filteredTable = scheduleTable.Clone()
-            For Each r As DataRow In scheduleTable.Rows
-                If r("fullname").ToString().ToLower().Contains(query) Then
-                    filteredTable.ImportRow(r)
+    ' ================= CLICK =================
+    Private Sub ListNotif_MouseClick(sender As Object, e As MouseEventArgs) Handles ListNotif.MouseClick
+        Dim rowIndex As Integer = (e.Y - headerHeight) \ rowHeight
+        If rowIndex < 0 OrElse rowIndex >= filteredTable.Rows.Count Then Exit Sub
+
+        Dim row As DataRow = filteredTable.Rows(rowIndex)
+        If Convert.ToBoolean(row("is_set")) Then Exit Sub
+
+        If TypeOf Owner Is MonitorAttendance Then
+            Dim m As MonitorAttendance = CType(Owner, MonitorAttendance)
+
+            ' ===== EMPLOYEE =====
+            For i As Integer = 0 To m.Employedropdown.Items.Count - 1
+                Dim drv As DataRowView = CType(m.Employedropdown.Items(i), DataRowView)
+                If drv("fullname").ToString() = row("fullname").ToString() Then
+                    m.Employedropdown.SelectedIndex = i
+                    Exit For
                 End If
             Next
+
+            ' ===== DATE =====
+            m.monthofdate.Value = CDate(row("schedule_date"))
+
+            ' ===== STATUS =====
+            m.status.SelectedItem = row("status").ToString()
+
+            ' ===== TIME IN / OUT (FIX) =====
+            SetComboTime(m.checkin, row("time_in"))
+            SetComboTime(m.checkout, row("time_out"))
         End If
-        ListNotif.Invalidate()
+
+        Me.Close()
     End Sub
 
-    ' =========================
-    ' PAINT PANEL
-    ' =========================
+    ' ================= TIME MATCH FIX =================
+    Private Sub SetComboTime(cb As ComboBox, dbValue As Object)
+        If dbValue Is DBNull.Value Then Exit Sub
+
+        Dim t As DateTime
+        If DateTime.TryParse(dbValue.ToString(), t) Then
+            Dim formatted As String = t.ToString("h:mm tt")
+            Dim idx As Integer = cb.FindStringExact(formatted)
+            If idx >= 0 Then cb.SelectedIndex = idx
+        End If
+    End Sub
+
+    ' ================= DRAW =================
     Private Sub ListNotif_Paint(sender As Object, e As PaintEventArgs) Handles ListNotif.Paint
         Dim g = e.Graphics
         g.SmoothingMode = SmoothingMode.AntiAlias
         g.Clear(Color.White)
 
-        If filteredTable Is Nothing OrElse filteredTable.Rows.Count = 0 Then Return
+        If filteredTable Is Nothing OrElse filteredTable.Rows.Count = 0 Then Exit Sub
 
-        Dim panelWidth = ListNotif.Width
+        Dim w = ListNotif.Width
         Dim fontHeader As New Font("Segoe UI", 10, FontStyle.Bold)
         Dim fontRow As New Font("Segoe UI", 9)
 
-        ' Column widths
-        Dim colFullname = CInt(panelWidth * 0.2)
-        Dim colDate = CInt(panelWidth * 0.15)
-        Dim colStatus = CInt(panelWidth * 0.15)
-        Dim colTimeIn = CInt(panelWidth * 0.15)
-        Dim colTimeOut = CInt(panelWidth * 0.15)
-        Dim colButton = panelWidth - (colFullname + colDate + colStatus + colTimeIn + colTimeOut + padding * 2)
+        Dim colFull = CInt(w * 0.2)
+        Dim colDate = CInt(w * 0.15)
+        Dim colStat = CInt(w * 0.15)
+        Dim colIn = CInt(w * 0.15)
+        Dim colOut = CInt(w * 0.15)
+        Dim colBtn = w - (colFull + colDate + colStat + colIn + colOut + padding * 2)
 
-        ' HEADER
-        g.FillRectangle(Brushes.LightGray, 0, 0, panelWidth, headerHeight)
+        g.FillRectangle(Brushes.LightGray, 0, 0, w, headerHeight)
+
         g.DrawString("Fullname", fontHeader, Brushes.Black, padding, 10)
-        g.DrawString("Date", fontHeader, Brushes.Black, colFullname + padding, 10)
-        g.DrawString("Status", fontHeader, Brushes.Black, colFullname + colDate + padding, 10)
-        g.DrawString("Time In", fontHeader, Brushes.Black, colFullname + colDate + colStatus + padding, 10)
-        g.DrawString("Time Out", fontHeader, Brushes.Black, colFullname + colDate + colStatus + colTimeIn + padding, 10)
-        g.DrawString("Action", fontHeader, Brushes.Black, colFullname + colDate + colStatus + colTimeIn + colTimeOut + padding, 10)
+        g.DrawString("Date", fontHeader, Brushes.Black, colFull + padding, 10)
+        g.DrawString("Status", fontHeader, Brushes.Black, colFull + colDate + padding, 10)
+        g.DrawString("Time In", fontHeader, Brushes.Black, colFull + colDate + colStat + padding, 10)
+        g.DrawString("Time Out", fontHeader, Brushes.Black, colFull + colDate + colStat + colIn + padding, 10)
+        g.DrawString("Action", fontHeader, Brushes.Black,
+                     colFull + colDate + colStat + colIn + colOut + padding, 10)
 
-        ' ROWS
-        For i = 0 To filteredTable.Rows.Count - 1
+        For i As Integer = 0 To filteredTable.Rows.Count - 1
             Dim y = headerHeight + i * rowHeight
-            g.FillRectangle(If(i Mod 2 = 0, Brushes.WhiteSmoke, Brushes.White), 0, y, panelWidth, rowHeight)
+            g.FillRectangle(If(i Mod 2 = 0, Brushes.WhiteSmoke, Brushes.White), 0, y, w, rowHeight)
 
-            Dim row = filteredTable.Rows(i)
-            Dim fullname = row("fullname").ToString()
-            Dim d As Date = row("schedule_date")
-            Dim status = row("status").ToString()
-            Dim timeIn = row("time_in").ToString()
-            Dim timeOut = row("time_out").ToString()
+            Dim r = filteredTable.Rows(i)
 
-            ' DRAW TEXT
-            g.DrawString(fullname, fontRow, Brushes.Black, padding, y + 8)
-            g.DrawString(d.ToString("yyyy-MM-dd"), fontRow, Brushes.Black, colFullname + padding, y + 8)
-            g.DrawString(status, fontRow, Brushes.Black, colFullname + colDate + padding, y + 8)
-            g.DrawString(timeIn, fontRow, Brushes.Black, colFullname + colDate + colStatus + padding, y + 8)
-            g.DrawString(timeOut, fontRow, Brushes.Black, colFullname + colDate + colStatus + colTimeIn + padding, y + 8)
+            g.DrawString(r("fullname").ToString(), fontRow, Brushes.Black, padding, y + 8)
+            g.DrawString(CDate(r("schedule_date")).ToString("yyyy-MM-dd"), fontRow, Brushes.Black, colFull + padding, y + 8)
+            g.DrawString(r("status").ToString(), fontRow, Brushes.Black, colFull + colDate + padding, y + 8)
+            g.DrawString(r("time_in").ToString(), fontRow, Brushes.Black, colFull + colDate + colStat + padding, y + 8)
+            g.DrawString(r("time_out").ToString(), fontRow, Brushes.Black, colFull + colDate + colStat + colIn + padding, y + 8)
 
-            ' DRAW "SET" BUTTON
-            Dim buttonRect As New Rectangle(colFullname + colDate + colStatus + colTimeIn + colTimeOut + padding, y + 5, colButton - 10, 25)
-            Using path = RoundedRect(buttonRect, 8)
-                Using br As New SolidBrush(Color.FromArgb(52, 152, 219))
-                    g.FillPath(br, path)
-                End Using
+            Dim isSet As Boolean = Convert.ToBoolean(r("is_set"))
+            Dim btnRect As New Rectangle(colFull + colDate + colStat + colIn + colOut + padding, y + 5, colBtn - 10, 25)
+
+            Using path = RoundedRect(btnRect, 8)
+                g.FillPath(New SolidBrush(If(isSet, Color.Gray, Color.FromArgb(52, 152, 219))), path)
             End Using
 
-            Dim ts = g.MeasureString("Set", fontRow)
-            g.DrawString("Set", fontRow, Brushes.White,
-                         buttonRect.X + (buttonRect.Width - ts.Width) / 2,
-                         buttonRect.Y + (buttonRect.Height - ts.Height) / 2)
+            Dim txt = If(isSet, "Already Set", "Set")
+            Dim ts = g.MeasureString(txt, fontRow)
+            g.DrawString(txt, fontRow, Brushes.White,
+                         btnRect.X + (btnRect.Width - ts.Width) / 2,
+                         btnRect.Y + (btnRect.Height - ts.Height) / 2)
         Next
     End Sub
 
-    ' =========================
-    ' ROUNDED RECTANGLE FUNCTION
-    ' =========================
-    Private Function RoundedRect(rect As Rectangle, radius As Integer) As GraphicsPath
-        Dim path As New GraphicsPath()
-        path.AddArc(rect.X, rect.Y, radius, radius, 180, 90)
-        path.AddArc(rect.Right - radius, rect.Y, radius, radius, 270, 90)
-        path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90)
-        path.AddArc(rect.X, rect.Bottom - radius, radius, radius, 90, 90)
-        path.CloseFigure()
-        Return path
+    Private Function RoundedRect(r As Rectangle, rad As Integer) As GraphicsPath
+        Dim p As New GraphicsPath
+        p.AddArc(r.X, r.Y, rad, rad, 180, 90)
+        p.AddArc(r.Right - rad, r.Y, rad, rad, 270, 90)
+        p.AddArc(r.Right - rad, r.Bottom - rad, rad, rad, 0, 90)
+        p.AddArc(r.X, r.Bottom - rad, rad, rad, 90, 90)
+        p.CloseFigure()
+        Return p
     End Function
-
-    ' =========================
-    ' CLICK PANEL TO SELECT ROW
-    ' =========================
-    Private Sub ListNotif_MouseClick(sender As Object, e As MouseEventArgs) Handles ListNotif.MouseClick
-        If filteredTable Is Nothing OrElse filteredTable.Rows.Count = 0 Then Return
-
-        Dim rowIndex As Integer = (e.Y - headerHeight) \ rowHeight
-        If rowIndex < 0 Or rowIndex >= filteredTable.Rows.Count Then Return
-
-        Dim selectedRow As DataRow = filteredTable.Rows(rowIndex)
-
-        ' =========================
-        ' SET MONITOR ATTENDANCE FIELDS
-        ' =========================
-        If TypeOf Owner Is MonitorAttendance Then
-            Dim monitor As MonitorAttendance = CType(Owner, MonitorAttendance)
-
-            ' ===== SET EMPLOYEE DROPDOWN =====
-            For i As Integer = 0 To monitor.Employedropdown.Items.Count - 1
-                Dim drv As DataRowView = CType(monitor.Employedropdown.Items(i), DataRowView)
-                If drv("fullname").ToString() = selectedRow("fullname").ToString() Then
-                    monitor.Employedropdown.SelectedIndex = i
-                    Exit For
-                End If
-            Next
-
-            ' ===== SET DATE =====
-            monitor.monthofdate.Value = CDate(selectedRow("schedule_date"))
-
-            ' ===== SET STATUS =====
-            Dim statIndex As Integer = monitor.status.FindString(selectedRow("status").ToString())
-            If statIndex <> -1 Then monitor.status.SelectedIndex = statIndex
-
-            ' ===== SET CHECK-IN / CHECK-OUT TIMES =====
-            Dim cin = selectedRow("time_in").ToString()
-            Dim cout = selectedRow("time_out").ToString()
-
-            ' Add missing times to dropdown if they are not already there
-            If monitor.checkin.Items.IndexOf(cin) = -1 Then monitor.checkin.Items.Add(cin)
-            If monitor.checkout.Items.IndexOf(cout) = -1 Then monitor.checkout.Items.Add(cout)
-
-            ' Select the times
-            monitor.checkin.SelectedItem = cin
-            monitor.checkout.SelectedItem = cout
-        End If
-
-        Me.Close() ' close notification after selection
-    End Sub
 
 End Class

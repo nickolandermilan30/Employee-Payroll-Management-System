@@ -60,80 +60,111 @@ Public Class AddEmployee
     ' =========================
     ' SAVE BUTTON
     ' =========================
+    ' =========================
+    ' SAVE BUTTON
+    ' =========================
     Private Sub save_Click(sender As Object, e As EventArgs) Handles save.Click
 
         ' ===== BASIC EMPTY CHECK =====
         If fullname.Text = "" Or email.Text = "" Or position.Text = "" _
-            Or salary.Text = "" Or contactnumber.Text = "" _
-            Or Passwordemployee.Text = "" Or Status.Text = "" Then
+        Or salary.Text = "" Or contactnumber.Text = "" _
+        Or Passwordemployee.Text = "" Or Status.Text = "" Then
 
             MessageBox.Show("Please fill up all required fields.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Exit Sub
         End If
 
         ' ===== PASSWORD LENGTH =====
         If Passwordemployee.Text.Length < 3 Then
             MessageBox.Show("Password must be at least 3 characters.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Exit Sub
         End If
 
-        ' ===== FULLNAME VALIDATION (LETTERS ONLY) =====
+        ' ===== FULLNAME VALIDATION =====
         If Not Regex.IsMatch(fullname.Text, "^[A-Za-z\s]+$") Then
             MessageBox.Show("Fullname must only contain letters and spaces.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             fullname.Focus()
             Exit Sub
         End If
 
-        ' ===== POSITION VALIDATION (LETTERS ONLY) =====
+        ' ===== POSITION VALIDATION =====
         If Not Regex.IsMatch(position.Text, "^[A-Za-z\s]+$") Then
             MessageBox.Show("Position must only contain letters and spaces.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             position.Focus()
             Exit Sub
         End If
 
-        ' ===== CONTACT NUMBER VALIDATION (NUMBERS ONLY, 10-15 DIGITS) =====
+        ' ===== CONTACT NUMBER VALIDATION =====
         If Not Regex.IsMatch(contactnumber.Text, "^\d{10,15}$") Then
             MessageBox.Show("Contact number must contain only numbers (10-15 digits).",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             contactnumber.Focus()
             Exit Sub
         End If
 
-        ' ===== SAVE TO DATABASE =====
         Try
             OpenConnection()
 
-            Dim query As String =
-                "INSERT INTO employees
-                (fullname, email, password, birthday, position_level,
-                 job_position, salary, date_hired, sex, contact_number, status)
-                 VALUES
-                (@fullname, @email, @password, @birthday, @position_level,
-                 @job_position, @salary, @date_hired, @sex, @contact_number, @status)"
+            ' =========================
+            ' CHECK DUPLICATE EMPLOYEE
+            ' =========================
+            Dim checkQuery As String =
+            "SELECT COUNT(*) FROM employees 
+             WHERE fullname = @fullname 
+             OR email = @email 
+             OR contact_number = @contact_number"
 
-            Using cmd As New MySqlCommand(query, Conn)
-                cmd.Parameters.AddWithValue("@fullname", fullname.Text)
-                cmd.Parameters.AddWithValue("@email", email.Text)
+            Using checkCmd As New MySqlCommand(checkQuery, Conn)
+                checkCmd.Parameters.AddWithValue("@fullname", fullname.Text.Trim())
+                checkCmd.Parameters.AddWithValue("@email", email.Text.Trim())
+                checkCmd.Parameters.AddWithValue("@contact_number", contactnumber.Text.Trim())
+
+                Dim count As Integer = Convert.ToInt32(checkCmd.ExecuteScalar())
+
+                If count > 0 Then
+                    MessageBox.Show("Employee already exists (Same Fullname, Email or Contact Number).",
+                                "Duplicate Entry",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning)
+                    Exit Sub
+                End If
+            End Using
+
+            ' =========================
+            ' INSERT NEW EMPLOYEE
+            ' =========================
+            Dim insertQuery As String =
+            "INSERT INTO employees
+            (fullname, email, password, birthday, position_level,
+             job_position, salary, date_hired, sex, contact_number, status)
+             VALUES
+            (@fullname, @email, @password, @birthday, @position_level,
+             @job_position, @salary, @date_hired, @sex, @contact_number, @status)"
+
+            Using cmd As New MySqlCommand(insertQuery, Conn)
+                cmd.Parameters.AddWithValue("@fullname", fullname.Text.Trim())
+                cmd.Parameters.AddWithValue("@email", email.Text.Trim())
                 cmd.Parameters.AddWithValue("@password", Passwordemployee.Text)
                 cmd.Parameters.AddWithValue("@birthday", birthday.Value.ToString("yyyy-MM-dd"))
-                cmd.Parameters.AddWithValue("@position_level", ComboBox1.Text) ' ONLY "Regular" / "Extra Faculties"
-                cmd.Parameters.AddWithValue("@job_position", position.Text)
-                ' REMOVE FORMATTING BEFORE SAVING
+                cmd.Parameters.AddWithValue("@position_level", ComboBox1.Text)
+                cmd.Parameters.AddWithValue("@job_position", position.Text.Trim())
                 cmd.Parameters.AddWithValue("@salary", Convert.ToDecimal(salary.Text.Replace(",", "")))
                 cmd.Parameters.AddWithValue("@date_hired", datehired.Value.ToString("yyyy-MM-dd"))
                 cmd.Parameters.AddWithValue("@sex", sex.Text)
-                cmd.Parameters.AddWithValue("@contact_number", contactnumber.Text)
+                cmd.Parameters.AddWithValue("@contact_number", contactnumber.Text.Trim())
                 cmd.Parameters.AddWithValue("@status", Status.Text)
 
                 cmd.ExecuteNonQuery()
             End Using
 
             MessageBox.Show("Employee saved successfully!",
-                            "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        "Success",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information)
 
             ClearFields()
 
@@ -142,7 +173,9 @@ Public Class AddEmployee
         Finally
             CloseConnection()
         End Try
+
     End Sub
+
 
     ' =========================
     ' CLEAR FIELDS
