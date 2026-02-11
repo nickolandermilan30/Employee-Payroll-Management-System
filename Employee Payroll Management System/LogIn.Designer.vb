@@ -264,6 +264,7 @@ Partial Class LogIn
         Controls.Add(Label1)
         Controls.Add(PictureBox2)
         Controls.Add(PictureBox1)
+        FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "LogIn"
         Text = "Log In"
         WindowState = FormWindowState.Maximized

@@ -47,6 +47,8 @@ Partial Class Register
         gender = New ComboBox()
         Label10 = New Label()
         birthday = New DateTimePicker()
+        Label11 = New Label()
+        Question = New TextBox()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox3, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox4, ComponentModel.ISupportInitialize).BeginInit()
@@ -71,7 +73,7 @@ Partial Class Register
         Signup.FlatStyle = FlatStyle.Flat
         Signup.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Signup.ForeColor = Color.White
-        Signup.Location = New Point(953, 561)
+        Signup.Location = New Point(953, 596)
         Signup.Name = "Signup"
         Signup.Size = New Size(173, 51)
         Signup.TabIndex = 20
@@ -85,7 +87,7 @@ Partial Class Register
         BackSignin.FlatStyle = FlatStyle.Flat
         BackSignin.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         BackSignin.ForeColor = Color.White
-        BackSignin.Location = New Point(716, 561)
+        BackSignin.Location = New Point(716, 596)
         BackSignin.Name = "BackSignin"
         BackSignin.Size = New Size(200, 53)
         BackSignin.TabIndex = 19
@@ -247,7 +249,7 @@ Partial Class Register
         PictureBox3.Image = My.Resources.Resources.Box
         PictureBox3.Location = New Point(652, 47)
         PictureBox3.Name = "PictureBox3"
-        PictureBox3.Size = New Size(540, 625)
+        PictureBox3.Size = New Size(540, 648)
         PictureBox3.SizeMode = PictureBoxSizeMode.StretchImage
         PictureBox3.TabIndex = 28
         PictureBox3.TabStop = False
@@ -364,11 +366,41 @@ Partial Class Register
         birthday.Size = New Size(200, 23)
         birthday.TabIndex = 38
         ' 
+        ' Label11
+        ' 
+        Label11.Anchor = AnchorStyles.Top
+        Label11.AutoSize = True
+        Label11.BackColor = SystemColors.Window
+        Label11.Font = New Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label11.ForeColor = SystemColors.InfoText
+        Label11.Location = New Point(716, 511)
+        Label11.Name = "Label11"
+        Label11.Size = New Size(113, 17)
+        Label11.TabIndex = 40
+        Label11.Text = "Mother Fullname"
+        Label11.TextAlign = ContentAlignment.TopCenter
+        ' 
+        ' Question
+        ' 
+        Question.Anchor = AnchorStyles.Top
+        Question.BackColor = SystemColors.Window
+        Question.BorderStyle = BorderStyle.FixedSingle
+        Question.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Question.ForeColor = SystemColors.InfoText
+        Question.Location = New Point(716, 531)
+        Question.Margin = New Padding(3, 4, 3, 3)
+        Question.Multiline = True
+        Question.Name = "Question"
+        Question.Size = New Size(410, 26)
+        Question.TabIndex = 39
+        ' 
         ' Register
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1222, 719)
+        Controls.Add(Label11)
+        Controls.Add(Question)
         Controls.Add(birthday)
         Controls.Add(Label10)
         Controls.Add(gender)
@@ -427,4 +459,6 @@ Partial Class Register
     Friend WithEvents gender As ComboBox
     Friend WithEvents Label10 As Label
     Friend WithEvents birthday As DateTimePicker
+    Friend WithEvents Label11 As Label
+    Friend WithEvents Question As TextBox
 End Class

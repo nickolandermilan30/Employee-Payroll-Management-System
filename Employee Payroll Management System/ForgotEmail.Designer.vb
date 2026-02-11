@@ -28,12 +28,14 @@ Partial Class ForgotEmail
         setemail = New Button()
         Label4 = New Label()
         Label3 = New Label()
-        Phonenumber = New TextBox()
-        Label2 = New Label()
+        Mothersname = New TextBox()
+        s = New Label()
         Label1 = New Label()
         PictureBox2 = New PictureBox()
         Timer = New Label()
         Newemail = New TextBox()
+        lblStatusssssss = New Label()
+        Valid = New Button()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -99,38 +101,38 @@ Partial Class ForgotEmail
         Label3.ForeColor = SystemColors.InfoText
         Label3.Location = New Point(102, 345)
         Label3.Name = "Label3"
-        Label3.Size = New Size(98, 17)
+        Label3.Size = New Size(148, 17)
         Label3.TabIndex = 35
-        Label3.Text = "Phone number"
+        Label3.Text = "Your mothers fullname"
         Label3.TextAlign = ContentAlignment.TopCenter
         ' 
-        ' Phonenumber
+        ' Mothersname
         ' 
-        Phonenumber.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
-        Phonenumber.BackColor = SystemColors.Window
-        Phonenumber.BorderStyle = BorderStyle.FixedSingle
-        Phonenumber.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        Phonenumber.ForeColor = SystemColors.InfoText
-        Phonenumber.Location = New Point(102, 366)
-        Phonenumber.Margin = New Padding(3, 4, 3, 3)
-        Phonenumber.Multiline = True
-        Phonenumber.Name = "Phonenumber"
-        Phonenumber.Size = New Size(433, 36)
-        Phonenumber.TabIndex = 33
+        Mothersname.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        Mothersname.BackColor = SystemColors.Window
+        Mothersname.BorderStyle = BorderStyle.FixedSingle
+        Mothersname.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Mothersname.ForeColor = SystemColors.InfoText
+        Mothersname.Location = New Point(102, 366)
+        Mothersname.Margin = New Padding(3, 4, 3, 3)
+        Mothersname.Multiline = True
+        Mothersname.Name = "Mothersname"
+        Mothersname.Size = New Size(433, 36)
+        Mothersname.TabIndex = 33
         ' 
-        ' Label2
+        ' s
         ' 
-        Label2.Anchor = AnchorStyles.Top
-        Label2.AutoSize = True
-        Label2.BackColor = SystemColors.Window
-        Label2.Font = New Font("Segoe UI Variable Display", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        Label2.ForeColor = SystemColors.ControlDarkDark
-        Label2.Location = New Point(244, 307)
-        Label2.Name = "Label2"
-        Label2.Size = New Size(125, 26)
-        Label2.TabIndex = 32
-        Label2.Text = "Forgot email"
-        Label2.TextAlign = ContentAlignment.TopCenter
+        s.Anchor = AnchorStyles.Top
+        s.AutoSize = True
+        s.BackColor = SystemColors.Window
+        s.Font = New Font("Segoe UI Variable Display", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        s.ForeColor = SystemColors.ControlDarkDark
+        s.Location = New Point(244, 307)
+        s.Name = "s"
+        s.Size = New Size(125, 26)
+        s.TabIndex = 32
+        s.Text = "Forgot email"
+        s.TextAlign = ContentAlignment.TopCenter
         ' 
         ' Label1
         ' 
@@ -183,19 +185,49 @@ Partial Class ForgotEmail
         Newemail.Size = New Size(433, 36)
         Newemail.TabIndex = 40
         ' 
+        ' lblStatusssssss
+        ' 
+        lblStatusssssss.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        lblStatusssssss.AutoSize = True
+        lblStatusssssss.BackColor = SystemColors.Window
+        lblStatusssssss.Font = New Font("Segoe UI Variable Display", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        lblStatusssssss.ForeColor = Color.Green
+        lblStatusssssss.Location = New Point(447, 336)
+        lblStatusssssss.Name = "lblStatusssssss"
+        lblStatusssssss.Size = New Size(56, 26)
+        lblStatusssssss.TabIndex = 41
+        lblStatusssssss.Text = "Valid"
+        lblStatusssssss.TextAlign = ContentAlignment.TopCenter
+        ' 
+        ' Valid
+        ' 
+        Valid.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        Valid.BackColor = Color.Green
+        Valid.FlatStyle = FlatStyle.Flat
+        Valid.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Valid.ForeColor = Color.White
+        Valid.Location = New Point(458, 408)
+        Valid.Name = "Valid"
+        Valid.Size = New Size(77, 26)
+        Valid.TabIndex = 42
+        Valid.Text = "Set Valid"
+        Valid.UseVisualStyleBackColor = False
+        ' 
         ' ForgotEmail
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(631, 788)
+        Controls.Add(Valid)
+        Controls.Add(lblStatusssssss)
         Controls.Add(Newemail)
         Controls.Add(Timer)
         Controls.Add(Signup)
         Controls.Add(setemail)
         Controls.Add(Label4)
         Controls.Add(Label3)
-        Controls.Add(Phonenumber)
-        Controls.Add(Label2)
+        Controls.Add(Mothersname)
+        Controls.Add(s)
         Controls.Add(Label1)
         Controls.Add(PictureBox2)
         Controls.Add(PictureBox1)
@@ -213,10 +245,12 @@ Partial Class ForgotEmail
     Friend WithEvents setemail As Button
     Friend WithEvents Label4 As Label
     Friend WithEvents Label3 As Label
-    Friend WithEvents Phonenumber As TextBox
-    Friend WithEvents Label2 As Label
+    Friend WithEvents Mothersname As TextBox
+    Friend WithEvents s As Label
     Friend WithEvents Label1 As Label
     Friend WithEvents PictureBox2 As PictureBox
     Friend WithEvents Timer As Label
     Friend WithEvents Newemail As TextBox
+    Friend WithEvents lblStatusssssss As Label
+    Friend WithEvents Valid As Button
 End Class

@@ -89,18 +89,19 @@ Public Class Register
     Private Sub Signup_Click(sender As Object, e As EventArgs) Handles Signup.Click
 
         If Username.Text = "" Or Email.Text = "" Or
-           Password.Text = "" Or confirmpassword.Text = "" Or
-           Phonenumber.Text = "" Or
-           gender.SelectedIndex = -1 Or age.Text = "" Then
+       Password.Text = "" Or confirmpassword.Text = "" Or
+       Phonenumber.Text = "" Or
+       gender.SelectedIndex = -1 Or age.Text = "" Or
+       Question.Text = "" Then
 
             MessageBox.Show("Please fill up all fields", "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
 
         If Password.Text <> confirmpassword.Text Then
             MessageBox.Show("Password does not match", "Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
 
@@ -108,10 +109,10 @@ Public Class Register
             OpenConnection()
 
             Dim query As String =
-                "INSERT INTO users
-                (username, email, gender, phone_number, birthday, age, password, role)
-                VALUES
-                (@username, @email, @gender, @phone, @birthday, @age, @password, 'Admin')"
+        "INSERT INTO users
+        (username, email, gender, phone_number, birthday, age, password, role, security_answer)
+        VALUES
+        (@username, @email, @gender, @phone, @birthday, @age, @password, 'Admin', @answer)"
 
             Dim cmd As New MySqlCommand(query, Conn)
 
@@ -119,14 +120,15 @@ Public Class Register
             cmd.Parameters.AddWithValue("@email", Email.Text)
             cmd.Parameters.AddWithValue("@gender", gender.SelectedItem.ToString())
             cmd.Parameters.AddWithValue("@phone", Phonenumber.Text)
-            cmd.Parameters.AddWithValue("@birthday", birthday.Value.Date) ' DB safe
+            cmd.Parameters.AddWithValue("@birthday", birthday.Value.Date)
             cmd.Parameters.AddWithValue("@age", Convert.ToInt32(age.Text))
             cmd.Parameters.AddWithValue("@password", Password.Text)
+            cmd.Parameters.AddWithValue("@answer", Question.Text)
 
             cmd.ExecuteNonQuery()
 
             MessageBox.Show("Registration Successful!", "Success",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        MessageBoxButtons.OK, MessageBoxIcon.Information)
 
             LogIn.Show()
             Me.Close()
@@ -137,6 +139,14 @@ Public Class Register
             CloseConnection()
         End Try
 
+    End Sub
+
+
+    Private Sub Question_TextChanged(sender As Object, e As EventArgs) Handles Question.TextChanged
+        If Question.Text.Length > 255 Then
+            MessageBox.Show("Answer is too long")
+            Question.Text = Question.Text.Substring(0, 255)
+        End If
     End Sub
 
 End Class

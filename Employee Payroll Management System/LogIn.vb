@@ -147,12 +147,16 @@ Public Class LogIn
 
             ' ========== EMPLOYEE LOGIN ==========
             Using cmdEmp As New MySqlCommand(
-                "SELECT fullname, password, status FROM employees WHERE email=@Email LIMIT 1", Conn)
+     "SELECT fullname, password, status, position_level 
+     FROM employees 
+     WHERE email=@Email 
+     LIMIT 1", Conn)
 
                 cmdEmp.Parameters.AddWithValue("@Email", emailInput)
 
                 Using readerEmp = cmdEmp.ExecuteReader()
                     If readerEmp.Read() Then
+
 
                         If readerEmp("status").ToString() = "Inactive" Then
                             MessageBox.Show("Your account is inactive. Please contact admin.",
@@ -161,20 +165,33 @@ Public Class LogIn
                         End If
 
                         If passwordInput = readerEmp("password").ToString() Then
-                            Dim staffHome As New HomepageMonitor(readerEmp("fullname").ToString())
-                            staffHome.Show()
+
+                            Dim fullname As String = readerEmp("fullname").ToString()
+                            Dim positionLevel As String = readerEmp("position_level").ToString()
+
+                            ' ===== CHECK POSITION LEVEL =====
+                            If positionLevel = "Extra" Then
+                                Dim extraHome As New ExtraHomepage(fullname)
+                                extraHome.Show()
+                            Else
+                                Dim staffHome As New HomepageMonitor(fullname)
+                                staffHome.Show()
+                            End If
+
                             Me.Hide()
                             failedAttempts = 0
                             Return
+
                         Else
                             HandleFailedAttempt()
                             Return
                         End If
                     Else
                         MessageBox.Show("Email not found.", "Login Failed",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBoxButtons.OK, MessageBoxIcon.Error)
                         HandleFailedAttempt()
                     End If
+
                 End Using
             End Using
 
