@@ -223,6 +223,7 @@ Public Class Print
         End If
     End Sub
 
+
     Private Sub Preview_Click(sender As Object, e As EventArgs) Handles Preview.Click
         Dim preview As New PrintPreviewDialog()
         preview.Document = PrintDoc
