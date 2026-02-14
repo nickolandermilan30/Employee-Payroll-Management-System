@@ -66,22 +66,43 @@ Public Class Notification
     End Sub
 
     ' =========================
-    ' HANDLE SET BUTTON CLICK
+    ' HANDLE BUTTON CLICK
     ' =========================
     Private Sub ListNotif_MouseClick(sender As Object, e As MouseEventArgs) Handles ListNotif.MouseClick
+
         Dim rowIndex As Integer = (e.Y - headerHeight) \ rowHeight
         If rowIndex < 0 OrElse rowIndex >= filteredTable.Rows.Count Then Exit Sub
 
+        Dim w = ListNotif.Width
+
+        ' column sizes
+        Dim colFull = CInt(w * 0.2)
+        Dim colDate = CInt(w * 0.15)
+        Dim colStat = CInt(w * 0.15)
+        Dim colIn = CInt(w * 0.15)
+        Dim colOut = CInt(w * 0.15)
+        Dim colBtn = w - (colFull + colDate + colStat + colIn + colOut + padding * 2)
+
+        Dim y = headerHeight + rowIndex * rowHeight
+        Dim btnRect As New Rectangle(colFull + colDate + colStat + colIn + colOut + padding, y + 5, colBtn - 10, 25)
+
+        ' 👉 check kung sa button area talaga nag click
+        If Not btnRect.Contains(e.Location) Then Exit Sub
+
         Dim row As DataRow = filteredTable.Rows(rowIndex)
-        If Convert.ToBoolean(row("is_set")) Then Exit Sub ' Already set, do nothing
+
+        ' 👉 kung naka set na → block click
+        If Convert.ToBoolean(row("is_set")) Then
+            MessageBox.Show("Already set in database")
+            Exit Sub
+        End If
 
         ' =========================
-        ' HANDLE ATTENDANCECHECKER
+        ' PASS DATA TO OWNER FORM
         ' =========================
         If TypeOf Owner Is AttendanceChecker Then
             Dim ac As AttendanceChecker = CType(Owner, AttendanceChecker)
 
-            ' Select Employee
             For i As Integer = 0 To ac.Employedropdown.Items.Count - 1
                 Dim drv As DataRowView = CType(ac.Employedropdown.Items(i), DataRowView)
                 If drv("fullname").ToString() = row("fullname").ToString() Then
@@ -90,24 +111,15 @@ Public Class Notification
                 End If
             Next
 
-            ' Set Date
             ac.monthofdate.Value = CDate(row("schedule_date"))
-
-            ' Set Status
             ac.status.SelectedItem = row("status").ToString()
-
-            ' Set CheckIn / CheckOut
             SetComboTime(ac.checkin, row("time_in"))
             SetComboTime(ac.checkout, row("time_out"))
         End If
 
-        ' =========================
-        ' HANDLE MONITORATTENDANCE
-        ' =========================
         If TypeOf Owner Is MonitorAttendance Then
             Dim ma As MonitorAttendance = CType(Owner, MonitorAttendance)
 
-            ' Select Employee
             For i As Integer = 0 To ma.Employedropdown.Items.Count - 1
                 Dim drv As DataRowView = CType(ma.Employedropdown.Items(i), DataRowView)
                 If drv("fullname").ToString() = row("fullname").ToString() Then
@@ -116,13 +128,8 @@ Public Class Notification
                 End If
             Next
 
-            ' Set Date
             ma.monthofdate.Value = CDate(row("schedule_date"))
-
-            ' Set Status
             ma.status.SelectedItem = row("status").ToString()
-
-            ' Set CheckIn / CheckOut
             SetComboTime(ma.checkin, row("time_in"))
             SetComboTime(ma.checkout, row("time_out"))
         End If
@@ -131,7 +138,7 @@ Public Class Notification
     End Sub
 
     ' =========================
-    ' MATCH TIME IN COMBOBOX
+    ' MATCH TIME
     ' =========================
     Private Sub SetComboTime(cb As ComboBox, dbValue As Object)
         If dbValue Is DBNull.Value Then Exit Sub
@@ -148,6 +155,7 @@ Public Class Notification
     ' DRAW LIST
     ' =========================
     Private Sub ListNotif_Paint(sender As Object, e As PaintEventArgs) Handles ListNotif.Paint
+
         Dim g = e.Graphics
         g.SmoothingMode = SmoothingMode.AntiAlias
         g.Clear(Color.White)
@@ -158,7 +166,6 @@ Public Class Notification
         Dim fontHeader As New Font("Segoe UI", 10, FontStyle.Bold)
         Dim fontRow As New Font("Segoe UI", 9)
 
-        ' Column widths
         Dim colFull = CInt(w * 0.2)
         Dim colDate = CInt(w * 0.15)
         Dim colStat = CInt(w * 0.15)
@@ -166,7 +173,6 @@ Public Class Notification
         Dim colOut = CInt(w * 0.15)
         Dim colBtn = w - (colFull + colDate + colStat + colIn + colOut + padding * 2)
 
-        ' Header
         g.FillRectangle(Brushes.LightGray, 0, 0, w, headerHeight)
         g.DrawString("Fullname", fontHeader, Brushes.Black, padding, 10)
         g.DrawString("Date", fontHeader, Brushes.Black, colFull + padding, 10)
@@ -175,7 +181,6 @@ Public Class Notification
         g.DrawString("Time Out", fontHeader, Brushes.Black, colFull + colDate + colStat + colIn + padding, 10)
         g.DrawString("Action", fontHeader, Brushes.Black, colFull + colDate + colStat + colIn + colOut + padding, 10)
 
-        ' Rows
         For i As Integer = 0 To filteredTable.Rows.Count - 1
             Dim y = headerHeight + i * rowHeight
             g.FillRectangle(If(i Mod 2 = 0, Brushes.WhiteSmoke, Brushes.White), 0, y, w, rowHeight)
@@ -188,7 +193,6 @@ Public Class Notification
             g.DrawString(r("time_in").ToString(), fontRow, Brushes.Black, colFull + colDate + colStat + padding, y + 8)
             g.DrawString(r("time_out").ToString(), fontRow, Brushes.Black, colFull + colDate + colStat + colIn + padding, y + 8)
 
-            ' Draw Set Button
             Dim isSet As Boolean = Convert.ToBoolean(r("is_set"))
             Dim btnRect As New Rectangle(colFull + colDate + colStat + colIn + colOut + padding, y + 5, colBtn - 10, 25)
 
@@ -196,14 +200,16 @@ Public Class Notification
                 g.FillPath(New SolidBrush(If(isSet, Color.Gray, Color.FromArgb(52, 152, 219))), path)
             End Using
 
-            Dim txt = If(isSet, "Already Set", "Set")
+            Dim txt = If(isSet, "In Set", "Set")
             Dim ts = g.MeasureString(txt, fontRow)
-            g.DrawString(txt, fontRow, Brushes.White, btnRect.X + (btnRect.Width - ts.Width) / 2, btnRect.Y + (btnRect.Height - ts.Height) / 2)
+            g.DrawString(txt, fontRow, Brushes.White,
+                         btnRect.X + (btnRect.Width - ts.Width) / 2,
+                         btnRect.Y + (btnRect.Height - ts.Height) / 2)
         Next
     End Sub
 
     ' =========================
-    ' ROUNDED RECTANGLE
+    ' ROUNDED RECT
     ' =========================
     Private Function RoundedRect(r As Rectangle, rad As Integer) As GraphicsPath
         Dim p As New GraphicsPath()

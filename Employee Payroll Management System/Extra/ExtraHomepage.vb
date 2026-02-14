@@ -17,8 +17,8 @@
         ' Ipakita ang username
         username.Text = LoggedInUser
 
-        ' Optional: default page (pwede mo alisin kung ayaw mo)
-        ' LoadFormIntoPanel(New AttendanceChecker())
+        ' 👉 AUTO LOAD ATTENDANCE CHECKER SA PANEL
+        LoadFormIntoPanel(New AttendanceChecker())
     End Sub
 
     ' =========================
@@ -64,11 +64,9 @@
         MessageBox.Show("Logged in as: " & LoggedInUser)
     End Sub
 
-    Private Sub Home_Click(sender As Object, e As EventArgs) Handles Home.Click
+    ' =========================
+    ' OTHER BUTTONS (OPTIONAL)
+    ' =========================
 
-    End Sub
 
-    Private Sub Employee_Click(sender As Object, e As EventArgs) Handles Employee.Click
-
-    End Sub
 End Class

@@ -28,10 +28,6 @@ Partial Class ExtraHomepage
         logoutbtn = New Button()
         Panel7 = New Panel()
         Attendance = New Button()
-        Panel3 = New Panel()
-        Employee = New Button()
-        Panel2 = New Panel()
-        Home = New Button()
         Panel5 = New Panel()
         logout = New Button()
         Label1 = New Label()
@@ -41,8 +37,6 @@ Partial Class ExtraHomepage
         Panel1.SuspendLayout()
         Panel4.SuspendLayout()
         Panel7.SuspendLayout()
-        Panel3.SuspendLayout()
-        Panel2.SuspendLayout()
         Panel5.SuspendLayout()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -52,8 +46,6 @@ Partial Class ExtraHomepage
         Panel1.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
         Panel1.Controls.Add(Panel4)
         Panel1.Controls.Add(Panel7)
-        Panel1.Controls.Add(Panel3)
-        Panel1.Controls.Add(Panel2)
         Panel1.Controls.Add(Panel5)
         Panel1.Controls.Add(Label1)
         Panel1.Controls.Add(username)
@@ -92,7 +84,7 @@ Partial Class ExtraHomepage
         ' Panel7
         ' 
         Panel7.Controls.Add(Attendance)
-        Panel7.Location = New Point(-3, 369)
+        Panel7.Location = New Point(0, 236)
         Panel7.Name = "Panel7"
         Panel7.Size = New Size(193, 47)
         Panel7.TabIndex = 11
@@ -111,52 +103,6 @@ Partial Class ExtraHomepage
         Attendance.TabIndex = 7
         Attendance.Text = "        Attendance"
         Attendance.UseVisualStyleBackColor = False
-        ' 
-        ' Panel3
-        ' 
-        Panel3.Controls.Add(Employee)
-        Panel3.Location = New Point(0, 308)
-        Panel3.Name = "Panel3"
-        Panel3.Size = New Size(182, 44)
-        Panel3.TabIndex = 10
-        ' 
-        ' Employee
-        ' 
-        Employee.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
-        Employee.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        Employee.ForeColor = Color.White
-        Employee.Image = CType(resources.GetObject("Employee.Image"), Image)
-        Employee.ImageAlign = ContentAlignment.MiddleLeft
-        Employee.Location = New Point(-16, -9)
-        Employee.Name = "Employee"
-        Employee.Padding = New Padding(25, 0, 35, 0)
-        Employee.Size = New Size(203, 64)
-        Employee.TabIndex = 4
-        Employee.Text = " Status "
-        Employee.UseVisualStyleBackColor = False
-        ' 
-        ' Panel2
-        ' 
-        Panel2.Controls.Add(Home)
-        Panel2.Location = New Point(0, 253)
-        Panel2.Name = "Panel2"
-        Panel2.Size = New Size(182, 44)
-        Panel2.TabIndex = 9
-        ' 
-        ' Home
-        ' 
-        Home.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
-        Home.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        Home.ForeColor = Color.White
-        Home.Image = CType(resources.GetObject("Home.Image"), Image)
-        Home.ImageAlign = ContentAlignment.MiddleLeft
-        Home.Location = New Point(-16, -8)
-        Home.Name = "Home"
-        Home.Padding = New Padding(25, 0, 35, 0)
-        Home.Size = New Size(203, 64)
-        Home.TabIndex = 3
-        Home.Text = "Home"
-        Home.UseVisualStyleBackColor = False
         ' 
         ' Panel5
         ' 
@@ -239,8 +185,6 @@ Partial Class ExtraHomepage
         Panel1.PerformLayout()
         Panel4.ResumeLayout(False)
         Panel7.ResumeLayout(False)
-        Panel3.ResumeLayout(False)
-        Panel2.ResumeLayout(False)
         Panel5.ResumeLayout(False)
         CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
@@ -255,10 +199,6 @@ Partial Class ExtraHomepage
     Friend WithEvents View As Panel
     Friend WithEvents Panel7 As Panel
     Friend WithEvents Attendance As Button
-    Friend WithEvents Panel3 As Panel
-    Friend WithEvents Employee As Button
-    Friend WithEvents Panel2 As Panel
-    Friend WithEvents Home As Button
     Friend WithEvents Panel4 As Panel
     Friend WithEvents logoutbtn As Button
 End Class
