@@ -118,17 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="PrintPayslip.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAARNJREFUSEvtlzEOAUEUQGl0Shehk9WqKByCW6BwFI1OpeIAEg5B6QQ6T0b+xs/f
-        YYfNLMW+5GeTmf//y85udmZrtX8DGAHHgjGyfXMBJsBZrt/Eo9b2zUWKj3Y8FLnjSpxPJf6UIDGQyOsf
-        mxPQ1eKdzYjIVovdspTF8/FFFK+BJrBQY6WIZ9J/oMZKEV+BFXBRY6WIfVRiL0W/XD7CxUADaAOdnHA5
-        jZCeoeIhcLOTHlzOIKRnKt7bWSHGUu910tzOCukd94CDNPPFRkul5pV4qpPqQN8c1pZK3ALGZl5H5jQp
-        YtdD5/VtXga9HweI03A5Lalx4vf7sQ8jdvv1u6VOw+UkUlNc/A1FxT850P/mFyY2d724ik4AbF2iAAAA
-        AElFTkSuQmCC
-</value>
-  </data>
   <data name="PictureBox4.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL

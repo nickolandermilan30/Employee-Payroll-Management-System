@@ -1,17 +1,15 @@
-﻿Imports System.Drawing
-Imports System.Drawing.Printing
+﻿Imports System.Drawing.Printing
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports MySql.Data.MySqlClient
+Imports System.Drawing.Drawing2D
 
 Public Class Print
 
     Private WithEvents PrintDoc As New PrintDocument()
 
     ' ================= DATABASE =================
-    Private conn As New MySqlConnection(
-        "Server=127.0.0.1;Database=payroll_system;Uid=root;Pwd=;"
-    )
+    Private conn As New MySqlConnection("Server=127.0.0.1;Database=payroll_system;Uid=root;Pwd=;")
 
     ' ================= DATA =================
     Private empName As String
@@ -19,20 +17,20 @@ Public Class Print
     Private monthYear As String
     Private presentDays As Integer
     Private baseSalary As Decimal
-    Private deduction As Decimal
     Private netSalary As Decimal
     Private DeductionItems As New List(Of String)
+    Private SubjectItems As New List(Of String)
     Private TotalDeduction As Decimal
 
-    Private payGroup As String = "Monthly 1"
+    Private payGroup As String = "FACULTY / MONTHLY"
+    Private modeOfPayment As String = "CASH"
     Private dateHired As String = ""
-
     Private logoPath As String = Path.Combine(Application.StartupPath, "Image\Logo.png")
 
     ' ================= CONSTRUCTOR =================
     Public Sub New(name As String, position As String, month As String,
                    days As Integer, base As Decimal, deduct As Decimal,
-                   net As Decimal, deductions As List(Of String))
+                   net As Decimal, deductions As List(Of String), subjects As List(Of String))
 
         InitializeComponent()
 
@@ -41,167 +39,213 @@ Public Class Print
         monthYear = month
         presentDays = days
         baseSalary = base
-        deduction = deduct
         netSalary = net
         DeductionItems = deductions
+        SubjectItems = subjects
         TotalDeduction = deduct
 
         GetDateHired()
 
+        ' Set to A4 Portrait (8.27in x 11.69in)
         PrintDoc.DefaultPageSettings.PaperSize = New PaperSize("A4", 827, 1169)
+        PrintDoc.DefaultPageSettings.Landscape = False
     End Sub
 
-    ' ================= GET DATE HIRED =================
+    ' ================= DATABASE FETCH =================
     Private Sub GetDateHired()
         Try
-            conn.Open()
+            If conn.State = ConnectionState.Closed Then conn.Open()
             Dim query As String = "SELECT date_hired FROM employees WHERE fullname=@name LIMIT 1"
             Dim cmd As New MySqlCommand(query, conn)
             cmd.Parameters.AddWithValue("@name", empName)
 
             Dim result = cmd.ExecuteScalar()
-            If result IsNot Nothing Then
+            If result IsNot Nothing AndAlso Not IsDBNull(result) Then
                 dateHired = Convert.ToDateTime(result).ToString("MMMM dd, yyyy")
             Else
                 dateHired = "N/A"
             End If
         Catch ex As Exception
-            MessageBox.Show("DB Error: " & ex.Message)
+            dateHired = "N/A"
         Finally
             conn.Close()
         End Try
     End Sub
 
-    ' ================= PRINT =================
+    ' ================= PRINTING LOGIC =================
     Private Sub PrintDoc_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDoc.PrintPage
         DrawPayslip(e.Graphics, e.PageBounds.Width)
     End Sub
 
-    ' ================= DRAW =================
     Private Sub DrawPayslip(g As Graphics, pageWidth As Integer)
+        ' High quality rendering settings
+        g.SmoothingMode = SmoothingMode.HighQuality
+        g.InterpolationMode = InterpolationMode.HighQualityBicubic
+        g.TextRenderingHint = Drawing.Text.TextRenderingHint.ClearTypeGridFit
 
         Dim margin As Integer = 50
         Dim contentWidth As Integer = pageWidth - (margin * 2)
-        Dim y As Integer = 40
+        Dim y As Integer = 80 ' Dagdag na spacing sa pinakataas
 
-        Dim fTitle As New Font("Segoe UI", 18, FontStyle.Bold)
-        Dim fHeader As New Font("Segoe UI", 10, FontStyle.Bold)
-        Dim fBody As New Font("Segoe UI", 10)
-        Dim fBold As New Font("Segoe UI", 11, FontStyle.Bold)
+        ' Define Fonts
+        Dim fTitle As New Font("Arial", 18, FontStyle.Bold)
+        Dim fCompany As New Font("Arial", 14, FontStyle.Bold)
+        Dim fSubHeader As New Font("Arial", 9, FontStyle.Regular)
+        Dim fLabel As New Font("Arial", 7, FontStyle.Bold)
+        Dim fValue As New Font("Arial", 9, FontStyle.Bold)
+        Dim fTableHead As New Font("Arial", 8, FontStyle.Bold)
+        Dim fFooter As New Font("Arial", 7, FontStyle.Italic)
 
-        g.Clear(Color.White)
-
-        ' ===== WATERMARK =====
+        ' ===== 1. BACKGROUND LOGO (WATERMARK) =====
         If File.Exists(logoPath) Then
             Using logo As Image = Image.FromFile(logoPath)
-                Dim cm As New ColorMatrix()
-                cm.Matrix33 = 0.05F
+                Dim cm As New ColorMatrix() With {.Matrix33 = 0.04F} ' Super faint
                 Dim ia As New ImageAttributes()
                 ia.SetColorMatrix(cm)
-
-                g.DrawImage(logo,
-                    New Rectangle((pageWidth - 350) \ 2, 350, 350, 350),
-                    0, 0, logo.Width, logo.Height,
-                    GraphicsUnit.Pixel, ia)
+                ' Center watermark in the middle of A4 page
+                g.DrawImage(logo, New Rectangle((pageWidth - 500) \ 2, 400, 500, 500), 0, 0, logo.Width, logo.Height, GraphicsUnit.Pixel, ia)
             End Using
         End If
 
-        ' ===== HEADER =====
+        ' ===== 2. HEADER SECTION =====
         If File.Exists(logoPath) Then
             Using logo As Image = Image.FromFile(logoPath)
-                g.DrawImage(logo, margin, y, 80, 80)
+                g.DrawImage(logo, margin, y, 85, 85)
             End Using
         End If
 
-        DrawCentered(g, "Saint Augustine Colleges Foundation Inc.", fBold, Brushes.Black, pageWidth, y + 10)
-        DrawCentered(g, "EMPLOYEE PAYSLIP", fTitle, Brushes.Black, pageWidth, y + 35)
+        ' Center-ish text alignment beside logo
+        Dim textX As Integer = margin + 100
+        g.DrawString("SAINT AUGUSTINE COLLEGES FOUNDATION INC.", fCompany, Brushes.Black, textX, y + 10)
+        g.DrawString("San Agustin, Hagonoy, Bulacan", fSubHeader, Brushes.DimGray, textX, y + 35)
+        g.DrawString("EMPLOYEE PAY ADVICE (CONFIDENTIAL)", fTitle, Brushes.DarkRed, textX, y + 55)
 
-        y += 110
+        y += 110 ' Spacing after header
 
-        ' ===== EMPLOYEE INFO CARD =====
-        Dim boxHeight As Integer = 35
-        Dim halfWidth As Integer = contentWidth \ 2
+        ' ===== 3. EMPLOYEE INFO BOXES (GRID STYLE) =====
+        Dim boxH As Integer = 38
+        Dim quarterW As Integer = contentWidth \ 4
+        Dim halfW As Integer = contentWidth \ 2
 
-        DrawInfoBox(g, margin, y, halfWidth, boxHeight, "Employee Name", empName)
-        DrawInfoBox(g, margin + halfWidth, y, halfWidth, boxHeight, "Position", empPosition)
-        y += boxHeight
+        ' Row 1: Name and Date
+        DrawGridCell(g, margin, y, halfW, boxH, "EMPLOYEE NAME", empName.ToUpper(), fLabel, fValue)
+        DrawGridCell(g, margin + halfW, y, quarterW, boxH, "DATE HIRED", dateHired, fLabel, fValue)
+        DrawGridCell(g, margin + halfW + quarterW, y, quarterW, boxH, "PAY DATE", DateTime.Now.ToString("MM/dd/yyyy"), fLabel, fValue)
+        y += boxH
 
-        DrawInfoBox(g, margin, y, halfWidth, boxHeight, "Payroll Month", monthYear)
-        DrawInfoBox(g, margin + halfWidth, y, halfWidth, boxHeight, "Pay Group", payGroup)
-        y += boxHeight
+        ' Row 2: Designation and Period
+        DrawGridCell(g, margin, y, halfW, boxH, "DESIGNATION / POSITION", empPosition.ToUpper(), fLabel, fValue)
+        DrawGridCell(g, margin + halfW, y, quarterW, boxH, "PAYROLL GROUP", payGroup, fLabel, fValue)
+        DrawGridCell(g, margin + halfW + quarterW, y, quarterW, boxH, "PAYROLL PERIOD", monthYear, fLabel, fValue)
+        y += boxH
 
-        DrawInfoBox(g, margin, y, halfWidth, boxHeight, "Date Hired", dateHired)
-        DrawInfoBox(g, margin + halfWidth, y, halfWidth, boxHeight, "Present Days", presentDays.ToString())
-        y += boxHeight + 20
+        ' Row 3: Mode of Payment and Attendance
+        DrawGridCell(g, margin, y, halfW, boxH, "MODE OF PAYMENT", modeOfPayment, fLabel, fValue)
+        DrawGridCell(g, margin + halfW, y, halfW, boxH, "TOTAL RENDERED DAYS", presentDays.ToString(), fLabel, fValue)
 
-        ' ===== EARNINGS =====
-        DrawSectionHeader(g, "EARNINGS", margin, y, contentWidth)
-        y += 30
-        DrawRow(g, margin, y, contentWidth, "Base Salary", baseSalary)
-        y += 35
+        y += boxH + 35 ' Spacing before tables
 
-        ' ===== DEDUCTIONS =====
-        DrawSectionHeader(g, "DEDUCTIONS", margin, y, contentWidth)
-        y += 30
+        ' ===== 4. EARNINGS & DEDUCTIONS (SIDE-BY-SIDE) =====
+        Dim tableWidth As Integer = (contentWidth \ 2) - 5
+        Dim tableStartTop As Integer = y
 
-        For Each item In DeductionItems
-            Dim parts = item.Split("-"c)
-            If parts.Length = 2 Then
-                DrawRowText(g, margin, y, contentWidth, parts(0).Trim(), parts(1).Trim())
-                y += 35
-            End If
-        Next
+        ' --- EARNINGS TABLE ---
+        g.FillRectangle(New SolidBrush(Color.FromArgb(52, 73, 94)), margin, y, tableWidth, 25)
+        g.DrawString("DESCRIPTION / EARNINGS", fTableHead, Brushes.White, margin + 5, y + 6)
+        g.DrawString("AMOUNT", fTableHead, Brushes.White, margin + tableWidth - 55, y + 6)
 
-        DrawRow(g, margin, y, contentWidth, "TOTAL DEDUCTION", TotalDeduction, True)
-        y += 40
+        Dim earnY As Integer = y + 25
+        If SubjectItems IsNot Nothing Then
+            For Each item In SubjectItems
+                Dim parts = item.Split("-"c)
+                Dim desc As String = parts(0).Trim()
+                Dim amt As String = If(parts.Length > 1, parts(1).Trim(), "0.00")
 
-        ' ===== NET SALARY =====
-        DrawSectionHeader(g, "NET SALARY", margin, y, contentWidth)
-        y += 30
-        DrawRow(g, margin, y, contentWidth, "Net Salary", netSalary, True)
-        y += 40
+                g.DrawRectangle(Pens.LightGray, margin, earnY, tableWidth, 25)
+                g.DrawString(desc, fSubHeader, Brushes.Black, margin + 5, earnY + 6)
+                g.DrawString("₱ " & amt, fValue, Brushes.Black, New RectangleF(margin, earnY + 6, tableWidth - 5, 20), New StringFormat With {.Alignment = StringAlignment.Far})
+                earnY += 25
+            Next
+        End If
+        ' Filler for Gross
+        DrawSummaryRow(g, margin, earnY, tableWidth, "GROSS SALARY", baseSalary, Color.FromArgb(245, 245, 245), fValue)
 
-        g.DrawString("Date of Pay: " & DateTime.Now.ToString("MMMM dd, yyyy"), fBody, Brushes.Black, margin, y)
+        ' --- DEDUCTIONS TABLE ---
+        Dim deducX As Integer = margin + tableWidth + 10
+        g.FillRectangle(New SolidBrush(Color.FromArgb(192, 57, 43)), deducX, y, tableWidth, 25)
+        g.DrawString("DEDUCTIONS", fTableHead, Brushes.White, deducX + 5, y + 6)
+        g.DrawString("AMOUNT", fTableHead, Brushes.White, deducX + tableWidth - 55, y + 6)
 
+        Dim deducY As Integer = y + 25
+        If DeductionItems IsNot Nothing AndAlso DeductionItems.Count > 0 Then
+            For Each item In DeductionItems
+                Dim parts = item.Split("-"c)
+                Dim desc As String = parts(0).Trim().ToUpper()
+                Dim amt As String = If(parts.Length > 1, parts(1).Trim(), "0.00")
+
+                g.DrawRectangle(Pens.LightGray, deducX, deducY, tableWidth, 25)
+                g.DrawString(desc, fSubHeader, Brushes.Black, deducX + 5, deducY + 6)
+                g.DrawString("₱ " & amt, fValue, Brushes.Black, New RectangleF(deducX, deducY + 6, tableWidth - 5, 20), New StringFormat With {.Alignment = StringAlignment.Far})
+                deducY += 25
+            Next
+        Else
+            g.DrawRectangle(Pens.LightGray, deducX, deducY, tableWidth, 25)
+            g.DrawString("NO DEDUCTIONS", fSubHeader, Brushes.Gray, deducX + 5, deducY + 6)
+            deducY += 25
+        End If
+        ' Filler for Total Deduc
+        DrawSummaryRow(g, deducX, deducY, tableWidth, "TOTAL DEDUCTION", TotalDeduction, Color.FromArgb(255, 240, 240), fValue)
+
+        y = Math.Max(earnY, deducY) + 40
+
+        ' ===== 5. NET PAY HIGHLIGHT =====
+        Dim netBoxW As Integer = contentWidth \ 2
+        Dim netX As Integer = margin + (contentWidth - netBoxW)
+        g.FillRectangle(New SolidBrush(Color.FromArgb(39, 174, 96)), netX, y, netBoxW, 45)
+        g.DrawRectangle(New Pen(Color.DarkGreen, 2), netX, y, netBoxW, 45)
+        g.DrawString("NET TAKE HOME PAY:", fTableHead, Brushes.White, netX + 15, y + 15)
+
+        Dim netText As String = "₱ " & netSalary.ToString("N2")
+        Dim netSize = g.MeasureString(netText, fTitle)
+        g.DrawString(netText, fTitle, Brushes.White, netX + netBoxW - netSize.Width - 15, y + 8)
+
+        y += 90
+
+        ' ===== 6. SIGNATURES & FOOTER =====
+        g.DrawString("I hereby acknowledge the receipt of the sum stated above as full payment for my services rendered.", fFooter, Brushes.Black, margin, y)
+        y += 70
+
+        ' Sig lines
+        Dim sigW As Integer = 220
+        g.DrawLine(Pens.Black, margin, y, margin + sigW, y)
+        g.DrawString(empName.ToUpper(), fValue, Brushes.Black, margin + (sigW \ 2), y + 5, New StringFormat With {.Alignment = StringAlignment.Center})
+        g.DrawString("Employee Signature", fSubHeader, Brushes.DimGray, margin + (sigW \ 2), y + 22, New StringFormat With {.Alignment = StringAlignment.Center})
+
+        g.DrawLine(Pens.Black, margin + contentWidth - sigW, y, margin + contentWidth, y)
+        g.DrawString("ADMINISTRATOR / FINANCE", fValue, Brushes.Black, margin + contentWidth - (sigW \ 2), y + 5, New StringFormat With {.Alignment = StringAlignment.Center})
+        g.DrawString("Authorized Signatory", fSubHeader, Brushes.DimGray, margin + contentWidth - (sigW \ 2), y + 22, New StringFormat With {.Alignment = StringAlignment.Center})
+
+        y += 80
+        g.DrawString("Computer Generated: " & DateTime.Now.ToString("f"), fFooter, Brushes.Gray, margin, y)
     End Sub
 
-    ' ================= UI HELPERS =================
-    Private Sub DrawInfoBox(g As Graphics, x As Integer, y As Integer, w As Integer, h As Integer, title As String, value As String)
+    ' ================= DRAWING HELPERS =================
+    Private Sub DrawGridCell(g As Graphics, x As Integer, y As Integer, w As Integer, h As Integer, title As String, val As String, fL As Font, fV As Font)
         g.DrawRectangle(Pens.Black, x, y, w, h)
-        g.DrawString(title, New Font("Segoe UI", 8, FontStyle.Bold), Brushes.Black, x + 5, y + 3)
-        g.DrawString(value, New Font("Segoe UI", 10), Brushes.Black, x + 5, y + 15)
+        g.DrawString(title, fL, Brushes.DimGray, x + 6, y + 5)
+        g.DrawString(val, fV, Brushes.Black, x + 6, y + 17)
     End Sub
 
-    Private Sub DrawSectionHeader(g As Graphics, text As String, x As Integer, y As Integer, w As Integer)
-        g.FillRectangle(New SolidBrush(Color.FromArgb(240, 240, 240)), x, y, w, 25)
-        g.DrawRectangle(Pens.Black, x, y, w, 25)
-        g.DrawString(text, New Font("Segoe UI", 10, FontStyle.Bold), Brushes.Black, x + 10, y + 5)
+    Private Sub DrawSummaryRow(g As Graphics, x As Integer, y As Integer, w As Integer, label As String, amt As Decimal, bg As Color, font As Font)
+        g.FillRectangle(New SolidBrush(bg), x, y, w, 28)
+        g.DrawRectangle(Pens.Black, x, y, w, 28)
+        g.DrawString(label, font, Brushes.Black, x + 5, y + 7)
+        Dim amtStr As String = "₱ " & amt.ToString("N2")
+        Dim sz = g.MeasureString(amtStr, font)
+        g.DrawString(amtStr, font, Brushes.Black, x + w - sz.Width - 5, y + 7)
     End Sub
 
-    Private Sub DrawRow(g As Graphics, x As Integer, y As Integer, w As Integer, label As String, amount As Decimal, Optional bold As Boolean = False)
-        Dim f As Font = If(bold, New Font("Segoe UI", 10, FontStyle.Bold), New Font("Segoe UI", 10))
-        g.DrawRectangle(Pens.Black, x, y, w, 30)
-        g.DrawString(label, f, Brushes.Black, x + 10, y + 7)
-
-        Dim amountText As String = "₱ " & amount.ToString("N2")
-        Dim size = g.MeasureString(amountText, f)
-        g.DrawString(amountText, f, Brushes.Black, x + w - size.Width - 10, y + 7)
-    End Sub
-
-    Private Sub DrawRowText(g As Graphics, x As Integer, y As Integer, w As Integer, label As String, amount As String)
-        g.DrawRectangle(Pens.Black, x, y, w, 30)
-        g.DrawString(label, New Font("Segoe UI", 10), Brushes.Black, x + 10, y + 7)
-
-        Dim size = g.MeasureString(amount, New Font("Segoe UI", 10))
-        g.DrawString(amount, New Font("Segoe UI", 10), Brushes.Black, x + w - size.Width - 10, y + 7)
-    End Sub
-
-    Private Sub DrawCentered(g As Graphics, text As String, font As Font, brush As Brush, pageWidth As Integer, y As Integer)
-        Dim sf As New StringFormat With {.Alignment = StringAlignment.Center}
-        g.DrawString(text, font, brush, pageWidth \ 2, y, sf)
-    End Sub
-
-    ' ================= BUTTONS =================
+    ' ================= BUTTON ACTIONS =================
     Private Sub btn_Print_Click(sender As Object, e As EventArgs) Handles btn_Print.Click
         Dim pd As New PrintDialog()
         pd.Document = PrintDoc
@@ -216,19 +260,18 @@ Public Class Print
         If sfd.ShowDialog() = DialogResult.OK Then
             Dim bmp As New Bitmap(827, 1169)
             Using g As Graphics = Graphics.FromImage(bmp)
+                g.Clear(Color.White)
                 DrawPayslip(g, bmp.Width)
             End Using
             bmp.Save(sfd.FileName, Imaging.ImageFormat.Png)
-            MessageBox.Show("Payslip saved successfully!")
+            MessageBox.Show("Saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
     End Sub
 
-
     Private Sub Preview_Click(sender As Object, e As EventArgs) Handles Preview.Click
-        Dim preview As New PrintPreviewDialog()
-        preview.Document = PrintDoc
-        preview.WindowState = FormWindowState.Maximized
-        preview.ShowDialog()
+        Dim previewDlg As New PrintPreviewDialog()
+        previewDlg.Document = PrintDoc
+        previewDlg.WindowState = FormWindowState.Maximized
+        previewDlg.ShowDialog()
     End Sub
-
 End Class

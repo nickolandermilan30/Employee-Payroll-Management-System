@@ -25,11 +25,11 @@ Partial Class Print
         Panel2 = New Panel()
         Label1 = New Label()
         Panel1 = New Panel()
+        Preview = New Button()
         btn_Save = New Button()
         btn_Print = New Button()
         PrintPreviewControl1 = New PrintPreviewControl()
         prntDoc_ANNEX_A = New Printing.PrintDocument()
-        Preview = New Button()
         Panel2.SuspendLayout()
         Panel1.SuspendLayout()
         SuspendLayout()
@@ -68,6 +68,20 @@ Partial Class Print
         Panel1.Name = "Panel1"
         Panel1.Size = New Size(988, 43)
         Panel1.TabIndex = 3
+        ' 
+        ' Preview
+        ' 
+        Preview.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
+        Preview.Dock = DockStyle.Left
+        Preview.FlatStyle = FlatStyle.Flat
+        Preview.ForeColor = Color.White
+        Preview.Location = New Point(0, 0)
+        Preview.Margin = New Padding(2)
+        Preview.Name = "Preview"
+        Preview.Size = New Size(158, 43)
+        Preview.TabIndex = 2
+        Preview.Text = "Preview Receipt"
+        Preview.UseVisualStyleBackColor = False
         ' 
         ' btn_Save
         ' 
@@ -108,20 +122,6 @@ Partial Class Print
         PrintPreviewControl1.Size = New Size(988, 595)
         PrintPreviewControl1.TabIndex = 5
         PrintPreviewControl1.Zoom = 1.09R
-        ' 
-        ' Preview
-        ' 
-        Preview.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
-        Preview.Dock = DockStyle.Left
-        Preview.FlatStyle = FlatStyle.Flat
-        Preview.ForeColor = Color.White
-        Preview.Location = New Point(0, 0)
-        Preview.Margin = New Padding(2)
-        Preview.Name = "Preview"
-        Preview.Size = New Size(158, 43)
-        Preview.TabIndex = 2
-        Preview.Text = "Preview"
-        Preview.UseVisualStyleBackColor = False
         ' 
         ' Print
         ' 

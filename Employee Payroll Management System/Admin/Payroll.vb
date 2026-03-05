@@ -9,55 +9,43 @@ Public Class Payroll
 
     Private conn As New MySqlConnection("Server=127.0.0.1;Database=payroll_system;Uid=root;Pwd=;")
     Private employeesTable As DataTable
-    Private deductionDetails As New List(Of String)
+    Private UnitSelectors As New List(Of CheckBox)
+    Private SelectedSubjectsList As New List(Of String)
 
     ' =========================
     ' FORM LOAD
     ' =========================
     Private Sub Payroll_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.KeyPreview = True
+        Me.BackColor = Color.FromArgb(240, 242, 245)
+
+        SetupUIStyle()
         LoadEmployees()
 
-        employee.TabIndex = 0
-        Month.TabIndex = 1
-        Year.TabIndex = 2
-        Salary.TabIndex = 3
-        Deduction.TabIndex = 4
-        Notes.TabIndex = 5
-        daysdate.TabIndex = 6
-        Pay.TabIndex = 7
-
-        employee.DropDownStyle = ComboBoxStyle.DropDownList
-
-        Month.Format = DateTimePickerFormat.Custom
-        Month.CustomFormat = "MMMM"
-        Month.ShowUpDown = True
-
+        ' Year Setup
         Year.Items.Clear()
         Dim currentYear As Integer = DateTime.Now.Year
-        For y As Integer = currentYear - 50 To currentYear + 1
+        For y As Integer = currentYear - 5 To currentYear + 1
             Year.Items.Add(y.ToString())
         Next
         Year.SelectedItem = currentYear.ToString()
-        Year.ReadOnly = True
-        Year.Wrap = True
 
-        Salary.Clear()
-        Deduction.Clear()
-        daysdate.Clear()
+        Salary.ReadOnly = True
+        Salary.BackColor = Color.White
+        Salary.Text = "0.00"
+        Units.AutoScroll = True
     End Sub
 
-    ' =========================
-    ' LOAD EMPLOYEES
-    ' =========================
+    Private Sub SetupUIStyle()
+        employee.DropDownStyle = ComboBoxStyle.DropDownList
+        Month.Format = DateTimePickerFormat.Custom
+        Month.CustomFormat = "MMMM"
+        Month.ShowUpDown = True
+    End Sub
+
     Private Sub LoadEmployees()
         Try
-            Dim sql As String =
-                "SELECT id, fullname, salary, job_position 
-                 FROM employees 
-                 WHERE status='Active'
-                 ORDER BY fullname"
-
+            Dim sql As String = "SELECT * FROM employees WHERE status='Active' ORDER BY fullname"
             Dim adapter As New MySqlDataAdapter(sql, conn)
             employeesTable = New DataTable()
             adapter.Fill(employeesTable)
@@ -67,199 +55,165 @@ Public Class Payroll
                 employee.Items.Add(row("fullname").ToString())
             Next
         Catch ex As Exception
-            ShowToast("⚠ Error loading employees: " & ex.Message, Color.Red)
+            ShowToast("⚠ Error loading database", Color.Red)
         End Try
     End Sub
 
-    ' =========================
-    ' EMPLOYEE SELECTED
-    ' =========================
     Private Sub employee_SelectedIndexChanged(sender As Object, e As EventArgs) Handles employee.SelectedIndexChanged
-        If employee.SelectedIndex = -1 OrElse Year.SelectedItem Is Nothing Then Exit Sub
-
+        If employee.SelectedIndex = -1 Then Exit Sub
         Dim empName As String = employee.SelectedItem.ToString()
         UpdateAttendanceCounts(empName)
-
         Dim row = employeesTable.Select("fullname='" & empName.Replace("'", "''") & "'").FirstOrDefault()
-        If row IsNot Nothing Then
-            Salary.Text = FormatNumberForTextbox(Convert.ToDecimal(row("salary")))
-        End If
+        If row IsNot Nothing Then GenerateSubjectTable(row)
     End Sub
 
-    ' =========================
-    ' MONTH / YEAR CHANGED
-    ' =========================
-    Private Sub Month_ValueChanged(sender As Object, e As EventArgs) Handles Month.ValueChanged
-        If employee.SelectedIndex <> -1 Then UpdateAttendanceCounts(employee.SelectedItem.ToString())
+    Private Sub GenerateSubjectTable(row As DataRow)
+        Units.Controls.Clear()
+        UnitSelectors.Clear()
+        Units.Padding = New Padding(10)
+
+        Dim subjects As String() = row("subject_names").ToString().Split({", "}, StringSplitOptions.None)
+        Dim salariesRaw As String() = row("unit_salaries_breakdown").ToString().Split({" ; "}, StringSplitOptions.None)
+        Dim semester As String = row("semester").ToString()
+
+        Dim lblTitle As New Label With {.Text = "COURSE LOAD BREAKDOWN - " & semester.ToUpper(), .Font = New Font("Segoe UI", 10, FontStyle.Bold), .ForeColor = Color.FromArgb(52, 73, 94), .Dock = DockStyle.Top, .Height = 30}
+        Units.Controls.Add(lblTitle)
+
+        Dim yPos As Integer = 40
+        For i As Integer = 0 To subjects.Length - 1
+            Dim card As New Panel With {.Width = Units.Width - 45, .Height = 90, .Location = New Point(10, yPos), .BackColor = Color.White, .Padding = New Padding(5)}
+            AddHandler card.Paint, Sub(s, e) ControlPaint.DrawBorder(e.Graphics, card.ClientRectangle, Color.LightGray, ButtonBorderStyle.Solid)
+
+            Dim lblSub As New Label With {.Text = subjects(i).ToUpper(), .Font = New Font("Segoe UI", 9, FontStyle.Bold), .ForeColor = Color.FromArgb(41, 128, 185), .Location = New Point(15, 12), .AutoSize = True}
+            card.Controls.Add(lblSub)
+
+            If i < salariesRaw.Length Then
+                Dim cleanSal As String = salariesRaw(i).Trim("["c, "]"c)
+                Dim individualUnits As String() = cleanSal.Split("|"c)
+                Dim xPos As Integer = 15
+                For u As Integer = 0 To individualUnits.Length - 1
+                    Dim unitVal As Decimal = 0
+                    Decimal.TryParse(individualUnits(u), unitVal)
+                    Dim chkUnit As New CheckBox With {.Appearance = Appearance.Button, .Text = "UNIT " & (u + 1) & vbCrLf & "₱" & unitVal.ToString("N0"), .Tag = New With {.Value = unitVal, .Subject = subjects(i)}, .Size = New Size(85, 45), .Location = New Point(xPos, 35), .TextAlign = ContentAlignment.MiddleCenter, .Font = New Font("Segoe UI", 7, FontStyle.Bold), .FlatStyle = FlatStyle.Flat, .Checked = True}
+                    AddHandler chkUnit.CheckedChanged, AddressOf CalculateTotalFromToggles
+                    card.Controls.Add(chkUnit)
+                    UnitSelectors.Add(chkUnit)
+                    xPos += 90
+                Next
+            End If
+            Units.Controls.Add(card)
+            yPos += 100
+        Next
+        CalculateTotalFromToggles(Nothing, Nothing)
     End Sub
 
-    Private Sub Year_SelectedItemChanged(sender As Object, e As EventArgs) Handles Year.SelectedItemChanged
-        If employee.SelectedIndex <> -1 Then UpdateAttendanceCounts(employee.SelectedItem.ToString())
+    Private Sub CalculateTotalFromToggles(sender As Object, e As EventArgs)
+        Dim total As Decimal = 0
+        SelectedSubjectsList.Clear()
+        For Each chk In UnitSelectors
+            Dim data = chk.Tag
+            If chk.Checked Then
+                total += data.Value
+                chk.BackColor = Color.FromArgb(46, 204, 113)
+                chk.ForeColor = Color.White
+                If Not SelectedSubjectsList.Contains(data.Subject) Then SelectedSubjectsList.Add(data.Subject)
+            Else
+                chk.BackColor = Color.FromArgb(236, 240, 241)
+                chk.ForeColor = Color.Silver
+            End If
+        Next
+        Salary.Text = total.ToString("N2")
     End Sub
 
-    ' =========================
-    ' UPDATE ATTENDANCE
-    ' =========================
     Private Sub UpdateAttendanceCounts(employeeName As String)
         Try
-            Dim sql As String =
-                "SELECT
-                    SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) AS PresentCount
-                 FROM attendance
-                 WHERE fullname=@name
-                 AND MONTH(attendance_date)=@m
-                 AND YEAR(attendance_date)=@y"
-
+            Dim sql As String = "SELECT SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END) AS count_present, SUM(CASE WHEN status='Absent' THEN 1 ELSE 0 END) AS count_absent, SUM(CASE WHEN status='Late' THEN 1 ELSE 0 END) AS count_late, SUM(CASE WHEN status='Half Day' THEN 1 ELSE 0 END) AS count_halfday FROM attendance WHERE fullname=@name AND MONTH(attendance_date)=@m AND YEAR(attendance_date)=@y"
             Using cmd As New MySqlCommand(sql, conn)
                 cmd.Parameters.AddWithValue("@name", employeeName)
                 cmd.Parameters.AddWithValue("@m", Month.Value.Month)
-                cmd.Parameters.AddWithValue("@y", CInt(Year.SelectedItem))
-
+                cmd.Parameters.AddWithValue("@y", Year.SelectedItem.ToString())
                 conn.Open()
-                Present.Text = cmd.ExecuteScalar().ToString()
+                Using reader = cmd.ExecuteReader()
+                    If reader.Read() Then
+                        Present.Text = If(reader("count_present") Is DBNull.Value, "0", reader("count_present").ToString())
+                        Absent.Text = If(reader("count_absent") Is DBNull.Value, "0", reader("count_absent").ToString())
+                        late.Text = If(reader("count_late") Is DBNull.Value, "0", reader("count_late").ToString())
+                        Halfday.Text = If(reader("count_halfday") Is DBNull.Value, "0", reader("count_halfday").ToString())
+                    End If
+                End Using
                 conn.Close()
             End Using
-        Catch
-            If conn.State = ConnectionState.Open Then conn.Close()
-        End Try
-    End Sub
-
-    ' =========================
-    ' PAY BUTTON
-    ' =========================
-    Private Sub Pay_Click(sender As Object, e As EventArgs) Handles Pay.Click
-        If employee.SelectedIndex = -1 Then
-            ShowToast("⚠ Select employee", Color.Red)
-            Exit Sub
-        End If
-
-        Dim presentDays As Integer = 0
-        If Not String.IsNullOrWhiteSpace(Present.Text) Then Integer.TryParse(Present.Text, presentDays)
-
-        Dim salaryAmount As Decimal = 0D
-        If Not String.IsNullOrWhiteSpace(Salary.Text) Then Decimal.TryParse(Salary.Text.Replace(",", ""), salaryAmount)
-
-        Dim deductionAmount As Decimal = 0D
-        If Not String.IsNullOrWhiteSpace(Deduction.Text) Then Decimal.TryParse(Deduction.Text.Replace(",", ""), deductionAmount)
-
-        Dim notesText As String = If(String.IsNullOrWhiteSpace(Notes.Text), "N/A", Notes.Text)
-
-        Dim employeeName As String = employee.SelectedItem.ToString()
-        Dim monthText As String = Month.Value.ToString("MMMM") & " " & Year.SelectedItem.ToString()
-
-        Dim row = employeesTable.Select("fullname='" & employeeName.Replace("'", "''") & "'").FirstOrDefault()
-        Dim position As String = If(row IsNot Nothing, row("job_position").ToString(), "")
-
-        Try
-            Dim sql =
-            "INSERT INTO payroll (employee_name, month, year, salary, deduction, notes)
-             VALUES (@n,@m,@y,@s,@d,@no)"
-
-            Using cmd As New MySqlCommand(sql, conn)
-                cmd.Parameters.AddWithValue("@n", employeeName)
-                cmd.Parameters.AddWithValue("@m", Month.Value.Month)
-                cmd.Parameters.AddWithValue("@y", If(Year.SelectedItem IsNot Nothing, CInt(Year.SelectedItem), DateTime.Now.Year))
-                cmd.Parameters.AddWithValue("@s", salaryAmount)
-                cmd.Parameters.AddWithValue("@d", deductionAmount)
-                cmd.Parameters.AddWithValue("@no", notesText)
-
-                conn.Open()
-                cmd.ExecuteNonQuery()
-                conn.Close()
-            End Using
-
-            Dim net As Decimal = salaryAmount - deductionAmount
-
-            ' PAYSLIP - PASS DEDUCTION DETAILS
-            Dim payslip As New Payslip(
-                employeeName,
-                position,
-                monthText,
-                presentDays,
-                salaryAmount,
-                deductionAmount,
-                net,
-                deductionDetails
-            )
-
-            payslip.ShowDialog()
-            ShowToast("✅ Payroll generated!", Color.Green)
-
         Catch ex As Exception
             If conn.State = ConnectionState.Open Then conn.Close()
-            ShowToast("❌ Payroll error: " & ex.Message, Color.Red)
         End Try
     End Sub
 
-    ' =========================
-    ' NUMBER FORMATTING
-    ' =========================
-    Private Sub Salary_TextChanged(sender As Object, e As EventArgs) Handles Salary.TextChanged
-        FormatTextboxWithSeparator(Salary)
-    End Sub
-
-    Private Sub Deduction_TextChanged(sender As Object, e As EventArgs) Handles Deduction.TextChanged
-        FormatTextboxWithSeparator(Deduction)
-    End Sub
-
-    Private Sub FormatTextboxWithSeparator(tb As TextBox)
-        If String.IsNullOrEmpty(tb.Text) Then Exit Sub
-        Dim value As String = tb.Text.Replace(",", "")
-        Dim number As Decimal
-        If Decimal.TryParse(value, number) Then
-            tb.Text = number.ToString("N0")
-            tb.SelectionStart = tb.Text.Length
-        End If
-    End Sub
-
-    Private Function FormatNumberForTextbox(value As Decimal) As String
-        Return value.ToString("N0")
-    End Function
-
-    ' =========================
-    ' TOAST MESSAGE
-    ' =========================
-    Private Async Sub ShowToast(msg As String, bg As Color)
-        Dim p As New Panel With {.Size = New Size(360, 45), .BackColor = bg,
-            .Location = New Point(Me.Width - 380, 10)}
-        Dim l As New Label With {.Text = msg, .Dock = DockStyle.Fill,
-            .ForeColor = Color.White, .Font = New Font("Segoe UI", 10, FontStyle.Bold),
-            .TextAlign = ContentAlignment.MiddleLeft, .Padding = New Padding(10, 0, 0, 0)}
-        p.Controls.Add(l)
-        Me.Controls.Add(p)
-        Await Task.Delay(3000)
-        Me.Controls.Remove(p)
-    End Sub
-
-    ' =========================
-    ' DEDUCTION BUTTON
-    ' =========================
     Private Sub deductionbtn_Click(sender As Object, e As EventArgs) Handles deductionbtn.Click
         Using d As New Deduction()
             If d.ShowDialog() = DialogResult.OK Then
-                Deduction.Text = d.TotalDeduction.ToString("N0")
-
+                ' Dito sinisigurado na mapupunta sa Listbox ang lahat ng deductions (SSS, Pag-ibig, etc)
+                Deduction.Text = d.TotalDeduction.ToString("N2")
                 Listofdeduction.Items.Clear()
-                deductionDetails.Clear()
-
                 For Each item In d.DeductionDetails
                     Listofdeduction.Items.Add(item)
-                    deductionDetails.Add(item) ' ← STORE FOR PAYSLIP
                 Next
             End If
         End Using
     End Sub
 
-    ' =========================
-    ' SELECT DEDUCTION ITEM
-    ' =========================
-    Private Sub Listofdeduction_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Listofdeduction.SelectedIndexChanged
-        If Listofdeduction.SelectedIndex <> -1 Then
-            MessageBox.Show(Listofdeduction.SelectedItem.ToString(),
-                            "Deduction Detail",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information)
+    Private Sub Pay_Click(sender As Object, e As EventArgs) Handles Pay.Click
+        If employee.SelectedIndex = -1 Then
+            ShowToast("⚠ Select employee first", Color.Orange)
+            Exit Sub
         End If
+
+        Try
+            Dim empName As String = employee.SelectedItem.ToString()
+
+            ' KUKUNIN DITO ANG POSITION MULA SA DATATABLE
+            Dim row = employeesTable.Select("fullname='" & empName.Replace("'", "''") & "'").FirstOrDefault()
+            Dim empPos As String = "Staff" ' Default value
+
+            If row IsNot Nothing Then
+                empPos = row("job_position").ToString()
+            End If
+
+            Dim period As String = Month.Value.ToString("MMMM") & " " & Year.SelectedItem.ToString()
+            Dim presDays As Integer = If(String.IsNullOrEmpty(Present.Text), 0, Integer.Parse(Present.Text))
+            Dim grossSalary As Decimal = Decimal.Parse(Salary.Text)
+            Dim totalDeductions As Decimal = If(String.IsNullOrEmpty(Deduction.Text), 0, Decimal.Parse(Deduction.Text))
+            Dim netSal As Decimal = grossSalary - totalDeductions
+
+            Dim subjectsBreakdown As New List(Of String)
+            For Each chk In UnitSelectors
+                If chk.Checked Then
+                    Dim data = chk.Tag
+                    Dim unitName As String = chk.Text.Split({Environment.NewLine}, StringSplitOptions.None)(0)
+                    subjectsBreakdown.Add(data.Subject & " (" & unitName & ") - ₱" & DirectCast(data.Value, Decimal).ToString("N2"))
+                End If
+            Next
+
+            Dim deductionList As New List(Of String)
+            For Each item In Listofdeduction.Items
+                deductionList.Add(item.ToString())
+            Next
+
+            ' Ipasa ang empPos na nakuha sa database
+            Dim frmPayslip As New Payslip(empName, empPos, period, presDays, grossSalary, totalDeductions, netSal, deductionList, subjectsBreakdown)
+            frmPayslip.Show()
+
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message)
+        End Try
     End Sub
 
+    Private Async Sub ShowToast(msg As String, bg As Color)
+        Dim p As New Panel With {.Size = New Size(300, 50), .BackColor = bg, .Location = New Point(Me.Width - 320, 20)}
+        Dim l As New Label With {.Text = msg, .Dock = DockStyle.Fill, .ForeColor = Color.White, .Font = New Font("Segoe UI", 9, FontStyle.Bold), .TextAlign = ContentAlignment.MiddleCenter}
+        p.Controls.Add(l)
+        Me.Controls.Add(p)
+        p.BringToFront()
+        Await Task.Delay(2000)
+        Me.Controls.Remove(p)
+    End Sub
 End Class

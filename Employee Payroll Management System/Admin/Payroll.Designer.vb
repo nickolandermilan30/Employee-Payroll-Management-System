@@ -63,6 +63,8 @@ Partial Class Payroll
         Label10 = New Label()
         deductionbtn = New Button()
         Listofdeduction = New ListBox()
+        Units = New Panel()
+        lblSemester = New Label()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
@@ -549,11 +551,34 @@ Partial Class Payroll
         Listofdeduction.Size = New Size(160, 75)
         Listofdeduction.TabIndex = 42
         ' 
+        ' Units
+        ' 
+        Units.Anchor = AnchorStyles.Top
+        Units.Location = New Point(67, 636)
+        Units.Name = "Units"
+        Units.Size = New Size(787, 226)
+        Units.TabIndex = 43
+        ' 
+        ' lblSemester
+        ' 
+        lblSemester.Anchor = AnchorStyles.Top
+        lblSemester.AutoSize = True
+        lblSemester.BackColor = SystemColors.Control
+        lblSemester.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
+        lblSemester.ForeColor = SystemColors.ControlDarkDark
+        lblSemester.Location = New Point(67, 598)
+        lblSemester.Name = "lblSemester"
+        lblSemester.Size = New Size(0, 19)
+        lblSemester.TabIndex = 44
+        lblSemester.TextAlign = ContentAlignment.TopCenter
+        ' 
         ' Payroll
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1092, 684)
+        ClientSize = New Size(1092, 890)
+        Controls.Add(lblSemester)
+        Controls.Add(Units)
         Controls.Add(Listofdeduction)
         Controls.Add(deductionbtn)
         Controls.Add(Label10)
@@ -643,4 +668,6 @@ Partial Class Payroll
     Friend WithEvents Label10 As Label
     Friend WithEvents deductionbtn As Button
     Friend WithEvents Listofdeduction As ListBox
+    Friend WithEvents Units As Panel
+    Friend WithEvents lblSemester As Label
 End Class

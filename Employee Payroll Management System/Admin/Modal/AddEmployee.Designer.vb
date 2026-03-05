@@ -31,6 +31,8 @@ Partial Class AddEmployee
         fullname = New TextBox()
         Label3 = New Label()
         Panel2 = New Panel()
+        Label17 = New Label()
+        age = New TextBox()
         ComboBox1 = New ComboBox()
         Label7 = New Label()
         birthday = New DateTimePicker()
@@ -59,19 +61,25 @@ Partial Class AddEmployee
         salary = New TextBox()
         Label12 = New Label()
         position = New TextBox()
+        Panel5 = New Panel()
+        btnAddUnit = New Button()
+        semester = New ComboBox()
+        Label18 = New Label()
+        Tableperunit = New Panel()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
         Panel2.SuspendLayout()
         Panel3.SuspendLayout()
         Panel4.SuspendLayout()
+        Panel5.SuspendLayout()
         SuspendLayout()
         ' 
         ' PictureBox1
         ' 
         PictureBox1.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
-        PictureBox1.Location = New Point(0, -3)
+        PictureBox1.Location = New Point(-1, -3)
         PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(664, 58)
+        PictureBox1.Size = New Size(1295, 58)
         PictureBox1.TabIndex = 0
         PictureBox1.TabStop = False
         ' 
@@ -117,7 +125,7 @@ Partial Class AddEmployee
         Panel1.Controls.Add(close)
         Panel1.Font = New Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Panel1.ForeColor = SystemColors.Control
-        Panel1.Location = New Point(546, 9)
+        Panel1.Location = New Point(1175, 9)
         Panel1.Name = "Panel1"
         Panel1.Size = New Size(101, 35)
         Panel1.TabIndex = 7
@@ -125,7 +133,7 @@ Partial Class AddEmployee
         ' fullname
         ' 
         fullname.BorderStyle = BorderStyle.FixedSingle
-        fullname.Location = New Point(18, 74)
+        fullname.Location = New Point(18, 63)
         fullname.Name = "fullname"
         fullname.Size = New Size(249, 23)
         fullname.TabIndex = 8
@@ -145,6 +153,8 @@ Partial Class AddEmployee
         ' Panel2
         ' 
         Panel2.BorderStyle = BorderStyle.FixedSingle
+        Panel2.Controls.Add(Label17)
+        Panel2.Controls.Add(age)
         Panel2.Controls.Add(ComboBox1)
         Panel2.Controls.Add(Label7)
         Panel2.Controls.Add(birthday)
@@ -155,13 +165,33 @@ Partial Class AddEmployee
         Panel2.Controls.Add(fullname)
         Panel2.Location = New Point(39, 99)
         Panel2.Name = "Panel2"
-        Panel2.Size = New Size(574, 222)
+        Panel2.Size = New Size(574, 241)
         Panel2.TabIndex = 11
+        ' 
+        ' Label17
+        ' 
+        Label17.AutoSize = True
+        Label17.BackColor = SystemColors.Control
+        Label17.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label17.ForeColor = Color.Black
+        Label17.Location = New Point(19, 169)
+        Label17.Name = "Label17"
+        Label17.Size = New Size(34, 16)
+        Label17.TabIndex = 22
+        Label17.Text = "Age"
+        ' 
+        ' age
+        ' 
+        age.BorderStyle = BorderStyle.FixedSingle
+        age.Location = New Point(19, 188)
+        age.Name = "age"
+        age.Size = New Size(113, 23)
+        age.TabIndex = 21
         ' 
         ' ComboBox1
         ' 
         ComboBox1.FormattingEnabled = True
-        ComboBox1.Location = New Point(320, 150)
+        ComboBox1.Location = New Point(320, 133)
         ComboBox1.Name = "ComboBox1"
         ComboBox1.Size = New Size(222, 23)
         ComboBox1.TabIndex = 20
@@ -172,7 +202,7 @@ Partial Class AddEmployee
         Label7.BackColor = SystemColors.Control
         Label7.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label7.ForeColor = Color.Black
-        Label7.Location = New Point(320, 131)
+        Label7.Location = New Point(320, 114)
         Label7.Name = "Label7"
         Label7.Size = New Size(35, 16)
         Label7.TabIndex = 19
@@ -180,7 +210,7 @@ Partial Class AddEmployee
         ' 
         ' birthday
         ' 
-        birthday.Location = New Point(18, 150)
+        birthday.Location = New Point(18, 130)
         birthday.Name = "birthday"
         birthday.Size = New Size(249, 23)
         birthday.TabIndex = 17
@@ -191,7 +221,7 @@ Partial Class AddEmployee
         Label6.BackColor = SystemColors.Control
         Label6.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label6.ForeColor = Color.Black
-        Label6.Location = New Point(18, 131)
+        Label6.Location = New Point(18, 111)
         Label6.Name = "Label6"
         Label6.Size = New Size(62, 16)
         Label6.TabIndex = 16
@@ -203,7 +233,7 @@ Partial Class AddEmployee
         Label5.BackColor = SystemColors.Control
         Label5.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label5.ForeColor = Color.Black
-        Label5.Location = New Point(320, 55)
+        Label5.Location = New Point(320, 44)
         Label5.Name = "Label5"
         Label5.Size = New Size(43, 16)
         Label5.TabIndex = 14
@@ -212,7 +242,7 @@ Partial Class AddEmployee
         ' email
         ' 
         email.BorderStyle = BorderStyle.FixedSingle
-        email.Location = New Point(320, 74)
+        email.Location = New Point(320, 63)
         email.Name = "email"
         email.Size = New Size(222, 23)
         email.TabIndex = 13
@@ -223,7 +253,7 @@ Partial Class AddEmployee
         Label4.BackColor = SystemColors.Control
         Label4.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label4.ForeColor = Color.Black
-        Label4.Location = New Point(18, 55)
+        Label4.Location = New Point(18, 44)
         Label4.Name = "Label4"
         Label4.Size = New Size(66, 16)
         Label4.TabIndex = 12
@@ -316,6 +346,7 @@ Partial Class AddEmployee
         Passwordemployee.Name = "Passwordemployee"
         Passwordemployee.Size = New Size(249, 23)
         Passwordemployee.TabIndex = 27
+        Passwordemployee.UseSystemPasswordChar = True
         ' 
         ' Label15
         ' 
@@ -464,16 +495,70 @@ Partial Class AddEmployee
         position.Size = New Size(249, 23)
         position.TabIndex = 8
         ' 
+        ' Panel5
+        ' 
+        Panel5.BorderStyle = BorderStyle.FixedSingle
+        Panel5.Controls.Add(btnAddUnit)
+        Panel5.Controls.Add(semester)
+        Panel5.Controls.Add(Label18)
+        Panel5.Controls.Add(Tableperunit)
+        Panel5.Location = New Point(637, 99)
+        Panel5.Name = "Panel5"
+        Panel5.Size = New Size(626, 618)
+        Panel5.TabIndex = 32
+        ' 
+        ' btnAddUnit
+        ' 
+        btnAddUnit.Anchor = AnchorStyles.Bottom
+        btnAddUnit.BackColor = Color.DeepSkyBlue
+        btnAddUnit.FlatStyle = FlatStyle.Flat
+        btnAddUnit.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        btnAddUnit.ForeColor = Color.White
+        btnAddUnit.Location = New Point(453, 16)
+        btnAddUnit.Name = "btnAddUnit"
+        btnAddUnit.Size = New Size(144, 36)
+        btnAddUnit.TabIndex = 38
+        btnAddUnit.Text = "Add"
+        btnAddUnit.UseVisualStyleBackColor = False
+        ' 
+        ' semester
+        ' 
+        semester.FormattingEnabled = True
+        semester.Location = New Point(83, 29)
+        semester.Name = "semester"
+        semester.Size = New Size(346, 23)
+        semester.TabIndex = 23
+        ' 
+        ' Label18
+        ' 
+        Label18.AutoSize = True
+        Label18.BackColor = SystemColors.Control
+        Label18.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label18.ForeColor = Color.Black
+        Label18.Location = New Point(12, 32)
+        Label18.Name = "Label18"
+        Label18.Size = New Size(65, 16)
+        Label18.TabIndex = 22
+        Label18.Text = "Semester"
+        ' 
+        ' Tableperunit
+        ' 
+        Tableperunit.Location = New Point(12, 64)
+        Tableperunit.Name = "Tableperunit"
+        Tableperunit.Size = New Size(585, 541)
+        Tableperunit.TabIndex = 0
+        ' 
         ' AddEmployee
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(659, 763)
+        ClientSize = New Size(1288, 763)
+        Controls.Add(Panel1)
+        Controls.Add(Panel5)
         Controls.Add(Label8)
         Controls.Add(Panel3)
         Controls.Add(Label3)
         Controls.Add(Panel2)
-        Controls.Add(Panel1)
         Controls.Add(Label2)
         Controls.Add(Label1)
         Controls.Add(PictureBox1)
@@ -487,6 +572,8 @@ Partial Class AddEmployee
         Panel3.ResumeLayout(False)
         Panel3.PerformLayout()
         Panel4.ResumeLayout(False)
+        Panel5.ResumeLayout(False)
+        Panel5.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -527,4 +614,11 @@ Partial Class AddEmployee
     Friend WithEvents showpassword As CheckBox
     Friend WithEvents Status As ComboBox
     Friend WithEvents Label16 As Label
+    Friend WithEvents Label17 As Label
+    Friend WithEvents age As TextBox
+    Friend WithEvents Panel5 As Panel
+    Friend WithEvents semester As ComboBox
+    Friend WithEvents Label18 As Label
+    Friend WithEvents Tableperunit As Panel
+    Friend WithEvents btnAddUnit As Button
 End Class

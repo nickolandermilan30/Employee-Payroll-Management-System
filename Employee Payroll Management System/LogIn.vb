@@ -157,7 +157,6 @@ Public Class LogIn
                 Using readerEmp = cmdEmp.ExecuteReader()
                     If readerEmp.Read() Then
 
-
                         If readerEmp("status").ToString() = "Inactive" Then
                             MessageBox.Show("Your account is inactive. Please contact admin.",
                                             "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning)
@@ -187,8 +186,7 @@ Public Class LogIn
                             Return
                         End If
                     Else
-                        MessageBox.Show("Email not found.", "Login Failed",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        ' Email not found in both tables
                         HandleFailedAttempt()
                     End If
 
@@ -209,30 +207,24 @@ Public Class LogIn
         failedAttempts += 1
 
         If failedAttempts >= 3 Then
-            lockoutAttempts += 1
+            ' Reset counter para sa susunod na batch ng attempts
             failedAttempts = 0
 
-            If lockoutAttempts >= 3 Then
-                MessageBox.Show("Too many failed attempts. System will close.",
-                                "System Lockout", MessageBoxButtons.OK, MessageBoxIcon.Stop)
-                Application.Exit()
-            Else
-                cooldownSeconds = 15
-                Timer.Text = "Cooldown: " & cooldownSeconds & "s"
-                TimerLogin.Enabled = True
+            MessageBox.Show("Incorrect login 3 times. If you forgot your email, please use the Security Recovery.",
+                            "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-                Signin.Enabled = False
-                Email.Enabled = False
-                Password.Enabled = False
-            End If
+            ' DIDIREKTA NA SA FORGOT EMAIL FORM
+            Dim forgotForm As New ForgotEmail()
+            forgotForm.Show()
+            Me.Hide()
         Else
-            MessageBox.Show("Incorrect email or password.", "Login Failed",
+            MessageBox.Show("Incorrect email or password. Attempt: " & failedAttempts & "/3", "Login Failed",
                             MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
     ' =========================
-    ' TIMER TICK
+    ' TIMER TICK (Para sa cooldown kung kailangan pa)
     ' =========================
     Private Sub TimerLogin_Tick(sender As Object, e As EventArgs) Handles TimerLogin.Tick
         cooldownSeconds -= 1
@@ -272,10 +264,5 @@ Public Class LogIn
         Me.Hide()
     End Sub
 
-    Private Sub Forgotemail_Click(sender As Object, e As EventArgs) Handles Forgotemail.Click
-        Dim forgotForm As New ForgotEmail()
-        forgotForm.Show()
-        Me.Hide()
-    End Sub
 
 End Class

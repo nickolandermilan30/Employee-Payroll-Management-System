@@ -88,31 +88,42 @@ Public Class Register
     ' =========================
     Private Sub Signup_Click(sender As Object, e As EventArgs) Handles Signup.Click
 
+        ' 1. CHECK KUNG MAY KULANG NA FIELDS
         If Username.Text = "" Or Email.Text = "" Or
-       Password.Text = "" Or confirmpassword.Text = "" Or
-       Phonenumber.Text = "" Or
-       gender.SelectedIndex = -1 Or age.Text = "" Or
-       Question.Text = "" Then
+           Password.Text = "" Or confirmpassword.Text = "" Or
+           Phonenumber.Text = "" Or
+           gender.SelectedIndex = -1 Or age.Text = "" Or
+           Question.Text = "" Then
 
             MessageBox.Show("Please fill up all fields", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
 
+        ' 2. CHECK AGE RESTRICTION (18+)
+        ' Ginagamit natin ang CInt para i-convert ang text sa number para ma-compare natin
+        If CInt(age.Text) < 18 Then
+            MessageBox.Show("Registration Rejected: You must be 18 years old or above to register.", "Age Restriction",
+                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+
+        ' 3. CHECK KUNG MATCH ANG PASSWORD
         If Password.Text <> confirmpassword.Text Then
             MessageBox.Show("Password does not match", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
 
+        ' 4. DATABASE SAVING
         Try
             OpenConnection()
 
             Dim query As String =
-        "INSERT INTO users
-        (username, email, gender, phone_number, birthday, age, password, role, security_answer)
-        VALUES
-        (@username, @email, @gender, @phone, @birthday, @age, @password, 'Admin', @answer)"
+            "INSERT INTO users
+            (username, email, gender, phone_number, birthday, age, password, role, security_answer)
+            VALUES
+            (@username, @email, @gender, @phone, @birthday, @age, @password, 'Admin', @answer)"
 
             Dim cmd As New MySqlCommand(query, Conn)
 
@@ -128,7 +139,7 @@ Public Class Register
             cmd.ExecuteNonQuery()
 
             MessageBox.Show("Registration Successful!", "Success",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
 
             LogIn.Show()
             Me.Close()
@@ -140,7 +151,6 @@ Public Class Register
         End Try
 
     End Sub
-
 
     Private Sub Question_TextChanged(sender As Object, e As EventArgs) Handles Question.TextChanged
         If Question.Text.Length > 255 Then

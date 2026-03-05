@@ -4,283 +4,281 @@ Imports System.Globalization
 
 Public Class AddEmployee
 
+    ' List para i-track ang bawat "Subject Card"
+    Private SubjectRows As New List(Of SubjectRow)
+
+    ' Helper class para sa dynamic rows
+    Private Class SubjectRow
+        Public CardPanel As Panel
+        Public txtSubject As TextBox
+        Public btnAddSalaryUnit As Button
+        Public btnRemoveRow As Button
+        Public SalaryUnitContainer As FlowLayoutPanel
+        Public SalaryUnitCount As Integer = 0
+    End Class
+
     ' =========================
     ' FORM LOAD
     ' =========================
     Private Sub AddEmployee_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.StartPosition = FormStartPosition.CenterScreen
-        Me.KeyPreview = True
+        Me.BackColor = Color.FromArgb(245, 246, 250)
 
-        ' ===== TAB ORDER =====
-        fullname.TabIndex = 0
-        email.TabIndex = 1
-        birthday.TabIndex = 2
-        ComboBox1.TabIndex = 3
-        position.TabIndex = 4
-        salary.TabIndex = 5
-        datehired.TabIndex = 6
-        sex.TabIndex = 7
-        contactnumber.TabIndex = 8
-        Status.TabIndex = 9
-        Passwordemployee.TabIndex = 10
-        showpassword.TabIndex = 11
-        save.TabIndex = 12
-        close.TabIndex = 13
+        salary.ReadOnly = True
+        salary.Text = "0"
+        age.ReadOnly = True
 
-        ' ===== POSITION LEVEL (NOW ONLY REGULAR / EXTRA FACULTIES) =====
-        ComboBox1.Items.Clear()
-        ComboBox1.Items.AddRange(New String() {"Regular", "Extra", "Faculties"})
+        ' Table UI Setup
+        Tableperunit.AutoScroll = True
+        Tableperunit.Controls.Clear()
 
-        ' ===== SEX =====
-        sex.Items.Clear()
-        sex.Items.AddRange(New String() {"Male", "Female", "Other"})
-
-        ' ===== STATUS =====
-        Status.Items.Clear()
-        Status.Items.Add("Active")
-        Status.Items.Add("Inactive")
-        Status.SelectedIndex = 0
-
-        ' ===== NO TYPING IN DROPDOWNS =====
-        ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
-        sex.DropDownStyle = ComboBoxStyle.DropDownList
-        Status.DropDownStyle = ComboBoxStyle.DropDownList
-
-        ' ===== PASSWORD HIDE =====
+        SetupDropdowns()
         Passwordemployee.UseSystemPasswordChar = True
     End Sub
 
-    ' =========================
-    ' CLOSE BUTTON
-    ' =========================
-    Private Sub close_Click(sender As Object, e As EventArgs) Handles close.Click
-        MyBase.Close()
-    End Sub
+    Private Sub SetupDropdowns()
+        semester.Items.Clear()
+        semester.Items.AddRange(New String() {"1st Semester", "2nd Semester"})
+        semester.DropDownStyle = ComboBoxStyle.DropDownList
 
-    ' =========================
-    ' SAVE BUTTON
-    ' =========================
-    ' =========================
-    ' SAVE BUTTON
-    ' =========================
-    Private Sub save_Click(sender As Object, e As EventArgs) Handles save.Click
+        ComboBox1.Items.Clear()
+        ComboBox1.Items.AddRange(New String() {"Regular", "Extra", "Faculties"})
+        ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
 
-        ' ===== BASIC EMPTY CHECK =====
-        If fullname.Text = "" Or email.Text = "" Or position.Text = "" _
-        Or salary.Text = "" Or contactnumber.Text = "" _
-        Or Passwordemployee.Text = "" Or Status.Text = "" Then
+        sex.Items.Clear()
+        sex.Items.AddRange(New String() {"Male", "Female", "Other"})
+        sex.DropDownStyle = ComboBoxStyle.DropDownList
 
-            MessageBox.Show("Please fill up all required fields.",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Exit Sub
-        End If
-
-        ' ===== PASSWORD LENGTH =====
-        If Passwordemployee.Text.Length < 3 Then
-            MessageBox.Show("Password must be at least 3 characters.",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Exit Sub
-        End If
-
-        ' ===== FULLNAME VALIDATION =====
-        If Not Regex.IsMatch(fullname.Text, "^[A-Za-z\s]+$") Then
-            MessageBox.Show("Fullname must only contain letters and spaces.",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            fullname.Focus()
-            Exit Sub
-        End If
-
-        ' ===== POSITION VALIDATION =====
-        If Not Regex.IsMatch(position.Text, "^[A-Za-z\s]+$") Then
-            MessageBox.Show("Position must only contain letters and spaces.",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            position.Focus()
-            Exit Sub
-        End If
-
-        ' ===== CONTACT NUMBER VALIDATION =====
-        If Not Regex.IsMatch(contactnumber.Text, "^\d{10,15}$") Then
-            MessageBox.Show("Contact number must contain only numbers (10-15 digits).",
-                        "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            contactnumber.Focus()
-            Exit Sub
-        End If
-
-        Try
-            OpenConnection()
-
-            ' =========================
-            ' CHECK DUPLICATE EMPLOYEE
-            ' =========================
-            Dim checkQuery As String =
-            "SELECT COUNT(*) FROM employees 
-             WHERE fullname = @fullname 
-             OR email = @email 
-             OR contact_number = @contact_number"
-
-            Using checkCmd As New MySqlCommand(checkQuery, Conn)
-                checkCmd.Parameters.AddWithValue("@fullname", fullname.Text.Trim())
-                checkCmd.Parameters.AddWithValue("@email", email.Text.Trim())
-                checkCmd.Parameters.AddWithValue("@contact_number", contactnumber.Text.Trim())
-
-                Dim count As Integer = Convert.ToInt32(checkCmd.ExecuteScalar())
-
-                If count > 0 Then
-                    MessageBox.Show("Employee already exists (Same Fullname, Email or Contact Number).",
-                                "Duplicate Entry",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning)
-                    Exit Sub
-                End If
-            End Using
-
-            ' =========================
-            ' INSERT NEW EMPLOYEE
-            ' =========================
-            Dim insertQuery As String =
-            "INSERT INTO employees
-            (fullname, email, password, birthday, position_level,
-             job_position, salary, date_hired, sex, contact_number, status)
-             VALUES
-            (@fullname, @email, @password, @birthday, @position_level,
-             @job_position, @salary, @date_hired, @sex, @contact_number, @status)"
-
-            Using cmd As New MySqlCommand(insertQuery, Conn)
-                cmd.Parameters.AddWithValue("@fullname", fullname.Text.Trim())
-                cmd.Parameters.AddWithValue("@email", email.Text.Trim())
-                cmd.Parameters.AddWithValue("@password", Passwordemployee.Text)
-                cmd.Parameters.AddWithValue("@birthday", birthday.Value.ToString("yyyy-MM-dd"))
-                cmd.Parameters.AddWithValue("@position_level", ComboBox1.Text)
-                cmd.Parameters.AddWithValue("@job_position", position.Text.Trim())
-                cmd.Parameters.AddWithValue("@salary", Convert.ToDecimal(salary.Text.Replace(",", "")))
-                cmd.Parameters.AddWithValue("@date_hired", datehired.Value.ToString("yyyy-MM-dd"))
-                cmd.Parameters.AddWithValue("@sex", sex.Text)
-                cmd.Parameters.AddWithValue("@contact_number", contactnumber.Text.Trim())
-                cmd.Parameters.AddWithValue("@status", Status.Text)
-
-                cmd.ExecuteNonQuery()
-            End Using
-
-            MessageBox.Show("Employee saved successfully!",
-                        "Success",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information)
-
-            ClearFields()
-
-        Catch ex As Exception
-            MessageBox.Show("Error saving data: " & ex.Message)
-        Finally
-            CloseConnection()
-        End Try
-
-    End Sub
-
-
-    ' =========================
-    ' CLEAR FIELDS
-    ' =========================
-    Private Sub ClearFields()
-        fullname.Clear()
-        email.Clear()
-        position.Clear()
-        salary.Clear()
-        contactnumber.Clear()
-        Passwordemployee.Clear()
-
-        ComboBox1.SelectedIndex = -1
-        sex.SelectedIndex = -1
+        Status.Items.Clear()
+        Status.Items.AddRange(New String() {"Active", "Inactive"})
         Status.SelectedIndex = 0
-        birthday.Value = Date.Now
-        datehired.Value = Date.Now
+        Status.DropDownStyle = ComboBoxStyle.DropDownList
     End Sub
 
-    ' =========================
-    ' SHOW / HIDE PASSWORD
-    ' =========================
-    Private Sub showpassword_CheckedChanged(sender As Object, e As EventArgs) Handles showpassword.CheckedChanged
-        Passwordemployee.UseSystemPasswordChar = Not showpassword.Checked
-    End Sub
-
-    ' =========================
-    ' ENTER KEY BEHAVIOR
-    ' =========================
-    Private Sub Control_EnterAsTab(sender As Object, e As KeyEventArgs) _
-    Handles fullname.KeyDown, email.KeyDown, position.KeyDown,
-            salary.KeyDown, contactnumber.KeyDown, Passwordemployee.KeyDown
-
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-            Me.SelectNextControl(DirectCast(sender, Control), True, True, True, True)
-        End If
-    End Sub
-
-    ' =========================
-    ' DROPDOWN ENTER KEY BEHAVIOR
-    ' =========================
-    Private Sub ComboBox_EnterBehavior(sender As Object, e As KeyEventArgs) _
-    Handles ComboBox1.KeyDown, sex.KeyDown, Status.KeyDown, birthday.KeyDown, datehired.KeyDown
-
-        Dim cb As Control = DirectCast(sender, Control)
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-
-            If TypeOf cb Is ComboBox Then
-                Dim combo As ComboBox = CType(cb, ComboBox)
-                If Not combo.DroppedDown Then
-                    combo.DroppedDown = True
-                Else
-                    Me.SelectNextControl(cb, True, True, True, True)
-                End If
-            Else
-                Me.SelectNextControl(cb, True, True, True, True)
-            End If
-        End If
-    End Sub
-
-    ' =========================
-    ' REAL-TIME INPUT VALIDATION
-    ' =========================
-    Private Sub fullname_KeyPress(sender As Object, e As KeyPressEventArgs) Handles fullname.KeyPress
-        If Not Char.IsLetter(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) AndAlso Not Char.IsWhiteSpace(e.KeyChar) Then
-            e.Handled = True
-        End If
-    End Sub
-
-    Private Sub position_KeyPress(sender As Object, e As KeyPressEventArgs) Handles position.KeyPress
-        If Not Char.IsLetter(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) AndAlso Not Char.IsWhiteSpace(e.KeyChar) Then
-            e.Handled = True
-        End If
-    End Sub
-
+    ' Validation: Numbers only for contact number
     Private Sub contactnumber_KeyPress(sender As Object, e As KeyPressEventArgs) Handles contactnumber.KeyPress
         If Not Char.IsDigit(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) Then
             e.Handled = True
         End If
     End Sub
 
-    ' =========================
-    ' SALARY KEY PRESS + AUTO FORMAT
-    ' =========================
-    Private Sub salary_KeyPress(sender As Object, e As KeyPressEventArgs) Handles salary.KeyPress
-        ' Allow digits and control keys only
-        If Not Char.IsDigit(e.KeyChar) AndAlso Not Char.IsControl(e.KeyChar) Then
-            e.Handled = True
-        End If
+    ' Show/Hide Password
+    Private Sub showpassword_CheckedChanged(sender As Object, e As EventArgs) Handles showpassword.CheckedChanged
+        Passwordemployee.UseSystemPasswordChar = Not showpassword.Checked
     End Sub
 
-    Private Sub salary_TextChanged(sender As Object, e As EventArgs) Handles salary.TextChanged
-        If String.IsNullOrEmpty(salary.Text) Then Exit Sub
-
-        Dim selStart As Integer = salary.SelectionStart
-
-        ' Remove commas and format
-        Dim value As String = salary.Text.Replace(",", "")
-        Dim number As Decimal
-        If Decimal.TryParse(value, number) Then
-            salary.Text = String.Format(CultureInfo.InvariantCulture, "{0:N0}", number)
-            salary.SelectionStart = Math.Min(selStart + 1, salary.Text.Length)
-        End If
+    ' Age Calculation
+    Private Sub birthday_ValueChanged(sender As Object, e As EventArgs) Handles birthday.ValueChanged
+        Dim birthDate As DateTime = birthday.Value
+        Dim today As DateTime = DateTime.Today
+        Dim calculatedAge As Integer = today.Year - birthDate.Year
+        If birthDate > today.AddYears(-calculatedAge) Then calculatedAge -= 1
+        age.Text = If(calculatedAge < 0, "0", calculatedAge.ToString())
     End Sub
 
+    ' =========================
+    ' DYNAMIC SUBJECTS LOGIC
+    ' =========================
+    Private Sub btnAddUnit_Click(sender As Object, e As EventArgs) Handles btnAddUnit.Click
+        If semester.SelectedIndex = -1 Then
+            MessageBox.Show("Please select a Semester first!", "Required", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        Dim newRow As New SubjectRow()
+        newRow.CardPanel = New Panel With {
+            .Size = New Size(Tableperunit.Width - 25, 150),
+            .BackColor = Color.White,
+            .BorderStyle = BorderStyle.FixedSingle,
+            .Dock = DockStyle.Top,
+            .Padding = New Padding(10),
+            .Margin = New Padding(0, 0, 0, 10)
+        }
+
+        Dim lblSubTitle As New Label With {.Text = "SUBJECT NAME:", .Font = New Font("Segoe UI", 8, FontStyle.Bold), .Location = New Point(10, 5), .AutoSize = True}
+        newRow.txtSubject = New TextBox With {.Width = 250, .Location = New Point(10, 25), .PlaceholderText = "Enter Subject (e.g. English)"}
+
+        newRow.btnAddSalaryUnit = New Button With {
+            .Text = "+ Add Unit", .Size = New Size(100, 28), .Location = New Point(270, 23),
+            .BackColor = Color.SeaGreen, .ForeColor = Color.White, .FlatStyle = FlatStyle.Flat
+        }
+        AddHandler newRow.btnAddSalaryUnit.Click, Sub() AddSalaryUnitInput(newRow)
+
+        newRow.btnRemoveRow = New Button With {
+            .Text = "Remove Subject", .Size = New Size(110, 28), .Location = New Point(newRow.CardPanel.Width - 120, 5),
+            .BackColor = Color.IndianRed, .ForeColor = Color.White, .FlatStyle = FlatStyle.Flat
+        }
+        AddHandler newRow.btnRemoveRow.Click, Sub()
+                                                  Tableperunit.Controls.Remove(newRow.CardPanel)
+                                                  SubjectRows.Remove(newRow)
+                                                  CalculateTotalSalary()
+                                              End Sub
+
+        newRow.SalaryUnitContainer = New FlowLayoutPanel With {.Size = New Size(newRow.CardPanel.Width - 20, 75), .Location = New Point(10, 60), .AutoScroll = True, .BackColor = Color.WhiteSmoke}
+
+        AddSalaryUnitInput(newRow)
+
+        newRow.CardPanel.Controls.AddRange({lblSubTitle, newRow.txtSubject, newRow.btnAddSalaryUnit, newRow.btnRemoveRow, newRow.SalaryUnitContainer})
+        Tableperunit.Controls.Add(newRow.CardPanel)
+        newRow.CardPanel.BringToFront()
+        SubjectRows.Add(newRow)
+    End Sub
+
+    Private Sub AddSalaryUnitInput(row As SubjectRow)
+        If row.SalaryUnitCount >= 10 Then Return
+
+        Dim unitWrapper As New FlowLayoutPanel With {.FlowDirection = FlowDirection.TopDown, .Size = New Size(85, 55), .Margin = New Padding(3)}
+        Dim lblUnit As New Label With {.Text = "Unit " & (row.SalaryUnitCount + 1), .Font = New Font("Segoe UI", 7, FontStyle.Bold), .AutoSize = True}
+        Dim txtUnit As New TextBox With {.Width = 75, .Text = "0", .TextAlign = HorizontalAlignment.Center}
+
+        AddHandler txtUnit.KeyPress, Sub(s, ev)
+                                         If Not Char.IsDigit(ev.KeyChar) AndAlso Not Char.IsControl(ev.KeyChar) Then ev.Handled = True
+                                     End Sub
+
+        AddHandler txtUnit.TextChanged, AddressOf DynamicSalary_Format
+
+        unitWrapper.Controls.Add(lblUnit)
+        unitWrapper.Controls.Add(txtUnit)
+        row.SalaryUnitContainer.Controls.Add(unitWrapper)
+        row.SalaryUnitCount += 1
+    End Sub
+
+    Private Sub DynamicSalary_Format(sender As Object, e As EventArgs)
+        Dim tb = DirectCast(sender, TextBox)
+        If String.IsNullOrEmpty(tb.Text) Then Return
+        RemoveHandler tb.TextChanged, AddressOf DynamicSalary_Format
+        Dim val As Decimal
+        If Decimal.TryParse(tb.Text.Replace(",", ""), val) Then
+            tb.Text = String.Format("{0:N0}", val)
+            tb.SelectionStart = tb.Text.Length
+        End If
+        AddHandler tb.TextChanged, AddressOf DynamicSalary_Format
+        CalculateTotalSalary()
+    End Sub
+
+    Private Sub CalculateTotalSalary()
+        Dim total As Decimal = 0
+        For Each row In SubjectRows
+            For Each wrapper As Control In row.SalaryUnitContainer.Controls
+                For Each ctrl In wrapper.Controls
+                    If TypeOf ctrl Is TextBox Then
+                        Dim v As Decimal
+                        If Decimal.TryParse(DirectCast(ctrl, TextBox).Text.Replace(",", ""), v) Then total += v
+                    End If
+                Next
+            Next
+        Next
+        salary.Text = String.Format("{0:N0}", total)
+    End Sub
+
+    ' =========================
+    ' SAVE TO DATABASE
+    ' =========================
+    Private Sub save_Click(sender As Object, e As EventArgs) Handles save.Click
+        If semester.SelectedIndex = -1 Then
+            MessageBox.Show("Please select a Semester!", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        If SubjectRows.Count = 0 Then
+            MessageBox.Show("Please add at least one Subject!", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+
+        ' Paghahanda ng data para sa isang row lang sa database
+        Dim allSubjectNames As New List(Of String)
+        Dim allUnitCounts As New List(Of String)
+        Dim allSalariesRaw As New List(Of String)
+        Dim grandTotalUnits As Integer = 0
+
+        For Each row In SubjectRows
+            If String.IsNullOrWhiteSpace(row.txtSubject.Text) Then
+                MessageBox.Show("Please fill all subject names.")
+                Return
+            End If
+
+            allSubjectNames.Add(row.txtSubject.Text.Trim())
+            allUnitCounts.Add(row.SalaryUnitCount.ToString())
+            grandTotalUnits += row.SalaryUnitCount
+
+            Dim currentSubSalaries As New List(Of String)
+            For Each wrapper As Control In row.SalaryUnitContainer.Controls
+                For Each ctrl In wrapper.Controls
+                    If TypeOf ctrl Is TextBox Then
+                        currentSubSalaries.Add(DirectCast(ctrl, TextBox).Text.Replace(",", ""))
+                    End If
+                Next
+            Next
+            ' I-format ang bawat subject units: (100|200|300)
+            allSalariesRaw.Add("[" & String.Join("|", currentSubSalaries) & "]")
+        Next
+
+        Try
+            OpenConnection()
+            Dim transaction = Conn.BeginTransaction()
+
+            Try
+                ' Dito isasama na natin ang mga bagong columns sa employees table
+                Dim empQuery = "INSERT INTO employees (fullname, email, password, birthday, age, position_level, job_position, " &
+                               "salary, date_hired, sex, contact_number, status, semester, " &
+                               "subject_names, unit_counts, unit_salaries_breakdown, total_units_overall) " &
+                               "VALUES (@fn, @em, @pw, @bd, @age, @pl, @jp, @sal, @dh, @sex, @cn, @st, @sem, @sn, @uc, @usb, @tuo)"
+
+                Dim totalSalVal As Decimal = Decimal.Parse(salary.Text.Replace(",", ""))
+
+                Using cmd As New MySqlCommand(empQuery, Conn, transaction)
+                    cmd.Parameters.AddWithValue("@fn", fullname.Text.Trim)
+                    cmd.Parameters.AddWithValue("@em", email.Text.Trim)
+                    cmd.Parameters.AddWithValue("@pw", Passwordemployee.Text)
+                    cmd.Parameters.AddWithValue("@bd", birthday.Value.ToString("yyyy-MM-dd"))
+                    cmd.Parameters.AddWithValue("@age", age.Text)
+                    cmd.Parameters.AddWithValue("@pl", ComboBox1.Text)
+                    cmd.Parameters.AddWithValue("@jp", position.Text.Trim)
+                    cmd.Parameters.AddWithValue("@sal", totalSalVal)
+                    cmd.Parameters.AddWithValue("@dh", datehired.Value.ToString("yyyy-MM-dd"))
+                    cmd.Parameters.AddWithValue("@sex", sex.Text)
+                    cmd.Parameters.AddWithValue("@cn", contactnumber.Text.Trim)
+                    cmd.Parameters.AddWithValue("@st", Status.Text)
+                    cmd.Parameters.AddWithValue("@sem", semester.Text)
+
+                    ' Mga bagong parameters
+                    cmd.Parameters.AddWithValue("@sn", String.Join(", ", allSubjectNames))
+                    cmd.Parameters.AddWithValue("@uc", String.Join(", ", allUnitCounts))
+                    cmd.Parameters.AddWithValue("@usb", String.Join(" ; ", allSalariesRaw))
+                    cmd.Parameters.AddWithValue("@tuo", grandTotalUnits)
+
+                    cmd.ExecuteNonQuery()
+                End Using
+
+                transaction.Commit()
+                MessageBox.Show("Employee and Subject Data Successfully Saved to Main Table!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                ClearFields()
+
+            Catch ex As Exception
+                transaction.Rollback()
+                MessageBox.Show("Error during saving: " & ex.Message)
+            End Try
+
+        Catch ex As Exception
+            MessageBox.Show("Connection Error: " & ex.Message)
+        Finally
+            CloseConnection()
+        End Try
+    End Sub
+
+    Private Sub ClearFields()
+        fullname.Clear() : email.Clear() : Passwordemployee.Clear() : position.Clear() : contactnumber.Clear()
+        salary.Text = "0" : age.Clear()
+        SubjectRows.Clear()
+        Tableperunit.Controls.Clear()
+        semester.SelectedIndex = -1
+    End Sub
+
+    Private Sub close_Click(sender As Object, e As EventArgs) Handles close.Click
+        MyBase.Close()
+    End Sub
+
+    Private Sub Tableperunit_Paint(sender As Object, e As PaintEventArgs) Handles Tableperunit.Paint
+
+    End Sub
 End Class
