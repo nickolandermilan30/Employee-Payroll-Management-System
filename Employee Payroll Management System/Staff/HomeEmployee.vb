@@ -243,6 +243,4 @@ Public Class HomeEmployee
             If conn.State = ConnectionState.Open Then conn.Close()
         End Try
     End Sub
-
-
 End Class
