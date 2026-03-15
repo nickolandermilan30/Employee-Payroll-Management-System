@@ -62,4 +62,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="My Project\NewFolder1\" />
+    <Folder Include="My Project\NewFolder\" />
+    <Folder Include="Test\" />
+  </ItemGroup>
+
 </Project>
