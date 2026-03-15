@@ -32,9 +32,7 @@ Partial Class AttendanceChecker
         Panel4 = New Panel()
         monthofdate = New DateTimePicker()
         Label10 = New Label()
-        checkout = New ComboBox()
         Label12 = New Label()
-        checkin = New ComboBox()
         Label5 = New Label()
         Label6 = New Label()
         PictureBox5 = New PictureBox()
@@ -59,6 +57,8 @@ Partial Class AttendanceChecker
         Label7 = New Label()
         PictureBox2 = New PictureBox()
         save = New Button()
+        timein = New DateTimePicker()
+        timeout = New DateTimePicker()
         Panel4.SuspendLayout()
         CType(PictureBox5, ComponentModel.ISupportInitialize).BeginInit()
         Panel7.SuspendLayout()
@@ -77,7 +77,7 @@ Partial Class AttendanceChecker
         ' 
         Notification.Anchor = AnchorStyles.Top
         Notification.BackColor = Color.FromArgb(CByte(208), CByte(39), CByte(82))
-        Notification.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Notification.Font = New Font("Segoe UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Notification.ForeColor = SystemColors.Window
         Notification.Image = CType(resources.GetObject("Notification.Image"), Image)
         Notification.Location = New Point(344, 133)
@@ -105,7 +105,7 @@ Partial Class AttendanceChecker
         Label2.Anchor = AnchorStyles.Top
         Label2.AutoSize = True
         Label2.BackColor = SystemColors.Control
-        Label2.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
+        Label2.Font = New Font("Century Gothic", 12.0F, FontStyle.Bold)
         Label2.ForeColor = SystemColors.ControlDarkDark
         Label2.Location = New Point(51, 84)
         Label2.Name = "Label2"
@@ -148,11 +148,11 @@ Partial Class AttendanceChecker
         ' 
         Panel4.Anchor = AnchorStyles.Top
         Panel4.BackColor = Color.FromArgb(CByte(41), CByte(99), CByte(116))
+        Panel4.Controls.Add(timeout)
+        Panel4.Controls.Add(timein)
         Panel4.Controls.Add(monthofdate)
         Panel4.Controls.Add(Label10)
-        Panel4.Controls.Add(checkout)
         Panel4.Controls.Add(Label12)
-        Panel4.Controls.Add(checkin)
         Panel4.Controls.Add(Label5)
         Panel4.Controls.Add(Label6)
         Panel4.Controls.Add(PictureBox5)
@@ -183,15 +183,6 @@ Partial Class AttendanceChecker
         Label10.Text = "Check Out Time"
         Label10.TextAlign = ContentAlignment.TopCenter
         ' 
-        ' checkout
-        ' 
-        checkout.Anchor = AnchorStyles.Top
-        checkout.FormattingEnabled = True
-        checkout.Location = New Point(169, 140)
-        checkout.Name = "checkout"
-        checkout.Size = New Size(143, 23)
-        checkout.TabIndex = 19
-        ' 
         ' Label12
         ' 
         Label12.Anchor = AnchorStyles.Top
@@ -205,15 +196,6 @@ Partial Class AttendanceChecker
         Label12.TabIndex = 18
         Label12.Text = "Check in Time"
         Label12.TextAlign = ContentAlignment.TopCenter
-        ' 
-        ' checkin
-        ' 
-        checkin.Anchor = AnchorStyles.Top
-        checkin.FormattingEnabled = True
-        checkin.Location = New Point(36, 140)
-        checkin.Name = "checkin"
-        checkin.Size = New Size(121, 23)
-        checkin.TabIndex = 17
         ' 
         ' Label5
         ' 
@@ -234,7 +216,7 @@ Partial Class AttendanceChecker
         Label6.Anchor = AnchorStyles.Top
         Label6.AutoSize = True
         Label6.BackColor = Color.Transparent
-        Label6.Font = New Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label6.Font = New Font("Century Gothic", 12.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label6.ForeColor = Color.White
         Label6.Location = New Point(45, 22)
         Label6.Name = "Label6"
@@ -280,7 +262,7 @@ Partial Class AttendanceChecker
         Label19.Anchor = AnchorStyles.Top
         Label19.AutoSize = True
         Label19.BackColor = Color.Transparent
-        Label19.Font = New Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label19.Font = New Font("Century Gothic", 12.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label19.ForeColor = Color.White
         Label19.Location = New Point(45, 22)
         Label19.Name = "Label19"
@@ -331,7 +313,7 @@ Partial Class AttendanceChecker
         Label9.Anchor = AnchorStyles.Top
         Label9.AutoSize = True
         Label9.BackColor = Color.Transparent
-        Label9.Font = New Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label9.Font = New Font("Century Gothic", 12.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label9.ForeColor = Color.White
         Label9.Location = New Point(15, 41)
         Label9.Name = "Label9"
@@ -382,7 +364,7 @@ Partial Class AttendanceChecker
         Label11.Anchor = AnchorStyles.Top
         Label11.AutoSize = True
         Label11.BackColor = Color.Transparent
-        Label11.Font = New Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label11.Font = New Font("Century Gothic", 12.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label11.ForeColor = Color.White
         Label11.Location = New Point(17, 46)
         Label11.Name = "Label11"
@@ -433,7 +415,7 @@ Partial Class AttendanceChecker
         Label4.Anchor = AnchorStyles.Top
         Label4.AutoSize = True
         Label4.BackColor = Color.Transparent
-        Label4.Font = New Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label4.Font = New Font("Century Gothic", 12.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label4.ForeColor = Color.White
         Label4.Location = New Point(17, 46)
         Label4.Name = "Label4"
@@ -484,7 +466,7 @@ Partial Class AttendanceChecker
         Label7.Anchor = AnchorStyles.Top
         Label7.AutoSize = True
         Label7.BackColor = Color.Transparent
-        Label7.Font = New Font("Century Gothic", 12F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label7.Font = New Font("Century Gothic", 12.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label7.ForeColor = Color.White
         Label7.Location = New Point(16, 46)
         Label7.Name = "Label7"
@@ -508,7 +490,7 @@ Partial Class AttendanceChecker
         ' 
         save.Anchor = AnchorStyles.Top
         save.BackColor = Color.FromArgb(CByte(208), CByte(39), CByte(82))
-        save.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        save.Font = New Font("Segoe UI", 12.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         save.ForeColor = Color.White
         save.Image = CType(resources.GetObject("save.Image"), Image)
         save.ImageAlign = ContentAlignment.MiddleLeft
@@ -520,9 +502,23 @@ Partial Class AttendanceChecker
         save.Text = "    Save Attendance"
         save.UseVisualStyleBackColor = False
         ' 
+        ' timein
+        ' 
+        timein.Location = New Point(36, 140)
+        timein.Name = "timein"
+        timein.Size = New Size(122, 23)
+        timein.TabIndex = 22
+        ' 
+        ' timeout
+        ' 
+        timeout.Location = New Point(169, 140)
+        timeout.Name = "timeout"
+        timeout.Size = New Size(122, 23)
+        timeout.TabIndex = 23
+        ' 
         ' AttendanceChecker
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1169, 839)
         Controls.Add(save)
@@ -598,4 +594,7 @@ Partial Class AttendanceChecker
     Friend WithEvents Label7 As Label
     Friend WithEvents PictureBox2 As PictureBox
     Friend WithEvents save As Button
+    Friend WithEvents timeout As DateTimePicker
+    Friend WithEvents timein As DateTimePicker
+
 End Class

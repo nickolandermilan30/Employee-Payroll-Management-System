@@ -57,7 +57,8 @@ Public Class EditEmployee
         semester.DropDownStyle = ComboBoxStyle.DropDownList
 
         ComboBox1.Items.Clear()
-        ComboBox1.Items.AddRange(New String() {"Regular", "Extra", "Faculties"})
+        ' Ginawang "Part-time" ang "Extra" base sa iyong hiling
+        ComboBox1.Items.AddRange(New String() {"Regular", "Part-time", "Faculties"})
         ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
 
         sex.Items.Clear()
@@ -67,6 +68,27 @@ Public Class EditEmployee
         Status.Items.Clear()
         Status.Items.AddRange(New String() {"Active", "Inactive"})
         Status.DropDownStyle = ComboBoxStyle.DropDownList
+    End Sub
+
+    ' =========================
+    ' LOGIC PARA SA PART-TIME SELECTION
+    ' =========================
+    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
+        If ComboBox1.Text = "Part-time" Then
+            ' I-disable ang Semester at Add Unit button
+            semester.SelectedIndex = -1
+            semester.Enabled = False
+            btnAddUnit2.Enabled = False
+
+            ' Linisin ang existing subjects
+            SubjectRows.Clear()
+            Tableperunit.Controls.Clear()
+            salary.Text = "0"
+        Else
+            ' I-enable ulit kung hindi Part-time
+            semester.Enabled = True
+            btnAddUnit2.Enabled = True
+        End If
     End Sub
 
     ' =========================
@@ -88,21 +110,29 @@ Public Class EditEmployee
                         Passwordemployee.Text = reader("password").ToString()
                         birthday.Value = Convert.ToDateTime(reader("birthday"))
                         age.Text = reader("age").ToString()
-                        ComboBox1.SelectedItem = reader("position_level").ToString()
+
+                        ' I-set ang position level muna para gumana ang IndexChanged logic
+                        Dim posLevel As String = reader("position_level").ToString()
+                        If posLevel = "Extra" Then posLevel = "Part-time" ' Fallback kung "Extra" pa ang nasa DB
+                        ComboBox1.SelectedItem = posLevel
+
                         position.Text = reader("job_position").ToString()
                         salary.Text = String.Format("{0:N0}", reader("salary"))
                         datehired.Value = Convert.ToDateTime(reader("date_hired"))
                         sex.SelectedItem = reader("sex").ToString()
                         contactnumber.Text = reader("contact_number").ToString()
                         Status.SelectedItem = reader("status").ToString()
-                        semester.SelectedItem = reader("semester").ToString()
 
-                        ' Reconstruct Subjects and Units
-                        Dim rawSubjects As String = reader("subject_names").ToString()
-                        Dim rawSalaries As String = reader("unit_salaries_breakdown").ToString()
+                        If ComboBox1.Text <> "Part-time" Then
+                            semester.SelectedItem = reader("semester").ToString()
 
-                        If Not String.IsNullOrEmpty(rawSubjects) Then
-                            ParseAndLoadSubjects(rawSubjects, rawSalaries)
+                            ' Reconstruct Subjects and Units
+                            Dim rawSubjects As String = reader("subject_names").ToString()
+                            Dim rawSalaries As String = reader("unit_salaries_breakdown").ToString()
+
+                            If Not String.IsNullOrEmpty(rawSubjects) AndAlso rawSubjects <> "N/A" Then
+                                ParseAndLoadSubjects(rawSubjects, rawSalaries)
+                            End If
                         End If
                     End If
                 End Using
@@ -115,25 +145,18 @@ Public Class EditEmployee
         End Try
     End Sub
 
-    ' Logic para hatiin ang string mula sa database at gawing Controls
     Private Sub ParseAndLoadSubjects(subjectNames As String, salaryBreakdown As String)
-        ' Hatiin ang subjects (hal. "HTML, CSS")
         Dim subjects() As String = subjectNames.Split(New String() {", "}, StringSplitOptions.None)
-
-        ' Hatiin ang salary groups (hal. "[10213|12424|1024] ; [10324]")
         Dim salaryGroups() As String = salaryBreakdown.Split(New String() {" ; "}, StringSplitOptions.None)
 
         For i As Integer = 0 To subjects.Length - 1
-            ' Gumawa ng bagong Subject Row
             Dim newRow As SubjectRow = CreateSubjectRowControl()
             newRow.txtSubject.Text = subjects(i)
 
-            ' Kunin ang sweldo para sa subject na ito at tanggalin ang brackets []
             If i < salaryGroups.Length Then
                 Dim cleanSalaries As String = salaryGroups(i).Trim("["c, "]"c)
                 Dim individualUnits() As String = cleanSalaries.Split("|"c)
 
-                ' I-clear ang default 1 unit and add based sa data
                 newRow.SalaryUnitContainer.Controls.Clear()
                 newRow.SalaryUnitCount = 0
 
@@ -145,7 +168,7 @@ Public Class EditEmployee
     End Sub
 
     ' =========================
-    ' DYNAMIC UI LOGIC (Copy from Add Form)
+    ' DYNAMIC UI LOGIC
     ' =========================
     Private Function CreateSubjectRowControl() As SubjectRow
         Dim newRow As New SubjectRow()
@@ -239,13 +262,19 @@ Public Class EditEmployee
     ' SAVE / UPDATE BUTTON
     ' =========================
     Private Sub save_Click(sender As Object, e As EventArgs) Handles save.Click
-        ' Validations
-        If semester.SelectedIndex = -1 Then
-            MessageBox.Show("Please select a Semester!")
-            Return
+        ' Validation check depende sa position level
+        If ComboBox1.Text <> "Part-time" Then
+            If semester.SelectedIndex = -1 Then
+                MessageBox.Show("Please select a Semester!")
+                Return
+            End If
+            If SubjectRows.Count = 0 Then
+                MessageBox.Show("Please add at least one subject!")
+                Return
+            End If
         End If
 
-        ' Prepare dynamic data for update
+        ' Prepare dynamic data
         Dim allSubjectNames As New List(Of String)
         Dim allUnitCounts As New List(Of String)
         Dim allSalariesRaw As New List(Of String)
@@ -270,12 +299,12 @@ Public Class EditEmployee
         Try
             If conn.State = ConnectionState.Closed Then conn.Open()
 
-            Dim sql As String = "UPDATE employees SET 
-                                fullname=@fn, email=@em, password=@pw, birthday=@bd, age=@age, 
-                                position_level=@pl, job_position=@jp, salary=@sal, date_hired=@dh, 
-                                sex=@sex, contact_number=@cn, status=@st, semester=@sem,
-                                subject_names=@sn, unit_counts=@uc, unit_salaries_breakdown=@usb, total_units_overall=@tuo
-                                WHERE id=@id"
+            Dim sql As String = "UPDATE employees SET " &
+                                "fullname=@fn, email=@em, password=@pw, birthday=@bd, age=@age, " &
+                                "position_level=@pl, job_position=@jp, salary=@sal, date_hired=@dh, " &
+                                "sex=@sex, contact_number=@cn, status=@st, semester=@sem, " &
+                                "subject_names=@sn, unit_counts=@uc, unit_salaries_breakdown=@usb, total_units_overall=@tuo " &
+                                "WHERE id=@id"
 
             Using cmd As New MySqlCommand(sql, conn)
                 cmd.Parameters.AddWithValue("@fn", fullname.Text.Trim)
@@ -290,10 +319,12 @@ Public Class EditEmployee
                 cmd.Parameters.AddWithValue("@sex", sex.Text)
                 cmd.Parameters.AddWithValue("@cn", contactnumber.Text.Trim)
                 cmd.Parameters.AddWithValue("@st", Status.Text)
-                cmd.Parameters.AddWithValue("@sem", semester.Text)
-                cmd.Parameters.AddWithValue("@sn", String.Join(", ", allSubjectNames))
-                cmd.Parameters.AddWithValue("@uc", String.Join(", ", allUnitCounts))
-                cmd.Parameters.AddWithValue("@usb", String.Join(" ; ", allSalariesRaw))
+
+                ' Logic para sa database values kung Part-time
+                cmd.Parameters.AddWithValue("@sem", If(ComboBox1.Text = "Part-time", "N/A", semester.Text))
+                cmd.Parameters.AddWithValue("@sn", If(allSubjectNames.Count > 0, String.Join(", ", allSubjectNames), "N/A"))
+                cmd.Parameters.AddWithValue("@uc", If(allUnitCounts.Count > 0, String.Join(", ", allUnitCounts), "0"))
+                cmd.Parameters.AddWithValue("@usb", If(allSalariesRaw.Count > 0, String.Join(" ; ", allSalariesRaw), "N/A"))
                 cmd.Parameters.AddWithValue("@tuo", grandTotalUnits)
                 cmd.Parameters.AddWithValue("@id", empId)
 
@@ -310,7 +341,6 @@ Public Class EditEmployee
         End Try
     End Sub
 
-    ' Button para magdagdag ng panibagong subject habang nag-eedit
     Private Sub btnAddUnit2_Click(sender As Object, e As EventArgs) Handles btnAddUnit2.Click
         If semester.SelectedIndex = -1 Then
             MessageBox.Show("Please select a semester first.")
@@ -319,7 +349,6 @@ Public Class EditEmployee
         CreateSubjectRowControl()
     End Sub
 
-    ' Basic Form Controls
     Private Sub close_Click(sender As Object, e As EventArgs) Handles close.Click
         MyBase.Close()
     End Sub

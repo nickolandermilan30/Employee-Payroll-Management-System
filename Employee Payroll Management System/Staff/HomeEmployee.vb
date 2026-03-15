@@ -36,8 +36,23 @@ Public Class HomeEmployee
         LoadAttendanceData()
         attendancePanel.Invalidate()
 
-        InitializeTimeComboBoxes()
+        ' Setup for Time Pickers
+        InitializeTimePickers()
         InitializeStatusComboBox()
+    End Sub
+
+    ' =========================
+    ' INITIALIZE TIME PICKERS
+    ' =========================
+    Private Sub InitializeTimePickers()
+        ' Siguraduhin na ang Format ay naka-Time sa Designer o dito sa code
+        TimeIn.Format = DateTimePickerFormat.Custom
+        TimeIn.CustomFormat = "hh:mm tt"
+        TimeIn.ShowUpDown = True
+
+        TimeOut.Format = DateTimePickerFormat.Custom
+        TimeOut.CustomFormat = "hh:mm tt"
+        TimeOut.ShowUpDown = True
     End Sub
 
     ' =========================
@@ -178,28 +193,6 @@ Public Class HomeEmployee
     End Function
 
     ' =========================
-    ' TIME COMBOS
-    ' =========================
-    Private Sub InitializeTimeComboBoxes()
-        TimeIn.DropDownStyle = ComboBoxStyle.DropDownList
-        TimeOut.DropDownStyle = ComboBoxStyle.DropDownList
-
-        TimeIn.Items.Clear()
-        TimeOut.Items.Clear()
-
-        For h = 0 To 23
-            Dim ampm = If(h < 12, "AM", "PM")
-            Dim hr = If(h Mod 12 = 0, 12, h Mod 12)
-            Dim t = hr.ToString("00") & ":00 " & ampm
-            TimeIn.Items.Add(t)
-            TimeOut.Items.Add(t)
-        Next
-
-        TimeIn.SelectedIndex = 0
-        TimeOut.SelectedIndex = 0
-    End Sub
-
-    ' =========================
     ' STATUS COMBO (ONLY 2)
     ' =========================
     Private Sub InitializeStatusComboBox()
@@ -214,11 +207,9 @@ Public Class HomeEmployee
     ' =========================
     Private Sub Status_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Status.SelectedIndexChanged
         If Status.SelectedItem.ToString() = "Absent" Then
-            Dim idx = TimeIn.Items.IndexOf("12:00 AM")
-            If idx >= 0 Then
-                TimeIn.SelectedIndex = idx
-                TimeOut.SelectedIndex = idx
-            End If
+            ' I-set ang time sa 12:00 AM kapag absent
+            TimeIn.Value = New DateTime(DateTimePicker1.Value.Year, DateTimePicker1.Value.Month, DateTimePicker1.Value.Day, 0, 0, 0)
+            TimeOut.Value = New DateTime(DateTimePicker1.Value.Year, DateTimePicker1.Value.Month, DateTimePicker1.Value.Day, 0, 0, 0)
         End If
     End Sub
 
@@ -238,12 +229,13 @@ Public Class HomeEmployee
                 cmd.Parameters.AddWithValue("@fn", EmployeeName)
                 cmd.Parameters.AddWithValue("@dt", DateTimePicker1.Value.Date)
                 cmd.Parameters.AddWithValue("@st", Status.SelectedItem.ToString())
-                cmd.Parameters.AddWithValue("@ti", TimeIn.SelectedItem.ToString())
-                cmd.Parameters.AddWithValue("@to", TimeOut.SelectedItem.ToString())
+                ' Kunin ang string format ng Time mula sa DateTimePicker
+                cmd.Parameters.AddWithValue("@ti", TimeIn.Value.ToString("hh:mm tt"))
+                cmd.Parameters.AddWithValue("@to", TimeOut.Value.ToString("hh:mm tt"))
                 cmd.ExecuteNonQuery()
             End Using
 
-            MessageBox.Show("Schedule saved successfully")
+            MessageBox.Show("Schedule saved successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
         Catch ex As Exception
             MessageBox.Show("Error saving schedule: " & ex.Message)
@@ -251,5 +243,6 @@ Public Class HomeEmployee
             If conn.State = ConnectionState.Open Then conn.Close()
         End Try
     End Sub
+
 
 End Class

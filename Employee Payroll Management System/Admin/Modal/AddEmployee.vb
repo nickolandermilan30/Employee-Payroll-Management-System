@@ -42,7 +42,7 @@ Public Class AddEmployee
         semester.DropDownStyle = ComboBoxStyle.DropDownList
 
         ComboBox1.Items.Clear()
-        ComboBox1.Items.AddRange(New String() {"Regular", "Extra", "Faculties"})
+        ComboBox1.Items.AddRange(New String() {"Regular", "Part-time", "Faculties"})
         ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
 
         sex.Items.Clear()
@@ -53,6 +53,25 @@ Public Class AddEmployee
         Status.Items.AddRange(New String() {"Active", "Inactive"})
         Status.SelectedIndex = 0
         Status.DropDownStyle = ComboBoxStyle.DropDownList
+    End Sub
+
+    ' LOGIC PARA SA "EXTRA" SELECTION
+    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
+        If ComboBox1.Text = "Part-time" Then
+            ' I-disable ang Semester at Add Unit button
+            semester.SelectedIndex = -1
+            semester.Enabled = False
+            btnAddUnit.Enabled = False
+
+            ' Linisin ang existing subjects kung meron man para iwas error sa save
+            SubjectRows.Clear()
+            Tableperunit.Controls.Clear()
+            salary.Text = "0"
+        Else
+            ' I-enable ulit kung hindi "Extra"
+            semester.Enabled = True
+            btnAddUnit.Enabled = True
+        End If
     End Sub
 
     ' Validation: Numbers only for contact number
@@ -175,17 +194,20 @@ Public Class AddEmployee
     ' SAVE TO DATABASE
     ' =========================
     Private Sub save_Click(sender As Object, e As EventArgs) Handles save.Click
-        If semester.SelectedIndex = -1 Then
-            MessageBox.Show("Please select a Semester!", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
+        ' Validation check depende sa position level
+        If ComboBox1.Text <> "Part-time" Then
+            If semester.SelectedIndex = -1 Then
+                MessageBox.Show("Please select a Semester!", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+
+            If SubjectRows.Count = 0 Then
+                MessageBox.Show("Please add at least one Subject!", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
         End If
 
-        If SubjectRows.Count = 0 Then
-            MessageBox.Show("Please add at least one Subject!", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            Return
-        End If
-
-        ' Paghahanda ng data para sa isang row lang sa database
+        ' Paghahanda ng data
         Dim allSubjectNames As New List(Of String)
         Dim allUnitCounts As New List(Of String)
         Dim allSalariesRaw As New List(Of String)
@@ -209,7 +231,6 @@ Public Class AddEmployee
                     End If
                 Next
             Next
-            ' I-format ang bawat subject units: (100|200|300)
             allSalariesRaw.Add("[" & String.Join("|", currentSubSalaries) & "]")
         Next
 
@@ -218,7 +239,6 @@ Public Class AddEmployee
             Dim transaction = Conn.BeginTransaction()
 
             Try
-                ' Dito isasama na natin ang mga bagong columns sa employees table
                 Dim empQuery = "INSERT INTO employees (fullname, email, password, birthday, age, position_level, job_position, " &
                                "salary, date_hired, sex, contact_number, status, semester, " &
                                "subject_names, unit_counts, unit_salaries_breakdown, total_units_overall) " &
@@ -239,19 +259,19 @@ Public Class AddEmployee
                     cmd.Parameters.AddWithValue("@sex", sex.Text)
                     cmd.Parameters.AddWithValue("@cn", contactnumber.Text.Trim)
                     cmd.Parameters.AddWithValue("@st", Status.Text)
-                    cmd.Parameters.AddWithValue("@sem", semester.Text)
+                    cmd.Parameters.AddWithValue("@sem", If(ComboBox1.Text = "Extra", "N/A", semester.Text))
 
-                    ' Mga bagong parameters
-                    cmd.Parameters.AddWithValue("@sn", String.Join(", ", allSubjectNames))
-                    cmd.Parameters.AddWithValue("@uc", String.Join(", ", allUnitCounts))
-                    cmd.Parameters.AddWithValue("@usb", String.Join(" ; ", allSalariesRaw))
+                    ' Bagong parameters (empty strings kung "Extra")
+                    cmd.Parameters.AddWithValue("@sn", If(allSubjectNames.Count > 0, String.Join(", ", allSubjectNames), "N/A"))
+                    cmd.Parameters.AddWithValue("@uc", If(allUnitCounts.Count > 0, String.Join(", ", allUnitCounts), "0"))
+                    cmd.Parameters.AddWithValue("@usb", If(allSalariesRaw.Count > 0, String.Join(" ; ", allSalariesRaw), "N/A"))
                     cmd.Parameters.AddWithValue("@tuo", grandTotalUnits)
 
                     cmd.ExecuteNonQuery()
                 End Using
 
                 transaction.Commit()
-                MessageBox.Show("Employee and Subject Data Successfully Saved to Main Table!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("Employee Successfully Saved!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 ClearFields()
 
             Catch ex As Exception
@@ -272,13 +292,16 @@ Public Class AddEmployee
         SubjectRows.Clear()
         Tableperunit.Controls.Clear()
         semester.SelectedIndex = -1
+        ComboBox1.SelectedIndex = -1
+        semester.Enabled = True
+        btnAddUnit.Enabled = True
     End Sub
 
     Private Sub close_Click(sender As Object, e As EventArgs) Handles close.Click
         MyBase.Close()
     End Sub
 
-    Private Sub Tableperunit_Paint(sender As Object, e As PaintEventArgs) Handles Tableperunit.Paint
+    Private Sub Status_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Status.SelectedIndexChanged
 
     End Sub
 End Class

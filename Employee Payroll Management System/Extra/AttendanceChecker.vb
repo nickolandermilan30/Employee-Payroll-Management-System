@@ -29,16 +29,26 @@ Public Class AttendanceChecker
         ' ===== TAB ORDER =====
         Employedropdown.TabIndex = 0
         monthofdate.TabIndex = 1
-        checkin.TabIndex = 2
-        checkout.TabIndex = 3
+        timein.TabIndex = 2
+        timeout.TabIndex = 3
         status.TabIndex = 4
         save.TabIndex = 5
 
         ' ===== DROPDOWNS =====
         Employedropdown.DropDownStyle = ComboBoxStyle.DropDownList
-        checkin.DropDownStyle = ComboBoxStyle.DropDownList
-        checkout.DropDownStyle = ComboBoxStyle.DropDownList
         status.DropDownStyle = ComboBoxStyle.DropDownList
+
+        ' ===== TIME PICKER SETUP (MANUAL SETTING) =====
+        ' Siguraduhin na ang "timein" at "timeout" ay DateTimePickers sa Designer
+        timein.Format = DateTimePickerFormat.Custom
+        timein.CustomFormat = "hh:mm tt"
+        timein.ShowUpDown = True
+        timein.Enabled = True
+
+        timeout.Format = DateTimePickerFormat.Custom
+        timeout.CustomFormat = "hh:mm tt"
+        timeout.ShowUpDown = True
+        timeout.Enabled = True
 
         ' ===== DATE PICKER =====
         monthofdate.Format = DateTimePickerFormat.Custom
@@ -47,8 +57,6 @@ Public Class AttendanceChecker
 
         ' ===== LOAD DATA =====
         LoadEmployees()
-        LoadCheckInTimes()
-        LoadCheckOutTimes()
         LoadStatus()
         ResetUI()
     End Sub
@@ -57,8 +65,9 @@ Public Class AttendanceChecker
     ' RESET UI
     ' =========================
     Private Sub ResetUI()
-        checkin.SelectedIndex = -1
-        checkout.SelectedIndex = -1
+        ' I-set ang time pickers sa kasalukuyang oras bilang default pero pwedeng baguhin
+        timein.Value = DateTime.Now
+        timeout.Value = DateTime.Now
         status.SelectedIndex = -1
         attendanceTable = Nothing
         ResetCounters()
@@ -79,15 +88,19 @@ Public Class AttendanceChecker
     ' LOAD EMPLOYEES
     ' =========================
     Private Sub LoadEmployees()
-        Dim da As New MySqlDataAdapter(
-            "SELECT id, fullname, email FROM employees WHERE status='Active'", conn)
-        Dim dt As New DataTable
-        da.Fill(dt)
+        Try
+            Dim da As New MySqlDataAdapter(
+                "SELECT id, fullname, email FROM employees WHERE status='Active'", conn)
+            Dim dt As New DataTable
+            da.Fill(dt)
 
-        Employedropdown.DataSource = dt
-        Employedropdown.DisplayMember = "fullname"
-        Employedropdown.ValueMember = "id"
-        Employedropdown.SelectedIndex = -1
+            Employedropdown.DataSource = dt
+            Employedropdown.DisplayMember = "fullname"
+            Employedropdown.ValueMember = "id"
+            Employedropdown.SelectedIndex = -1
+        Catch ex As Exception
+            ' Silent error handling
+        End Try
     End Sub
 
     ' =========================
@@ -108,34 +121,10 @@ Public Class AttendanceChecker
         End If
     End Sub
 
-    ' =========================
-    ' LOAD TIMES + STATUS
-    ' =========================
-    Private Sub LoadCheckInTimes()
-        checkin.Items.Clear()
-        checkin.Items.AddRange(GenerateTimeList())
-    End Sub
-
-    Private Sub LoadCheckOutTimes()
-        checkout.Items.Clear()
-        checkout.Items.AddRange(GenerateTimeList())
-    End Sub
-
     Private Sub LoadStatus()
         status.Items.Clear()
         status.Items.AddRange({"Present", "Absent", "Late", "Half Day"})
     End Sub
-
-    Private Function GenerateTimeList() As String()
-        Dim times As New List(Of String)
-        For h As Integer = 1 To 12
-            times.Add($"{h}:00 AM")
-            times.Add($"{h}:30 AM")
-            times.Add($"{h}:00 PM")
-            times.Add($"{h}:30 PM")
-        Next
-        Return times.ToArray()
-    End Function
 
     ' =========================
     ' SAVE ATTENDANCE
@@ -154,6 +143,10 @@ Public Class AttendanceChecker
             Dim fullname As String = drv("fullname").ToString()
             Dim email As String = drv("email").ToString()
 
+            ' Convert selected time to string format
+            Dim timeInStr As String = timein.Value.ToString("hh:mm tt")
+            Dim timeOutStr As String = timeout.Value.ToString("hh:mm tt")
+
             Dim sql =
                 "INSERT INTO attendance
                 (employee_id, fullname, email, attendance_date, checkin_time, checkout_time, status)
@@ -164,8 +157,8 @@ Public Class AttendanceChecker
                 cmd.Parameters.AddWithValue("@fn", fullname)
                 cmd.Parameters.AddWithValue("@em", email)
                 cmd.Parameters.AddWithValue("@dt", monthofdate.Value.Date)
-                cmd.Parameters.AddWithValue("@cin", If(checkin.SelectedIndex = -1, "N/A", checkin.Text))
-                cmd.Parameters.AddWithValue("@cout", If(checkout.SelectedIndex = -1, "N/A", checkout.Text))
+                cmd.Parameters.AddWithValue("@cin", timeInStr)
+                cmd.Parameters.AddWithValue("@cout", timeOutStr)
                 cmd.Parameters.AddWithValue("@st", status.Text)
                 cmd.ExecuteNonQuery()
             End Using
@@ -187,29 +180,32 @@ Public Class AttendanceChecker
     Private Sub LoadAttendance()
         If Not TypeOf Employedropdown.SelectedValue Is Integer Then Exit Sub
 
-        Dim empId As Integer = CInt(Employedropdown.SelectedValue)
-        Dim m As Integer = monthofdate.Value.Month
-        Dim y As Integer = monthofdate.Value.Year
+        Try
+            Dim empId As Integer = CInt(Employedropdown.SelectedValue)
+            Dim m As Integer = monthofdate.Value.Month
+            Dim y As Integer = monthofdate.Value.Year
 
-        Dim sql =
-            "SELECT fullname, email, attendance_date, checkin_time, checkout_time, status
-             FROM attendance
-             WHERE employee_id=@eid
-             AND MONTH(attendance_date)=@m
-             AND YEAR(attendance_date)=@y
-             ORDER BY attendance_date DESC"
+            Dim sql =
+                "SELECT fullname, email, attendance_date, checkin_time, checkout_time, status
+                 FROM attendance
+                 WHERE employee_id=@eid
+                 AND MONTH(attendance_date)=@m
+                 AND YEAR(attendance_date)=@y
+                 ORDER BY attendance_date DESC"
 
-        Dim da As New MySqlDataAdapter(sql, conn)
-        da.SelectCommand.Parameters.AddWithValue("@eid", empId)
-        da.SelectCommand.Parameters.AddWithValue("@m", m)
-        da.SelectCommand.Parameters.AddWithValue("@y", y)
+            Dim da As New MySqlDataAdapter(sql, conn)
+            da.SelectCommand.Parameters.AddWithValue("@eid", empId)
+            da.SelectCommand.Parameters.AddWithValue("@m", m)
+            da.SelectCommand.Parameters.AddWithValue("@y", y)
 
-        attendanceTable = New DataTable()
-        da.Fill(attendanceTable)
+            attendanceTable = New DataTable()
+            da.Fill(attendanceTable)
 
-        UpdateAttendanceCounts()
-        UpdateScroll()
-        viewemployeedata.Invalidate()
+            UpdateAttendanceCounts()
+            UpdateScroll()
+            viewemployeedata.Invalidate()
+        Catch ex As Exception
+        End Try
     End Sub
 
     ' =========================
@@ -219,18 +215,20 @@ Public Class AttendanceChecker
         ResetCounters()
         If attendanceTable Is Nothing Then Exit Sub
 
-        presentcount.Text = attendanceTable.Select("status='Present'").Length
-        absentcount.Text = attendanceTable.Select("status='Absent'").Length
-        latedayscount.Text = attendanceTable.Select("status='Late'").Length
-        halfdaycount.Text = attendanceTable.Select("status='Half Day'").Length
+        presentcount.Text = attendanceTable.Select("status='Present'").Length.ToString()
+        absentcount.Text = attendanceTable.Select("status='Absent'").Length.ToString()
+        latedayscount.Text = attendanceTable.Select("status='Late'").Length.ToString()
+        halfdaycount.Text = attendanceTable.Select("status='Half Day'").Length.ToString()
     End Sub
 
     ' =========================
     ' UPDATE SCROLL
     ' =========================
     Private Sub UpdateScroll()
-        viewemployeedata.AutoScrollMinSize =
-            New Size(0, headerHeight + attendanceTable.Rows.Count * rowHeight + 20)
+        If attendanceTable IsNot Nothing Then
+            viewemployeedata.AutoScrollMinSize =
+                New Size(0, headerHeight + attendanceTable.Rows.Count * rowHeight + 20)
+        End If
     End Sub
 
     ' =========================

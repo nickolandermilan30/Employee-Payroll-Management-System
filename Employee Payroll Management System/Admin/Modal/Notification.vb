@@ -68,58 +68,34 @@ Public Class Notification
     ' =========================
     ' HANDLE BUTTON CLICK
     ' =========================
-    Private Sub ListNotif_MouseClick(sender As Object, e As MouseEventArgs) Handles ListNotif.MouseClick
+    ' ... (Imports remains the same)
 
+    ' =========================
+    ' HANDLE BUTTON CLICK
+    ' =========================
+    Private Sub ListNotif_MouseClick(sender As Object, e As MouseEventArgs) Handles ListNotif.MouseClick
         Dim rowIndex As Integer = (e.Y - headerHeight) \ rowHeight
         If rowIndex < 0 OrElse rowIndex >= filteredTable.Rows.Count Then Exit Sub
 
         Dim w = ListNotif.Width
-
-        ' column sizes
-        Dim colFull = CInt(w * 0.2)
-        Dim colDate = CInt(w * 0.15)
-        Dim colStat = CInt(w * 0.15)
-        Dim colIn = CInt(w * 0.15)
-        Dim colOut = CInt(w * 0.15)
+        Dim colFull = CInt(w * 0.2), colDate = CInt(w * 0.15), colStat = CInt(w * 0.15), colIn = CInt(w * 0.15), colOut = CInt(w * 0.15)
         Dim colBtn = w - (colFull + colDate + colStat + colIn + colOut + padding * 2)
-
         Dim y = headerHeight + rowIndex * rowHeight
         Dim btnRect As New Rectangle(colFull + colDate + colStat + colIn + colOut + padding, y + 5, colBtn - 10, 25)
 
-        ' 👉 check kung sa button area talaga nag click
         If Not btnRect.Contains(e.Location) Then Exit Sub
 
         Dim row As DataRow = filteredTable.Rows(rowIndex)
-
-        ' 👉 kung naka set na → block click
         If Convert.ToBoolean(row("is_set")) Then
             MessageBox.Show("Already set in database")
             Exit Sub
         End If
 
-        ' =========================
-        ' PASS DATA TO OWNER FORM
-        ' =========================
-        If TypeOf Owner Is AttendanceChecker Then
-            Dim ac As AttendanceChecker = CType(Owner, AttendanceChecker)
-
-            For i As Integer = 0 To ac.Employedropdown.Items.Count - 1
-                Dim drv As DataRowView = CType(ac.Employedropdown.Items(i), DataRowView)
-                If drv("fullname").ToString() = row("fullname").ToString() Then
-                    ac.Employedropdown.SelectedIndex = i
-                    Exit For
-                End If
-            Next
-
-            ac.monthofdate.Value = CDate(row("schedule_date"))
-            ac.status.SelectedItem = row("status").ToString()
-            SetComboTime(ac.checkin, row("time_in"))
-            SetComboTime(ac.checkout, row("time_out"))
-        End If
-
+        ' PASS DATA TO MONITOR ATTENDANCE
         If TypeOf Owner Is MonitorAttendance Then
             Dim ma As MonitorAttendance = CType(Owner, MonitorAttendance)
 
+            ' Select Employee
             For i As Integer = 0 To ma.Employedropdown.Items.Count - 1
                 Dim drv As DataRowView = CType(ma.Employedropdown.Items(i), DataRowView)
                 If drv("fullname").ToString() = row("fullname").ToString() Then
@@ -130,8 +106,17 @@ Public Class Notification
 
             ma.monthofdate.Value = CDate(row("schedule_date"))
             ma.status.SelectedItem = row("status").ToString()
-            SetComboTime(ma.checkin, row("time_in"))
-            SetComboTime(ma.checkout, row("time_out"))
+
+            ' FIX: Use Value property instead of SetComboTime
+            If Not IsDBNull(row("time_in")) Then
+                Dim tIn As DateTime
+                If DateTime.TryParse(row("time_in").ToString(), tIn) Then ma.checkin.Value = tIn
+            End If
+
+            If Not IsDBNull(row("time_out")) Then
+                Dim tOut As DateTime
+                If DateTime.TryParse(row("time_out").ToString(), tOut) Then ma.checkout.Value = tOut
+            End If
         End If
 
         Me.Close()

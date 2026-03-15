@@ -38,9 +38,7 @@ Partial Class HomeEmployee
         Label1 = New Label()
         Panel5 = New Panel()
         Label9 = New Label()
-        TimeOut = New ComboBox()
         Label8 = New Label()
-        TimeIn = New ComboBox()
         Label6 = New Label()
         Status = New ComboBox()
         Label4 = New Label()
@@ -48,6 +46,8 @@ Partial Class HomeEmployee
         Label2 = New Label()
         Panel6 = New Panel()
         Setscedule = New Button()
+        TimeIn = New DateTimePicker()
+        TimeOut = New DateTimePicker()
         Panel4.SuspendLayout()
         Panel1.SuspendLayout()
         Panel2.SuspendLayout()
@@ -211,10 +211,10 @@ Partial Class HomeEmployee
         ' 
         Panel5.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Right
         Panel5.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
-        Panel5.Controls.Add(Label9)
         Panel5.Controls.Add(TimeOut)
-        Panel5.Controls.Add(Label8)
         Panel5.Controls.Add(TimeIn)
+        Panel5.Controls.Add(Label9)
+        Panel5.Controls.Add(Label8)
         Panel5.Controls.Add(Label6)
         Panel5.Controls.Add(Status)
         Panel5.Controls.Add(Label4)
@@ -237,14 +237,6 @@ Partial Class HomeEmployee
         Label9.TabIndex = 16
         Label9.Text = "Set Scedule "
         ' 
-        ' TimeOut
-        ' 
-        TimeOut.FormattingEnabled = True
-        TimeOut.Location = New Point(23, 298)
-        TimeOut.Name = "TimeOut"
-        TimeOut.Size = New Size(230, 23)
-        TimeOut.TabIndex = 14
-        ' 
         ' Label8
         ' 
         Label8.AutoSize = True
@@ -254,14 +246,6 @@ Partial Class HomeEmployee
         Label8.Size = New Size(55, 15)
         Label8.TabIndex = 13
         Label8.Text = "Time out"
-        ' 
-        ' TimeIn
-        ' 
-        TimeIn.FormattingEnabled = True
-        TimeIn.Location = New Point(23, 239)
-        TimeIn.Name = "TimeIn"
-        TimeIn.Size = New Size(230, 23)
-        TimeIn.TabIndex = 12
         ' 
         ' Label6
         ' 
@@ -330,6 +314,20 @@ Partial Class HomeEmployee
         Setscedule.Text = "Set "
         Setscedule.UseVisualStyleBackColor = False
         ' 
+        ' TimeIn
+        ' 
+        TimeIn.Location = New Point(23, 236)
+        TimeIn.Name = "TimeIn"
+        TimeIn.Size = New Size(230, 23)
+        TimeIn.TabIndex = 0
+        ' 
+        ' TimeOut
+        ' 
+        TimeOut.Location = New Point(23, 295)
+        TimeOut.Name = "TimeOut"
+        TimeOut.Size = New Size(230, 23)
+        TimeOut.TabIndex = 17
+        ' 
         ' HomeEmployee
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -379,11 +377,11 @@ Partial Class HomeEmployee
     Friend WithEvents Label2 As Label
     Friend WithEvents Panel6 As Panel
     Friend WithEvents Setscedule As Button
-    Friend WithEvents TimeIn As ComboBox
     Friend WithEvents Label6 As Label
     Friend WithEvents Status As ComboBox
     Friend WithEvents DateTimePicker1 As DateTimePicker
-    Friend WithEvents TimeOut As ComboBox
     Friend WithEvents Label8 As Label
     Friend WithEvents Label9 As Label
+    Friend WithEvents TimeOut As DateTimePicker
+    Friend WithEvents TimeIn As DateTimePicker
 End Class

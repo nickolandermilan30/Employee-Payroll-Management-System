@@ -46,9 +46,7 @@ Partial Class MonitorAttendance
         Panel4 = New Panel()
         monthofdate = New DateTimePicker()
         Label10 = New Label()
-        checkout = New ComboBox()
         Label12 = New Label()
-        checkin = New ComboBox()
         Label5 = New Label()
         Label6 = New Label()
         PictureBox5 = New PictureBox()
@@ -64,6 +62,8 @@ Partial Class MonitorAttendance
         save = New Button()
         Panel9 = New Panel()
         Notification = New Button()
+        checkin = New DateTimePicker()
+        checkout = New DateTimePicker()
         Panel1.SuspendLayout()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         Panel5.SuspendLayout()
@@ -324,11 +324,11 @@ Partial Class MonitorAttendance
         ' 
         Panel4.Anchor = AnchorStyles.Top
         Panel4.BackColor = Color.FromArgb(CByte(41), CByte(99), CByte(116))
+        Panel4.Controls.Add(checkout)
+        Panel4.Controls.Add(checkin)
         Panel4.Controls.Add(monthofdate)
         Panel4.Controls.Add(Label10)
-        Panel4.Controls.Add(checkout)
         Panel4.Controls.Add(Label12)
-        Panel4.Controls.Add(checkin)
         Panel4.Controls.Add(Label5)
         Panel4.Controls.Add(Label6)
         Panel4.Controls.Add(PictureBox5)
@@ -357,14 +357,6 @@ Partial Class MonitorAttendance
         Label10.Text = "Check Out Time"
         Label10.TextAlign = ContentAlignment.TopCenter
         ' 
-        ' checkout
-        ' 
-        checkout.FormattingEnabled = True
-        checkout.Location = New Point(239, 139)
-        checkout.Name = "checkout"
-        checkout.Size = New Size(168, 23)
-        checkout.TabIndex = 19
-        ' 
         ' Label12
         ' 
         Label12.AutoSize = True
@@ -377,14 +369,6 @@ Partial Class MonitorAttendance
         Label12.TabIndex = 18
         Label12.Text = "Check in Time"
         Label12.TextAlign = ContentAlignment.TopCenter
-        ' 
-        ' checkin
-        ' 
-        checkin.FormattingEnabled = True
-        checkin.Location = New Point(45, 139)
-        checkin.Name = "checkin"
-        checkin.Size = New Size(168, 23)
-        checkin.TabIndex = 17
         ' 
         ' Label5
         ' 
@@ -559,6 +543,20 @@ Partial Class MonitorAttendance
         Notification.TabIndex = 7
         Notification.UseVisualStyleBackColor = False
         ' 
+        ' checkin
+        ' 
+        checkin.Location = New Point(45, 139)
+        checkin.Name = "checkin"
+        checkin.Size = New Size(173, 23)
+        checkin.TabIndex = 24
+        ' 
+        ' checkout
+        ' 
+        checkout.Location = New Point(234, 139)
+        checkout.Name = "checkout"
+        checkout.Size = New Size(173, 23)
+        checkout.TabIndex = 25
+        ' 
         ' MonitorAttendance
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -632,9 +630,7 @@ Partial Class MonitorAttendance
     Friend WithEvents PictureBox5 As PictureBox
     Friend WithEvents Label5 As Label
     Friend WithEvents Label10 As Label
-    Friend WithEvents checkout As ComboBox
     Friend WithEvents Label12 As Label
-    Friend WithEvents checkin As ComboBox
     Friend WithEvents Panel6 As Panel
     Friend WithEvents emailofemployee As Label
     Friend WithEvents nameemployee As Label
@@ -648,4 +644,6 @@ Partial Class MonitorAttendance
     Friend WithEvents Panel9 As Panel
     Friend WithEvents monthofdate As DateTimePicker
     Friend WithEvents Notification As Button
+    Friend WithEvents checkout As DateTimePicker
+    Friend WithEvents checkin As DateTimePicker
 End Class

@@ -11,6 +11,7 @@ Public Class Payroll
     Private employeesTable As DataTable
     Private UnitSelectors As New List(Of CheckBox)
     Private SelectedSubjectsList As New List(Of String)
+    Private CurrentSemester As String = "" ' Dito mai-store ang semester na lumalabas sa panel
 
     ' =========================
     ' FORM LOAD
@@ -74,9 +75,11 @@ Public Class Payroll
 
         Dim subjects As String() = row("subject_names").ToString().Split({", "}, StringSplitOptions.None)
         Dim salariesRaw As String() = row("unit_salaries_breakdown").ToString().Split({" ; "}, StringSplitOptions.None)
-        Dim semester As String = row("semester").ToString()
 
-        Dim lblTitle As New Label With {.Text = "COURSE LOAD BREAKDOWN - " & semester.ToUpper(), .Font = New Font("Segoe UI", 10, FontStyle.Bold), .ForeColor = Color.FromArgb(52, 73, 94), .Dock = DockStyle.Top, .Height = 30}
+        ' KUKUNIN ANG SEMESTER MULA SA DATABASE PARA LUMABAS SA PANEL
+        CurrentSemester = row("semester").ToString()
+
+        Dim lblTitle As New Label With {.Text = "COURSE LOAD BREAKDOWN - " & CurrentSemester.ToUpper(), .Font = New Font("Segoe UI", 10, FontStyle.Bold), .ForeColor = Color.FromArgb(52, 73, 94), .Dock = DockStyle.Top, .Height = 30}
         Units.Controls.Add(lblTitle)
 
         Dim yPos As Integer = 40
@@ -151,7 +154,6 @@ Public Class Payroll
     Private Sub deductionbtn_Click(sender As Object, e As EventArgs) Handles deductionbtn.Click
         Using d As New Deduction()
             If d.ShowDialog() = DialogResult.OK Then
-                ' Dito sinisigurado na mapupunta sa Listbox ang lahat ng deductions (SSS, Pag-ibig, etc)
                 Deduction.Text = d.TotalDeduction.ToString("N2")
                 Listofdeduction.Items.Clear()
                 For Each item In d.DeductionDetails
@@ -161,6 +163,9 @@ Public Class Payroll
         End Using
     End Sub
 
+    ' ==========================================
+    ' PAY BUTTON: SAVE TO DB AND SHOW PAYSLIP
+    ' ==========================================
     Private Sub Pay_Click(sender As Object, e As EventArgs) Handles Pay.Click
         If employee.SelectedIndex = -1 Then
             ShowToast("⚠ Select employee first", Color.Orange)
@@ -168,42 +173,68 @@ Public Class Payroll
         End If
 
         Try
+            ' 1. Kunin ang basic data
             Dim empName As String = employee.SelectedItem.ToString()
+            Dim periodMonth As String = Month.Value.ToString("MMMM")
+            Dim periodYear As String = Year.SelectedItem.ToString()
+            Dim grossSal As Decimal = Decimal.Parse(Salary.Text)
+            Dim totalDeduc As Decimal = If(String.IsNullOrEmpty(Deduction.Text), 0, Decimal.Parse(Deduction.Text))
 
-            ' KUKUNIN DITO ANG POSITION MULA SA DATATABLE
-            Dim row = employeesTable.Select("fullname='" & empName.Replace("'", "''") & "'").FirstOrDefault()
-            Dim empPos As String = "Staff" ' Default value
+            ' Ito yung requested mo na Position as N/A
+            Dim empPos As String = "N/A"
 
-            If row IsNot Nothing Then
-                empPos = row("job_position").ToString()
-            End If
-
-            Dim period As String = Month.Value.ToString("MMMM") & " " & Year.SelectedItem.ToString()
-            Dim presDays As Integer = If(String.IsNullOrEmpty(Present.Text), 0, Integer.Parse(Present.Text))
-            Dim grossSalary As Decimal = Decimal.Parse(Salary.Text)
-            Dim totalDeductions As Decimal = If(String.IsNullOrEmpty(Deduction.Text), 0, Decimal.Parse(Deduction.Text))
-            Dim netSal As Decimal = grossSalary - totalDeductions
-
-            Dim subjectsBreakdown As New List(Of String)
+            ' 2. I-prepare ang Notes (Dito natin ilalagay ang Semester at Unit Breakdowns)
+            Dim unitDetails As New List(Of String)
             For Each chk In UnitSelectors
                 If chk.Checked Then
                     Dim data = chk.Tag
-                    Dim unitName As String = chk.Text.Split({Environment.NewLine}, StringSplitOptions.None)(0)
-                    subjectsBreakdown.Add(data.Subject & " (" & unitName & ") - ₱" & DirectCast(data.Value, Decimal).ToString("N2"))
+                    unitDetails.Add(data.Subject & "(" & chk.Text.Split({vbCrLf}, StringSplitOptions.None)(0) & ")")
                 End If
             Next
+            Dim notesContent As String = "Sem: " & CurrentSemester & " | Units: " & String.Join(", ", unitDetails)
 
+            ' 3. INSERT QUERY SA DATABASE (payroll table)
+            Dim sqlSave As String = "INSERT INTO payroll (employee_name, month, year, salary, deduction, notes, created_at) " &
+                                    "VALUES (@name, @month, @year, @sal, @deduc, @notes, NOW())"
+
+            Using cmd As New MySqlCommand(sqlSave, conn)
+                cmd.Parameters.AddWithValue("@name", empName)
+                cmd.Parameters.AddWithValue("@month", periodMonth)
+                cmd.Parameters.AddWithValue("@year", periodYear)
+                cmd.Parameters.AddWithValue("@sal", grossSal)
+                cmd.Parameters.AddWithValue("@deduc", totalDeduc)
+                cmd.Parameters.AddWithValue("@notes", notesContent)
+
+                conn.Open()
+                cmd.ExecuteNonQuery()
+                conn.Close()
+            End Using
+
+            ' 4. Pagkatapos ma-save, ipakita ang Payslip Form
             Dim deductionList As New List(Of String)
             For Each item In Listofdeduction.Items
                 deductionList.Add(item.ToString())
             Next
 
-            ' Ipasa ang empPos na nakuha sa database
-            Dim frmPayslip As New Payslip(empName, empPos, period, presDays, grossSalary, totalDeductions, netSal, deductionList, subjectsBreakdown)
+            Dim subjectsBreakdown As New List(Of String)
+            For Each chk In UnitSelectors
+                If chk.Checked Then
+                    Dim data = chk.Tag
+                    subjectsBreakdown.Add(data.Subject & " - ₱" & DirectCast(data.Value, Decimal).ToString("N2"))
+                End If
+            Next
+
+            Dim presDays As Integer = If(String.IsNullOrEmpty(Present.Text), 0, Integer.Parse(Present.Text))
+            Dim netSalary As Decimal = grossSal - totalDeduc
+
+            Dim frmPayslip As New Payslip(empName, empPos, periodMonth & " " & periodYear, presDays, grossSal, totalDeduc, netSalary, deductionList, subjectsBreakdown)
             frmPayslip.Show()
 
+            ShowToast("✅ Saved to Database!", Color.Green)
+
         Catch ex As Exception
-            MessageBox.Show("Error: " & ex.Message)
+            If conn.State = ConnectionState.Open Then conn.Close()
+            MessageBox.Show("Error Saving: " & ex.Message)
         End Try
     End Sub
 
