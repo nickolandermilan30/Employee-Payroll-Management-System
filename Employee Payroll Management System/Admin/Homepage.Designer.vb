@@ -65,13 +65,13 @@ Partial Class Homepage
         Panel1.Dock = DockStyle.Left
         Panel1.Location = New Point(0, 0)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(190, 782)
+        Panel1.Size = New Size(190, 749)
         Panel1.TabIndex = 0
         ' 
         ' Panel7
         ' 
         Panel7.Controls.Add(Attendance)
-        Panel7.Location = New Point(3, 341)
+        Panel7.Location = New Point(2, 279)
         Panel7.Name = "Panel7"
         Panel7.Size = New Size(193, 47)
         Panel7.TabIndex = 8
@@ -94,7 +94,7 @@ Partial Class Homepage
         ' Panel6
         ' 
         Panel6.Controls.Add(History)
-        Panel6.Location = New Point(0, 457)
+        Panel6.Location = New Point(-1, 395)
         Panel6.Name = "Panel6"
         Panel6.Size = New Size(187, 47)
         Panel6.TabIndex = 7
@@ -118,7 +118,7 @@ Partial Class Homepage
         ' 
         Panel5.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         Panel5.Controls.Add(logout)
-        Panel5.Location = New Point(6, 710)
+        Panel5.Location = New Point(0, 619)
         Panel5.Name = "Panel5"
         Panel5.Size = New Size(190, 48)
         Panel5.TabIndex = 7
@@ -142,7 +142,7 @@ Partial Class Homepage
         ' Panel4
         ' 
         Panel4.Controls.Add(Payroll)
-        Panel4.Location = New Point(0, 400)
+        Panel4.Location = New Point(-1, 338)
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(182, 44)
         Panel4.TabIndex = 6
@@ -165,7 +165,7 @@ Partial Class Homepage
         ' Panel3
         ' 
         Panel3.Controls.Add(Employee)
-        Panel3.Location = New Point(6, 280)
+        Panel3.Location = New Point(5, 218)
         Panel3.Name = "Panel3"
         Panel3.Size = New Size(182, 44)
         Panel3.TabIndex = 5
@@ -188,7 +188,7 @@ Partial Class Homepage
         ' Panel2
         ' 
         Panel2.Controls.Add(Home)
-        Panel2.Location = New Point(6, 225)
+        Panel2.Location = New Point(5, 163)
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(182, 44)
         Panel2.TabIndex = 4
@@ -213,7 +213,7 @@ Partial Class Homepage
         Label1.AutoSize = True
         Label1.Font = New Font("Century Gothic", 8.25F)
         Label1.ForeColor = Color.White
-        Label1.Location = New Point(83, 56)
+        Label1.Location = New Point(75, 55)
         Label1.Name = "Label1"
         Label1.Size = New Size(63, 16)
         Label1.TabIndex = 2
@@ -224,7 +224,7 @@ Partial Class Homepage
         username.AutoSize = True
         username.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         username.ForeColor = Color.White
-        username.Location = New Point(81, 34)
+        username.Location = New Point(73, 33)
         username.Name = "username"
         username.Size = New Size(87, 19)
         username.TabIndex = 1
@@ -234,7 +234,7 @@ Partial Class Homepage
         ' 
         PictureBox1.BackColor = Color.Transparent
         PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), Image)
-        PictureBox1.Location = New Point(21, 31)
+        PictureBox1.Location = New Point(13, 30)
         PictureBox1.Name = "PictureBox1"
         PictureBox1.Size = New Size(43, 41)
         PictureBox1.SizeMode = PictureBoxSizeMode.Zoom
@@ -247,14 +247,14 @@ Partial Class Homepage
         View.BackColor = SystemColors.AppWorkspace
         View.Location = New Point(185, 0)
         View.Name = "View"
-        View.Size = New Size(1132, 782)
+        View.Size = New Size(1132, 749)
         View.TabIndex = 1
         ' 
         ' Homepage
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1313, 782)
+        ClientSize = New Size(1313, 749)
         Controls.Add(View)
         Controls.Add(Panel1)
         Name = "Homepage"

@@ -47,7 +47,7 @@ Partial Class ForgotEmail
         PictureBox1.Image = My.Resources.Resources.Box
         PictureBox1.Location = New Point(65, 83)
         PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(500, 624)
+        PictureBox1.Size = New Size(500, 654)
         PictureBox1.SizeMode = PictureBoxSizeMode.StretchImage
         PictureBox1.TabIndex = 29
         PictureBox1.TabStop = False
@@ -59,7 +59,7 @@ Partial Class ForgotEmail
         Signup.FlatStyle = FlatStyle.Flat
         Signup.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Signup.ForeColor = Color.White
-        Signup.Location = New Point(102, 620)
+        Signup.Location = New Point(102, 651)
         Signup.Name = "Signup"
         Signup.Size = New Size(433, 56)
         Signup.TabIndex = 38
@@ -73,7 +73,7 @@ Partial Class ForgotEmail
         setemail.FlatStyle = FlatStyle.Flat
         setemail.Font = New Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         setemail.ForeColor = Color.White
-        setemail.Location = New Point(102, 545)
+        setemail.Location = New Point(102, 576)
         setemail.Name = "setemail"
         setemail.Size = New Size(433, 56)
         setemail.TabIndex = 37
@@ -86,7 +86,7 @@ Partial Class ForgotEmail
         Label4.BackColor = SystemColors.Window
         Label4.Font = New Font("Segoe UI Variable Display", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label4.ForeColor = SystemColors.InfoText
-        Label4.Location = New Point(102, 425)
+        Label4.Location = New Point(102, 461)
         Label4.Name = "Label4"
         Label4.Size = New Size(72, 17)
         Label4.TabIndex = 36
@@ -101,9 +101,9 @@ Partial Class ForgotEmail
         Label3.ForeColor = SystemColors.InfoText
         Label3.Location = New Point(102, 345)
         Label3.Name = "Label3"
-        Label3.Size = New Size(148, 17)
+        Label3.Size = New Size(294, 17)
         Label3.TabIndex = 35
-        Label3.Text = "Your mothers fullname"
+        Label3.Text = "What is your favorite book or movie character?"
         Label3.TextAlign = ContentAlignment.TopCenter
         ' 
         ' Mothersname
@@ -113,7 +113,7 @@ Partial Class ForgotEmail
         Mothersname.BorderStyle = BorderStyle.FixedSingle
         Mothersname.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Mothersname.ForeColor = SystemColors.InfoText
-        Mothersname.Location = New Point(102, 366)
+        Mothersname.Location = New Point(102, 368)
         Mothersname.Margin = New Padding(3, 4, 3, 3)
         Mothersname.Multiline = True
         Mothersname.Name = "Mothersname"
@@ -178,7 +178,7 @@ Partial Class ForgotEmail
         Newemail.BorderStyle = BorderStyle.FixedSingle
         Newemail.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Newemail.ForeColor = SystemColors.InfoText
-        Newemail.Location = New Point(102, 446)
+        Newemail.Location = New Point(102, 482)
         Newemail.Margin = New Padding(3, 4, 3, 3)
         Newemail.Multiline = True
         Newemail.Name = "Newemail"
@@ -192,7 +192,7 @@ Partial Class ForgotEmail
         lblStatusssssss.BackColor = SystemColors.Window
         lblStatusssssss.Font = New Font("Segoe UI Variable Display", 14.25F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         lblStatusssssss.ForeColor = Color.Green
-        lblStatusssssss.Location = New Point(447, 336)
+        lblStatusssssss.Location = New Point(102, 407)
         lblStatusssssss.Name = "lblStatusssssss"
         lblStatusssssss.Size = New Size(56, 26)
         lblStatusssssss.TabIndex = 41
@@ -206,9 +206,9 @@ Partial Class ForgotEmail
         Valid.FlatStyle = FlatStyle.Flat
         Valid.Font = New Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Valid.ForeColor = Color.White
-        Valid.Location = New Point(458, 408)
+        Valid.Location = New Point(244, 409)
         Valid.Name = "Valid"
-        Valid.Size = New Size(77, 26)
+        Valid.Size = New Size(291, 26)
         Valid.TabIndex = 42
         Valid.Text = "Set Valid"
         Valid.UseVisualStyleBackColor = False
@@ -217,7 +217,7 @@ Partial Class ForgotEmail
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(631, 788)
+        ClientSize = New Size(631, 749)
         Controls.Add(Valid)
         Controls.Add(lblStatusssssss)
         Controls.Add(Newemail)

@@ -50,7 +50,6 @@ Partial Class Home
         Label13 = New Label()
         PictureBox12 = New PictureBox()
         Addemployee = New Button()
-        Panel1 = New Panel()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox5, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox6, ComponentModel.ISupportInitialize).BeginInit()
@@ -63,7 +62,6 @@ Partial Class Home
         CType(PictureBox10, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox11, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox12, ComponentModel.ISupportInitialize).BeginInit()
-        Panel1.SuspendLayout()
         SuspendLayout()
         ' 
         ' PictureBox1
@@ -385,29 +383,20 @@ Partial Class Home
         Addemployee.ForeColor = Color.White
         Addemployee.Image = CType(resources.GetObject("Addemployee.Image"), Image)
         Addemployee.ImageAlign = ContentAlignment.TopCenter
-        Addemployee.Location = New Point(-7, -10)
+        Addemployee.Location = New Point(73, 483)
         Addemployee.Name = "Addemployee"
         Addemployee.Padding = New Padding(0, 31, 0, 0)
-        Addemployee.Size = New Size(359, 185)
+        Addemployee.Size = New Size(220, 194)
         Addemployee.TabIndex = 31
-        Addemployee.Text = vbCrLf & "Add Employee" & vbCrLf & "Register new staff members"
+        Addemployee.Text = vbCrLf & vbCrLf & "Add Employee" & vbCrLf & "Register new staff members"
         Addemployee.UseVisualStyleBackColor = False
-        ' 
-        ' Panel1
-        ' 
-        Panel1.Anchor = AnchorStyles.Top
-        Panel1.Controls.Add(Addemployee)
-        Panel1.Location = New Point(380, 535)
-        Panel1.Name = "Panel1"
-        Panel1.Size = New Size(347, 164)
-        Panel1.TabIndex = 32
         ' 
         ' Home
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1124, 762)
-        Controls.Add(Panel1)
+        Controls.Add(Addemployee)
         Controls.Add(PictureBox10)
         Controls.Add(PictureBox11)
         Controls.Add(deletecount)
@@ -449,7 +438,6 @@ Partial Class Home
         CType(PictureBox10, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBox11, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBox12, ComponentModel.ISupportInitialize).EndInit()
-        Panel1.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -481,5 +469,4 @@ Partial Class Home
     Friend WithEvents Label13 As Label
     Friend WithEvents PictureBox12 As PictureBox
     Friend WithEvents Addemployee As Button
-    Friend WithEvents Panel1 As Panel
 End Class

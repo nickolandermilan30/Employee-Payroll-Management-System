@@ -40,8 +40,14 @@ Partial Class AddEmployee
         Label5 = New Label()
         email = New TextBox()
         Label4 = New Label()
+        sex = New ComboBox()
+        Label9 = New Label()
         Label8 = New Label()
         Panel3 = New Panel()
+        Label20 = New Label()
+        Label19 = New Label()
+        mothersname = New TextBox()
+        save = New Button()
         Status = New ComboBox()
         Label16 = New Label()
         showpassword = New CheckBox()
@@ -49,12 +55,8 @@ Partial Class AddEmployee
         Passwordemployee = New TextBox()
         Label15 = New Label()
         Label14 = New Label()
-        Panel4 = New Panel()
-        save = New Button()
-        sex = New ComboBox()
         Label13 = New Label()
         contactnumber = New TextBox()
-        Label9 = New Label()
         datehired = New DateTimePicker()
         Label10 = New Label()
         Label11 = New Label()
@@ -70,7 +72,6 @@ Partial Class AddEmployee
         Panel1.SuspendLayout()
         Panel2.SuspendLayout()
         Panel3.SuspendLayout()
-        Panel4.SuspendLayout()
         Panel5.SuspendLayout()
         SuspendLayout()
         ' 
@@ -162,7 +163,9 @@ Partial Class AddEmployee
         Panel2.Controls.Add(Label5)
         Panel2.Controls.Add(email)
         Panel2.Controls.Add(Label4)
+        Panel2.Controls.Add(sex)
         Panel2.Controls.Add(fullname)
+        Panel2.Controls.Add(Label9)
         Panel2.Location = New Point(39, 99)
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(574, 241)
@@ -191,7 +194,7 @@ Partial Class AddEmployee
         ' ComboBox1
         ' 
         ComboBox1.FormattingEnabled = True
-        ComboBox1.Location = New Point(320, 133)
+        ComboBox1.Location = New Point(320, 130)
         ComboBox1.Name = "ComboBox1"
         ComboBox1.Size = New Size(222, 23)
         ComboBox1.TabIndex = 20
@@ -202,11 +205,11 @@ Partial Class AddEmployee
         Label7.BackColor = SystemColors.Control
         Label7.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label7.ForeColor = Color.Black
-        Label7.Location = New Point(320, 114)
+        Label7.Location = New Point(320, 111)
         Label7.Name = "Label7"
-        Label7.Size = New Size(35, 16)
+        Label7.Size = New Size(93, 16)
         Label7.TabIndex = 19
-        Label7.Text = "Role"
+        Label7.Text = "Account Role"
         ' 
         ' birthday
         ' 
@@ -259,6 +262,26 @@ Partial Class AddEmployee
         Label4.TabIndex = 12
         Label4.Text = "Fullname"
         ' 
+        ' sex
+        ' 
+        sex.FormattingEnabled = True
+        sex.Location = New Point(320, 187)
+        sex.Name = "sex"
+        sex.Size = New Size(222, 23)
+        sex.TabIndex = 21
+        ' 
+        ' Label9
+        ' 
+        Label9.AutoSize = True
+        Label9.BackColor = SystemColors.Control
+        Label9.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label9.ForeColor = Color.Black
+        Label9.Location = New Point(323, 165)
+        Label9.Name = "Label9"
+        Label9.Size = New Size(29, 16)
+        Label9.TabIndex = 19
+        Label9.Text = "Sex"
+        ' 
         ' Label8
         ' 
         Label8.AutoSize = True
@@ -274,6 +297,10 @@ Partial Class AddEmployee
         ' Panel3
         ' 
         Panel3.BorderStyle = BorderStyle.FixedSingle
+        Panel3.Controls.Add(Label20)
+        Panel3.Controls.Add(Label19)
+        Panel3.Controls.Add(mothersname)
+        Panel3.Controls.Add(save)
         Panel3.Controls.Add(Status)
         Panel3.Controls.Add(Label16)
         Panel3.Controls.Add(showpassword)
@@ -281,26 +308,72 @@ Partial Class AddEmployee
         Panel3.Controls.Add(Passwordemployee)
         Panel3.Controls.Add(Label15)
         Panel3.Controls.Add(Label14)
-        Panel3.Controls.Add(Panel4)
-        Panel3.Controls.Add(sex)
         Panel3.Controls.Add(Label13)
         Panel3.Controls.Add(contactnumber)
-        Panel3.Controls.Add(Label9)
         Panel3.Controls.Add(datehired)
         Panel3.Controls.Add(Label10)
         Panel3.Controls.Add(Label11)
         Panel3.Controls.Add(salary)
         Panel3.Controls.Add(Label12)
         Panel3.Controls.Add(position)
-        Panel3.Location = New Point(39, 378)
+        Panel3.Location = New Point(39, 379)
         Panel3.Name = "Panel3"
         Panel3.Size = New Size(574, 339)
         Panel3.TabIndex = 13
         ' 
+        ' Label20
+        ' 
+        Label20.Anchor = AnchorStyles.Top
+        Label20.AutoSize = True
+        Label20.BackColor = SystemColors.Control
+        Label20.Font = New Font("Century Gothic", 8.25F, FontStyle.Italic, GraphicsUnit.Point, CByte(0))
+        Label20.ForeColor = Color.DarkOliveGreen
+        Label20.Location = New Point(19, 291)
+        Label20.Name = "Label20"
+        Label20.Size = New Size(151, 15)
+        Label20.TabIndex = 42
+        Label20.Text = "Backup question for email"
+        ' 
+        ' Label19
+        ' 
+        Label19.AutoSize = True
+        Label19.BackColor = SystemColors.Control
+        Label19.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label19.ForeColor = Color.Black
+        Label19.Location = New Point(18, 240)
+        Label19.Name = "Label19"
+        Label19.Size = New Size(312, 16)
+        Label19.TabIndex = 33
+        Label19.Text = "What is your favorite book or movie character?"
+        ' 
+        ' mothersname
+        ' 
+        mothersname.BorderStyle = BorderStyle.FixedSingle
+        mothersname.Location = New Point(19, 265)
+        mothersname.Name = "mothersname"
+        mothersname.Size = New Size(249, 23)
+        mothersname.TabIndex = 32
+        ' 
+        ' save
+        ' 
+        save.BackColor = Color.DodgerBlue
+        save.FlatStyle = FlatStyle.Flat
+        save.Font = New Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        save.ForeColor = SystemColors.Window
+        save.Image = CType(resources.GetObject("save.Image"), Image)
+        save.ImageAlign = ContentAlignment.MiddleLeft
+        save.Location = New Point(381, 265)
+        save.Name = "save"
+        save.Padding = New Padding(20, 0, 0, 0)
+        save.Size = New Size(161, 56)
+        save.TabIndex = 23
+        save.Text = "Save"
+        save.UseVisualStyleBackColor = False
+        ' 
         ' Status
         ' 
         Status.FormattingEnabled = True
-        Status.Location = New Point(320, 212)
+        Status.Location = New Point(320, 131)
         Status.Name = "Status"
         Status.Size = New Size(222, 23)
         Status.TabIndex = 31
@@ -311,7 +384,7 @@ Partial Class AddEmployee
         Label16.BackColor = SystemColors.Control
         Label16.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label16.ForeColor = Color.Black
-        Label16.Location = New Point(320, 190)
+        Label16.Location = New Point(320, 109)
         Label16.Name = "Label16"
         Label16.Size = New Size(45, 16)
         Label16.TabIndex = 30
@@ -320,7 +393,7 @@ Partial Class AddEmployee
         ' showpassword
         ' 
         showpassword.AutoSize = True
-        showpassword.Location = New Point(160, 291)
+        showpassword.Location = New Point(434, 215)
         showpassword.Name = "showpassword"
         showpassword.Size = New Size(108, 19)
         showpassword.TabIndex = 29
@@ -333,7 +406,7 @@ Partial Class AddEmployee
         Password.BackColor = SystemColors.Control
         Password.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Password.ForeColor = Color.Black
-        Password.Location = New Point(19, 243)
+        Password.Location = New Point(320, 167)
         Password.Name = "Password"
         Password.Size = New Size(67, 16)
         Password.TabIndex = 28
@@ -342,9 +415,9 @@ Partial Class AddEmployee
         ' Passwordemployee
         ' 
         Passwordemployee.BorderStyle = BorderStyle.FixedSingle
-        Passwordemployee.Location = New Point(19, 262)
+        Passwordemployee.Location = New Point(320, 186)
         Passwordemployee.Name = "Passwordemployee"
-        Passwordemployee.Size = New Size(249, 23)
+        Passwordemployee.Size = New Size(222, 23)
         Passwordemployee.TabIndex = 27
         Passwordemployee.UseSystemPasswordChar = True
         ' 
@@ -354,7 +427,7 @@ Partial Class AddEmployee
         Label15.BackColor = SystemColors.Control
         Label15.Font = New Font("Century Gothic", 8.25F, FontStyle.Italic, GraphicsUnit.Point, CByte(0))
         Label15.ForeColor = Color.DarkOliveGreen
-        Label15.Location = New Point(323, 100)
+        Label15.Location = New Point(323, 79)
         Label15.Name = "Label15"
         Label15.Size = New Size(89, 15)
         Label15.TabIndex = 26
@@ -366,43 +439,11 @@ Partial Class AddEmployee
         Label14.BackColor = SystemColors.Control
         Label14.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label14.ForeColor = Color.Black
-        Label14.Location = New Point(443, 77)
+        Label14.Location = New Point(443, 56)
         Label14.Name = "Label14"
         Label14.Size = New Size(31, 16)
         Label14.TabIndex = 25
         Label14.Text = "Php"
-        ' 
-        ' Panel4
-        ' 
-        Panel4.Controls.Add(save)
-        Panel4.Location = New Point(394, 262)
-        Panel4.Name = "Panel4"
-        Panel4.Size = New Size(148, 56)
-        Panel4.TabIndex = 24
-        ' 
-        ' save
-        ' 
-        save.BackColor = Color.DodgerBlue
-        save.FlatStyle = FlatStyle.Flat
-        save.Font = New Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        save.ForeColor = SystemColors.Window
-        save.Image = CType(resources.GetObject("save.Image"), Image)
-        save.ImageAlign = ContentAlignment.MiddleLeft
-        save.Location = New Point(-7, -8)
-        save.Name = "save"
-        save.Padding = New Padding(20, 0, 0, 0)
-        save.Size = New Size(164, 72)
-        save.TabIndex = 23
-        save.Text = "Save"
-        save.UseVisualStyleBackColor = False
-        ' 
-        ' sex
-        ' 
-        sex.FormattingEnabled = True
-        sex.Location = New Point(320, 149)
-        sex.Name = "sex"
-        sex.Size = New Size(222, 23)
-        sex.TabIndex = 21
         ' 
         ' Label13
         ' 
@@ -410,7 +451,7 @@ Partial Class AddEmployee
         Label13.BackColor = SystemColors.Control
         Label13.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label13.ForeColor = Color.Black
-        Label13.Location = New Point(18, 176)
+        Label13.Location = New Point(19, 167)
         Label13.Name = "Label13"
         Label13.Size = New Size(114, 16)
         Label13.TabIndex = 22
@@ -419,26 +460,14 @@ Partial Class AddEmployee
         ' contactnumber
         ' 
         contactnumber.BorderStyle = BorderStyle.FixedSingle
-        contactnumber.Location = New Point(18, 195)
+        contactnumber.Location = New Point(19, 186)
         contactnumber.Name = "contactnumber"
         contactnumber.Size = New Size(249, 23)
         contactnumber.TabIndex = 21
         ' 
-        ' Label9
-        ' 
-        Label9.AutoSize = True
-        Label9.BackColor = SystemColors.Control
-        Label9.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        Label9.ForeColor = Color.Black
-        Label9.Location = New Point(320, 127)
-        Label9.Name = "Label9"
-        Label9.Size = New Size(29, 16)
-        Label9.TabIndex = 19
-        Label9.Text = "Sex"
-        ' 
         ' datehired
         ' 
-        datehired.Location = New Point(18, 131)
+        datehired.Location = New Point(19, 115)
         datehired.Name = "datehired"
         datehired.Size = New Size(249, 23)
         datehired.TabIndex = 17
@@ -449,7 +478,7 @@ Partial Class AddEmployee
         Label10.BackColor = SystemColors.Control
         Label10.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label10.ForeColor = Color.Black
-        Label10.Location = New Point(18, 112)
+        Label10.Location = New Point(19, 96)
         Label10.Name = "Label10"
         Label10.Size = New Size(75, 16)
         Label10.TabIndex = 16
@@ -461,7 +490,7 @@ Partial Class AddEmployee
         Label11.BackColor = SystemColors.Control
         Label11.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label11.ForeColor = Color.Black
-        Label11.Location = New Point(320, 55)
+        Label11.Location = New Point(320, 34)
         Label11.Name = "Label11"
         Label11.Size = New Size(49, 16)
         Label11.TabIndex = 14
@@ -470,7 +499,7 @@ Partial Class AddEmployee
         ' salary
         ' 
         salary.BorderStyle = BorderStyle.FixedSingle
-        salary.Location = New Point(320, 74)
+        salary.Location = New Point(320, 53)
         salary.Name = "salary"
         salary.Size = New Size(117, 23)
         salary.TabIndex = 13
@@ -481,7 +510,7 @@ Partial Class AddEmployee
         Label12.BackColor = SystemColors.Control
         Label12.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label12.ForeColor = Color.Black
-        Label12.Location = New Point(18, 55)
+        Label12.Location = New Point(18, 34)
         Label12.Name = "Label12"
         Label12.Size = New Size(56, 16)
         Label12.TabIndex = 12
@@ -490,7 +519,7 @@ Partial Class AddEmployee
         ' position
         ' 
         position.BorderStyle = BorderStyle.FixedSingle
-        position.Location = New Point(18, 74)
+        position.Location = New Point(18, 53)
         position.Name = "position"
         position.Size = New Size(249, 23)
         position.TabIndex = 8
@@ -571,7 +600,6 @@ Partial Class AddEmployee
         Panel2.PerformLayout()
         Panel3.ResumeLayout(False)
         Panel3.PerformLayout()
-        Panel4.ResumeLayout(False)
         Panel5.ResumeLayout(False)
         Panel5.PerformLayout()
         ResumeLayout(False)
@@ -606,8 +634,6 @@ Partial Class AddEmployee
     Friend WithEvents Label13 As Label
     Friend WithEvents contactnumber As TextBox
     Friend WithEvents sex As ComboBox
-    Friend WithEvents Panel4 As Panel
-    Friend WithEvents save As Button
     Friend WithEvents Label15 As Label
     Friend WithEvents Label14 As Label
     Friend WithEvents Password As Label
@@ -621,4 +647,8 @@ Partial Class AddEmployee
     Friend WithEvents Label18 As Label
     Friend WithEvents Tableperunit As Panel
     Friend WithEvents btnAddUnit As Button
+    Friend WithEvents save As Button
+    Friend WithEvents Label19 As Label
+    Friend WithEvents mothersname As TextBox
+    Friend WithEvents Label20 As Label
 End Class

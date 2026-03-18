@@ -41,7 +41,6 @@ Partial Class Payroll
         Label8 = New Label()
         Notes = New TextBox()
         Label9 = New Label()
-        Panel1 = New Panel()
         Pay = New Button()
         Panel3 = New Panel()
         late = New Label()
@@ -67,7 +66,6 @@ Partial Class Payroll
         lblSemester = New Label()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBox2, ComponentModel.ISupportInitialize).BeginInit()
-        Panel1.SuspendLayout()
         Panel3.SuspendLayout()
         CType(PictureBox4, ComponentModel.ISupportInitialize).BeginInit()
         Panel2.SuspendLayout()
@@ -82,7 +80,7 @@ Partial Class Payroll
         ' 
         PictureBox1.Anchor = AnchorStyles.Top
         PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), Image)
-        PictureBox1.Location = New Point(70, 212)
+        PictureBox1.Location = New Point(70, 151)
         PictureBox1.Name = "PictureBox1"
         PictureBox1.Size = New Size(449, 252)
         PictureBox1.SizeMode = PictureBoxSizeMode.StretchImage
@@ -104,7 +102,7 @@ Partial Class Payroll
         ' 
         employee.Anchor = AnchorStyles.Top
         employee.FormattingEnabled = True
-        employee.Location = New Point(108, 284)
+        employee.Location = New Point(108, 223)
         employee.Name = "employee"
         employee.Size = New Size(361, 23)
         employee.TabIndex = 7
@@ -129,7 +127,7 @@ Partial Class Payroll
         Label3.BackColor = SystemColors.Window
         Label3.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         Label3.ForeColor = SystemColors.ActiveCaptionText
-        Label3.Location = New Point(108, 259)
+        Label3.Location = New Point(108, 198)
         Label3.Name = "Label3"
         Label3.Size = New Size(98, 19)
         Label3.TabIndex = 9
@@ -143,7 +141,7 @@ Partial Class Payroll
         Label4.BackColor = SystemColors.Window
         Label4.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         Label4.ForeColor = SystemColors.ActiveCaptionText
-        Label4.Location = New Point(108, 323)
+        Label4.Location = New Point(108, 262)
         Label4.Name = "Label4"
         Label4.Size = New Size(68, 19)
         Label4.TabIndex = 11
@@ -153,7 +151,7 @@ Partial Class Payroll
         ' Month
         ' 
         Month.Anchor = AnchorStyles.Top
-        Month.Location = New Point(108, 348)
+        Month.Location = New Point(108, 287)
         Month.Name = "Month"
         Month.Size = New Size(114, 23)
         Month.TabIndex = 12
@@ -165,7 +163,7 @@ Partial Class Payroll
         Label5.BackColor = SystemColors.Window
         Label5.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         Label5.ForeColor = SystemColors.ActiveCaptionText
-        Label5.Location = New Point(108, 389)
+        Label5.Location = New Point(108, 328)
         Label5.Name = "Label5"
         Label5.Size = New Size(56, 19)
         Label5.TabIndex = 14
@@ -175,7 +173,7 @@ Partial Class Payroll
         ' Year
         ' 
         Year.Anchor = AnchorStyles.Top
-        Year.Location = New Point(108, 414)
+        Year.Location = New Point(108, 353)
         Year.Name = "Year"
         Year.Size = New Size(173, 23)
         Year.TabIndex = 15
@@ -188,7 +186,7 @@ Partial Class Payroll
         Label6.BackColor = SystemColors.Window
         Label6.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         Label6.ForeColor = SystemColors.ActiveCaptionText
-        Label6.Location = New Point(604, 259)
+        Label6.Location = New Point(604, 198)
         Label6.Name = "Label6"
         Label6.Size = New Size(64, 19)
         Label6.TabIndex = 16
@@ -199,7 +197,7 @@ Partial Class Payroll
         ' 
         Salary.Anchor = AnchorStyles.Top
         Salary.BorderStyle = BorderStyle.FixedSingle
-        Salary.Location = New Point(604, 284)
+        Salary.Location = New Point(604, 223)
         Salary.Name = "Salary"
         Salary.Size = New Size(234, 23)
         Salary.TabIndex = 17
@@ -211,7 +209,7 @@ Partial Class Payroll
         Label15.BackColor = SystemColors.Window
         Label15.Font = New Font("Century Gothic", 8.25F, FontStyle.Italic, GraphicsUnit.Point, CByte(0))
         Label15.ForeColor = Color.DarkOliveGreen
-        Label15.Location = New Point(604, 310)
+        Label15.Location = New Point(604, 249)
         Label15.Name = "Label15"
         Label15.Size = New Size(86, 15)
         Label15.TabIndex = 27
@@ -221,7 +219,7 @@ Partial Class Payroll
         ' 
         PictureBox2.Anchor = AnchorStyles.Top
         PictureBox2.Image = CType(resources.GetObject("PictureBox2.Image"), Image)
-        PictureBox2.Location = New Point(575, 212)
+        PictureBox2.Location = New Point(575, 151)
         PictureBox2.Name = "PictureBox2"
         PictureBox2.Size = New Size(449, 362)
         PictureBox2.SizeMode = PictureBoxSizeMode.StretchImage
@@ -235,7 +233,7 @@ Partial Class Payroll
         Label7.BackColor = SystemColors.Window
         Label7.Font = New Font("Century Gothic", 8.25F, FontStyle.Italic, GraphicsUnit.Point, CByte(0))
         Label7.ForeColor = Color.DarkOliveGreen
-        Label7.Location = New Point(604, 399)
+        Label7.Location = New Point(604, 338)
         Label7.Name = "Label7"
         Label7.Size = New Size(86, 15)
         Label7.TabIndex = 31
@@ -245,7 +243,7 @@ Partial Class Payroll
         ' 
         Deduction.Anchor = AnchorStyles.Top
         Deduction.BorderStyle = BorderStyle.FixedSingle
-        Deduction.Location = New Point(604, 373)
+        Deduction.Location = New Point(604, 312)
         Deduction.Name = "Deduction"
         Deduction.Size = New Size(137, 23)
         Deduction.TabIndex = 30
@@ -257,7 +255,7 @@ Partial Class Payroll
         Label8.BackColor = SystemColors.Window
         Label8.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         Label8.ForeColor = SystemColors.ActiveCaptionText
-        Label8.Location = New Point(604, 348)
+        Label8.Location = New Point(604, 287)
         Label8.Name = "Label8"
         Label8.Size = New Size(96, 19)
         Label8.TabIndex = 29
@@ -268,7 +266,7 @@ Partial Class Payroll
         ' 
         Notes.Anchor = AnchorStyles.Top
         Notes.BorderStyle = BorderStyle.FixedSingle
-        Notes.Location = New Point(604, 461)
+        Notes.Location = New Point(604, 400)
         Notes.Multiline = True
         Notes.Name = "Notes"
         Notes.Size = New Size(389, 83)
@@ -281,21 +279,12 @@ Partial Class Payroll
         Label9.BackColor = SystemColors.Window
         Label9.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         Label9.ForeColor = SystemColors.ActiveCaptionText
-        Label9.Location = New Point(604, 432)
+        Label9.Location = New Point(604, 371)
         Label9.Name = "Label9"
         Label9.Size = New Size(51, 19)
         Label9.TabIndex = 32
         Label9.Text = "Notes"
         Label9.TextAlign = ContentAlignment.TopCenter
-        ' 
-        ' Panel1
-        ' 
-        Panel1.Anchor = AnchorStyles.Top
-        Panel1.Controls.Add(Pay)
-        Panel1.Location = New Point(873, 598)
-        Panel1.Name = "Panel1"
-        Panel1.Size = New Size(151, 54)
-        Panel1.TabIndex = 34
         ' 
         ' Pay
         ' 
@@ -303,7 +292,7 @@ Partial Class Payroll
         Pay.ForeColor = Color.White
         Pay.Image = CType(resources.GetObject("Pay.Image"), Image)
         Pay.ImageAlign = ContentAlignment.MiddleLeft
-        Pay.Location = New Point(-13, -9)
+        Pay.Location = New Point(849, 532)
         Pay.Name = "Pay"
         Pay.Padding = New Padding(25, 0, 0, 0)
         Pay.Size = New Size(175, 74)
@@ -318,7 +307,7 @@ Partial Class Payroll
         Panel3.Controls.Add(late)
         Panel3.Controls.Add(Label11)
         Panel3.Controls.Add(PictureBox4)
-        Panel3.Location = New Point(412, 480)
+        Panel3.Location = New Point(412, 419)
         Panel3.Name = "Panel3"
         Panel3.Size = New Size(108, 94)
         Panel3.TabIndex = 35
@@ -366,7 +355,7 @@ Partial Class Payroll
         Panel2.Controls.Add(Halfday)
         Panel2.Controls.Add(Label12)
         Panel2.Controls.Add(PictureBox3)
-        Panel2.Location = New Point(298, 480)
+        Panel2.Location = New Point(298, 419)
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(108, 94)
         Panel2.TabIndex = 36
@@ -414,7 +403,7 @@ Partial Class Payroll
         Panel4.Controls.Add(Absent)
         Panel4.Controls.Add(Label14)
         Panel4.Controls.Add(PictureBox5)
-        Panel4.Location = New Point(184, 480)
+        Panel4.Location = New Point(184, 419)
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(108, 94)
         Panel4.TabIndex = 37
@@ -462,7 +451,7 @@ Partial Class Payroll
         Panel5.Controls.Add(Present)
         Panel5.Controls.Add(Label17)
         Panel5.Controls.Add(PictureBox6)
-        Panel5.Location = New Point(70, 480)
+        Panel5.Location = New Point(70, 419)
         Panel5.Name = "Panel5"
         Panel5.Size = New Size(108, 94)
         Panel5.TabIndex = 38
@@ -507,7 +496,7 @@ Partial Class Payroll
         ' 
         daysdate.Anchor = AnchorStyles.Top
         daysdate.BorderStyle = BorderStyle.FixedSingle
-        daysdate.Location = New Point(238, 348)
+        daysdate.Location = New Point(238, 287)
         daysdate.Name = "daysdate"
         daysdate.Size = New Size(85, 23)
         daysdate.TabIndex = 39
@@ -519,7 +508,7 @@ Partial Class Payroll
         Label10.BackColor = SystemColors.Window
         Label10.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         Label10.ForeColor = SystemColors.ActiveCaptionText
-        Label10.Location = New Point(238, 323)
+        Label10.Location = New Point(238, 262)
         Label10.Name = "Label10"
         Label10.Size = New Size(56, 19)
         Label10.TabIndex = 40
@@ -532,7 +521,7 @@ Partial Class Payroll
         deductionbtn.BackColor = Color.OrangeRed
         deductionbtn.FlatStyle = FlatStyle.Flat
         deductionbtn.ForeColor = Color.White
-        deductionbtn.Location = New Point(747, 368)
+        deductionbtn.Location = New Point(747, 304)
         deductionbtn.Name = "deductionbtn"
         deductionbtn.Size = New Size(80, 35)
         deductionbtn.TabIndex = 41
@@ -542,21 +531,22 @@ Partial Class Payroll
         ' Listofdeduction
         ' 
         Listofdeduction.Anchor = AnchorStyles.Top
+        Listofdeduction.BackColor = SystemColors.ButtonHighlight
         Listofdeduction.BorderStyle = BorderStyle.None
         Listofdeduction.ForeColor = Color.ForestGreen
         Listofdeduction.FormattingEnabled = True
         Listofdeduction.ItemHeight = 15
-        Listofdeduction.Location = New Point(833, 368)
+        Listofdeduction.Location = New Point(844, 298)
         Listofdeduction.Name = "Listofdeduction"
-        Listofdeduction.Size = New Size(160, 75)
+        Listofdeduction.Size = New Size(144, 90)
         Listofdeduction.TabIndex = 42
         ' 
         ' Units
         ' 
         Units.Anchor = AnchorStyles.Top
-        Units.Location = New Point(67, 636)
+        Units.Location = New Point(67, 532)
         Units.Name = "Units"
-        Units.Size = New Size(787, 226)
+        Units.Size = New Size(776, 244)
         Units.TabIndex = 43
         ' 
         ' lblSemester
@@ -576,7 +566,8 @@ Partial Class Payroll
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1092, 890)
+        ClientSize = New Size(1092, 788)
+        Controls.Add(Pay)
         Controls.Add(lblSemester)
         Controls.Add(Units)
         Controls.Add(Listofdeduction)
@@ -587,7 +578,6 @@ Partial Class Payroll
         Controls.Add(Panel4)
         Controls.Add(Panel2)
         Controls.Add(Panel3)
-        Controls.Add(Panel1)
         Controls.Add(Notes)
         Controls.Add(Label9)
         Controls.Add(Label7)
@@ -611,7 +601,6 @@ Partial Class Payroll
         Text = "Payroll"
         CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBox2, ComponentModel.ISupportInitialize).EndInit()
-        Panel1.ResumeLayout(False)
         Panel3.ResumeLayout(False)
         Panel3.PerformLayout()
         CType(PictureBox4, ComponentModel.ISupportInitialize).EndInit()
@@ -646,7 +635,6 @@ Partial Class Payroll
     Friend WithEvents Label8 As Label
     Friend WithEvents Notes As TextBox
     Friend WithEvents Label9 As Label
-    Friend WithEvents Panel1 As Panel
     Friend WithEvents Pay As Button
     Friend WithEvents Panel3 As Panel
     Friend WithEvents late As Label

@@ -37,6 +37,8 @@ Partial Class HomeEmployee
         attendancePanel = New Panel()
         Label1 = New Label()
         Panel5 = New Panel()
+        TimeOut = New DateTimePicker()
+        TimeIn = New DateTimePicker()
         Label9 = New Label()
         Label8 = New Label()
         Label6 = New Label()
@@ -46,8 +48,6 @@ Partial Class HomeEmployee
         Label2 = New Label()
         Panel6 = New Panel()
         Setscedule = New Button()
-        TimeIn = New DateTimePicker()
-        TimeOut = New DateTimePicker()
         Panel4.SuspendLayout()
         Panel1.SuspendLayout()
         Panel2.SuspendLayout()
@@ -193,7 +193,7 @@ Partial Class HomeEmployee
         attendancePanel.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         attendancePanel.Location = New Point(88, 215)
         attendancePanel.Name = "attendancePanel"
-        attendancePanel.Size = New Size(671, 419)
+        attendancePanel.Size = New Size(671, 447)
         attendancePanel.TabIndex = 14
         ' 
         ' Label1
@@ -223,25 +223,39 @@ Partial Class HomeEmployee
         Panel5.Controls.Add(Panel6)
         Panel5.Location = New Point(777, 212)
         Panel5.Name = "Panel5"
-        Panel5.Size = New Size(269, 419)
+        Panel5.Size = New Size(269, 450)
         Panel5.TabIndex = 15
+        ' 
+        ' TimeOut
+        ' 
+        TimeOut.Location = New Point(23, 261)
+        TimeOut.Name = "TimeOut"
+        TimeOut.Size = New Size(230, 23)
+        TimeOut.TabIndex = 17
+        ' 
+        ' TimeIn
+        ' 
+        TimeIn.Location = New Point(23, 211)
+        TimeIn.Name = "TimeIn"
+        TimeIn.Size = New Size(230, 23)
+        TimeIn.TabIndex = 0
         ' 
         ' Label9
         ' 
         Label9.AutoSize = True
         Label9.Font = New Font("Century Gothic", 21.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label9.ForeColor = Color.White
-        Label9.Location = New Point(46, 28)
+        Label9.Location = New Point(37, 25)
         Label9.Name = "Label9"
-        Label9.Size = New Size(189, 36)
+        Label9.Size = New Size(198, 36)
         Label9.TabIndex = 16
-        Label9.Text = "Set Scedule "
+        Label9.Text = "Set Schedule"
         ' 
         ' Label8
         ' 
         Label8.AutoSize = True
         Label8.ForeColor = Color.White
-        Label8.Location = New Point(20, 277)
+        Label8.Location = New Point(20, 243)
         Label8.Name = "Label8"
         Label8.Size = New Size(55, 15)
         Label8.TabIndex = 13
@@ -251,7 +265,7 @@ Partial Class HomeEmployee
         ' 
         Label6.AutoSize = True
         Label6.ForeColor = Color.White
-        Label6.Location = New Point(20, 218)
+        Label6.Location = New Point(20, 193)
         Label6.Name = "Label6"
         Label6.Size = New Size(50, 15)
         Label6.TabIndex = 11
@@ -260,7 +274,7 @@ Partial Class HomeEmployee
         ' Status
         ' 
         Status.FormattingEnabled = True
-        Status.Location = New Point(23, 174)
+        Status.Location = New Point(23, 163)
         Status.Name = "Status"
         Status.Size = New Size(230, 23)
         Status.TabIndex = 10
@@ -269,7 +283,7 @@ Partial Class HomeEmployee
         ' 
         Label4.AutoSize = True
         Label4.ForeColor = Color.White
-        Label4.Location = New Point(20, 153)
+        Label4.Location = New Point(20, 142)
         Label4.Name = "Label4"
         Label4.Size = New Size(39, 15)
         Label4.TabIndex = 9
@@ -296,7 +310,7 @@ Partial Class HomeEmployee
         ' 
         Panel6.Anchor = AnchorStyles.Top
         Panel6.Controls.Add(Setscedule)
-        Panel6.Location = New Point(23, 359)
+        Panel6.Location = New Point(23, 318)
         Panel6.Name = "Panel6"
         Panel6.Size = New Size(230, 44)
         Panel6.TabIndex = 5
@@ -313,20 +327,6 @@ Partial Class HomeEmployee
         Setscedule.TabIndex = 3
         Setscedule.Text = "Set "
         Setscedule.UseVisualStyleBackColor = False
-        ' 
-        ' TimeIn
-        ' 
-        TimeIn.Location = New Point(23, 236)
-        TimeIn.Name = "TimeIn"
-        TimeIn.Size = New Size(230, 23)
-        TimeIn.TabIndex = 0
-        ' 
-        ' TimeOut
-        ' 
-        TimeOut.Location = New Point(23, 295)
-        TimeOut.Name = "TimeOut"
-        TimeOut.Size = New Size(230, 23)
-        TimeOut.TabIndex = 17
         ' 
         ' HomeEmployee
         ' 

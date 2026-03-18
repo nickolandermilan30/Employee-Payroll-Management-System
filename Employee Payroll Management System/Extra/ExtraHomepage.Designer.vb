@@ -53,14 +53,14 @@ Partial Class ExtraHomepage
         Panel1.Dock = DockStyle.Left
         Panel1.Location = New Point(0, 0)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(190, 782)
+        Panel1.Size = New Size(190, 749)
         Panel1.TabIndex = 1
         ' 
         ' Panel4
         ' 
         Panel4.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         Panel4.Controls.Add(logoutbtn)
-        Panel4.Location = New Point(0, 687)
+        Panel4.Location = New Point(0, 654)
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(190, 56)
         Panel4.TabIndex = 8
@@ -108,7 +108,7 @@ Partial Class ExtraHomepage
         ' 
         Panel5.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         Panel5.Controls.Add(logout)
-        Panel5.Location = New Point(6, 1392)
+        Panel5.Location = New Point(6, 1359)
         Panel5.Name = "Panel5"
         Panel5.Size = New Size(190, 48)
         Panel5.TabIndex = 7
@@ -131,10 +131,11 @@ Partial Class ExtraHomepage
         ' 
         ' Label1
         ' 
+        Label1.Anchor = AnchorStyles.Top
         Label1.AutoSize = True
         Label1.Font = New Font("Century Gothic", 8.25F)
         Label1.ForeColor = Color.White
-        Label1.Location = New Point(83, 56)
+        Label1.Location = New Point(83, 138)
         Label1.Name = "Label1"
         Label1.Size = New Size(34, 16)
         Label1.TabIndex = 2
@@ -142,10 +143,11 @@ Partial Class ExtraHomepage
         ' 
         ' username
         ' 
+        username.Anchor = AnchorStyles.Top
         username.AutoSize = True
         username.Font = New Font("Century Gothic", 12F, FontStyle.Bold)
         username.ForeColor = Color.White
-        username.Location = New Point(81, 34)
+        username.Location = New Point(30, 116)
         username.Name = "username"
         username.Size = New Size(87, 19)
         username.TabIndex = 1
@@ -155,9 +157,9 @@ Partial Class ExtraHomepage
         ' 
         PictureBox1.BackColor = Color.Transparent
         PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), Image)
-        PictureBox1.Location = New Point(21, 31)
+        PictureBox1.Location = New Point(21, 25)
         PictureBox1.Name = "PictureBox1"
-        PictureBox1.Size = New Size(43, 41)
+        PictureBox1.Size = New Size(137, 83)
         PictureBox1.SizeMode = PictureBoxSizeMode.Zoom
         PictureBox1.TabIndex = 0
         PictureBox1.TabStop = False
@@ -168,14 +170,14 @@ Partial Class ExtraHomepage
         View.BackColor = SystemColors.AppWorkspace
         View.Location = New Point(187, 0)
         View.Name = "View"
-        View.Size = New Size(1124, 782)
+        View.Size = New Size(1124, 749)
         View.TabIndex = 2
         ' 
         ' ExtraHomepage
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1313, 782)
+        ClientSize = New Size(1313, 749)
         Controls.Add(View)
         Controls.Add(Panel1)
         Name = "ExtraHomepage"

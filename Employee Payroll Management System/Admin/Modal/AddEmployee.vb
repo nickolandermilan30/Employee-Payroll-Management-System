@@ -28,6 +28,9 @@ Public Class AddEmployee
         salary.Text = "0"
         age.ReadOnly = True
 
+        ' ETO ANG PAG-SET NG 1998 AS MINIMUM YEAR PARA SA DATE HIRED
+        datehired.MinDate = New DateTime(1998, 1, 1)
+
         ' Table UI Setup
         Tableperunit.AutoScroll = True
         Tableperunit.Controls.Clear()
@@ -42,7 +45,9 @@ Public Class AddEmployee
         semester.DropDownStyle = ComboBoxStyle.DropDownList
 
         ComboBox1.Items.Clear()
-        ComboBox1.Items.AddRange(New String() {"Regular", "Part-time", "Faculties"})
+        ' Idinagdag ang Teacher at Attendance Staff dito
+        ComboBox1.Items.AddRange(New String() {"Regular", "Part-time", "Faculties", "Teacher", "Attendance Staff"})
+        ComboBox1.SelectedIndex = -1 ' Para walang default na nakapili agad
         ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
 
         sex.Items.Clear()
@@ -57,18 +62,17 @@ Public Class AddEmployee
 
     ' LOGIC PARA SA "EXTRA" SELECTION
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
-        If ComboBox1.Text = "Part-time" Then
-            ' I-disable ang Semester at Add Unit button
+        ' Listahan ng mga roles na walang subjects/units
+        Dim noSubjectRoles As String() = {"Part-time", "Attendance Staff"}
+
+        If noSubjectRoles.Contains(ComboBox1.Text) Then
             semester.SelectedIndex = -1
             semester.Enabled = False
             btnAddUnit.Enabled = False
-
-            ' Linisin ang existing subjects kung meron man para iwas error sa save
             SubjectRows.Clear()
             Tableperunit.Controls.Clear()
             salary.Text = "0"
         Else
-            ' I-enable ulit kung hindi "Extra"
             semester.Enabled = True
             btnAddUnit.Enabled = True
         End If
@@ -194,8 +198,9 @@ Public Class AddEmployee
     ' SAVE TO DATABASE
     ' =========================
     Private Sub save_Click(sender As Object, e As EventArgs) Handles save.Click
-        ' Validation check depende sa position level
-        If ComboBox1.Text <> "Part-time" Then
+        ' LOGIC PARA SA VALIDATION (Updated)
+        ' Dito natin idedetalye kung sino ang HINDI kailangan mag-input ng subjects/units
+        If ComboBox1.Text <> "Part-time" AndAlso ComboBox1.Text <> "Attendance Staff" Then
             If semester.SelectedIndex = -1 Then
                 MessageBox.Show("Please select a Semester!", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
@@ -239,10 +244,11 @@ Public Class AddEmployee
             Dim transaction = Conn.BeginTransaction()
 
             Try
+                ' 1. I-update ang Query String (Idinagdag ang mothers_name)
                 Dim empQuery = "INSERT INTO employees (fullname, email, password, birthday, age, position_level, job_position, " &
-                               "salary, date_hired, sex, contact_number, status, semester, " &
-                               "subject_names, unit_counts, unit_salaries_breakdown, total_units_overall) " &
-                               "VALUES (@fn, @em, @pw, @bd, @age, @pl, @jp, @sal, @dh, @sex, @cn, @st, @sem, @sn, @uc, @usb, @tuo)"
+               "salary, date_hired, sex, contact_number, mothers_name, status, semester, " &
+               "subject_names, unit_counts, unit_salaries_breakdown, total_units_overall) " &
+               "VALUES (@fn, @em, @pw, @bd, @age, @pl, @jp, @sal, @dh, @sex, @cn, @mn, @st, @sem, @sn, @uc, @usb, @tuo)"
 
                 Dim totalSalVal As Decimal = Decimal.Parse(salary.Text.Replace(",", ""))
 
@@ -258,10 +264,13 @@ Public Class AddEmployee
                     cmd.Parameters.AddWithValue("@dh", datehired.Value.ToString("yyyy-MM-dd"))
                     cmd.Parameters.AddWithValue("@sex", sex.Text)
                     cmd.Parameters.AddWithValue("@cn", contactnumber.Text.Trim)
-                    cmd.Parameters.AddWithValue("@st", Status.Text)
-                    cmd.Parameters.AddWithValue("@sem", If(ComboBox1.Text = "Extra", "N/A", semester.Text))
 
-                    ' Bagong parameters (empty strings kung "Extra")
+                    ' --- ETO ANG DAGDAG PARA SA MOTHERS NAME ---
+                    cmd.Parameters.AddWithValue("@mn", mothersname.Text.Trim)
+
+                    cmd.Parameters.AddWithValue("@st", Status.Text)
+                    cmd.Parameters.AddWithValue("@sem", If(ComboBox1.Text = "Part-time" Or ComboBox1.Text = "Attendance Staff", "N/A", semester.Text))
+
                     cmd.Parameters.AddWithValue("@sn", If(allSubjectNames.Count > 0, String.Join(", ", allSubjectNames), "N/A"))
                     cmd.Parameters.AddWithValue("@uc", If(allUnitCounts.Count > 0, String.Join(", ", allUnitCounts), "0"))
                     cmd.Parameters.AddWithValue("@usb", If(allSalariesRaw.Count > 0, String.Join(" ; ", allSalariesRaw), "N/A"))
@@ -288,6 +297,7 @@ Public Class AddEmployee
 
     Private Sub ClearFields()
         fullname.Clear() : email.Clear() : Passwordemployee.Clear() : position.Clear() : contactnumber.Clear()
+        mothersname.Clear()
         salary.Text = "0" : age.Clear()
         SubjectRows.Clear()
         Tableperunit.Controls.Clear()
@@ -302,6 +312,14 @@ Public Class AddEmployee
     End Sub
 
     Private Sub Status_SelectedIndexChanged(sender As Object, e As EventArgs) Handles Status.SelectedIndexChanged
+
+    End Sub
+
+    Private Sub positionlist_Paint(sender As Object, e As PaintEventArgs)
+
+    End Sub
+
+    Private Sub mothersname_TextChanged(sender As Object, e As EventArgs) Handles mothersname.TextChanged
 
     End Sub
 End Class

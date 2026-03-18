@@ -36,19 +36,22 @@ Partial Class HomepageMonitor
         SalaryHistiory = New Button()
         Panel4 = New Panel()
         View = New Panel()
+        Panel6 = New Panel()
+        monitor = New Button()
         Panel2.SuspendLayout()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
         Panel5.SuspendLayout()
         Panel3.SuspendLayout()
         Panel4.SuspendLayout()
+        Panel6.SuspendLayout()
         SuspendLayout()
         ' 
         ' Panel2
         ' 
         Panel2.Anchor = AnchorStyles.Top
         Panel2.Controls.Add(Home)
-        Panel2.Location = New Point(490, 20)
+        Panel2.Location = New Point(490, 23)
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(116, 44)
         Panel2.TabIndex = 4
@@ -63,7 +66,7 @@ Partial Class HomepageMonitor
         Home.Name = "Home"
         Home.Size = New Size(136, 52)
         Home.TabIndex = 3
-        Home.Text = "Attendance"
+        Home.Text = "Set Leave"
         Home.UseVisualStyleBackColor = False
         ' 
         ' PictureBox1
@@ -102,6 +105,7 @@ Partial Class HomepageMonitor
         ' Panel1
         ' 
         Panel1.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
+        Panel1.Controls.Add(Panel6)
         Panel1.Controls.Add(Panel5)
         Panel1.Controls.Add(Panel3)
         Panel1.Controls.Add(PictureBox1)
@@ -117,9 +121,9 @@ Partial Class HomepageMonitor
         ' 
         Panel5.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         Panel5.Controls.Add(logout)
-        Panel5.Location = New Point(1240, 20)
+        Panel5.Location = New Point(1219, 14)
         Panel5.Name = "Panel5"
-        Panel5.Size = New Size(61, 48)
+        Panel5.Size = New Size(70, 65)
         Panel5.TabIndex = 8
         ' 
         ' logout
@@ -130,10 +134,10 @@ Partial Class HomepageMonitor
         logout.ForeColor = Color.White
         logout.Image = CType(resources.GetObject("logout.Image"), Image)
         logout.ImageAlign = ContentAlignment.MiddleLeft
-        logout.Location = New Point(-8, -9)
+        logout.Location = New Point(-7, -9)
         logout.Name = "logout"
         logout.Padding = New Padding(25, 0, 35, 0)
-        logout.Size = New Size(76, 64)
+        logout.Size = New Size(107, 78)
         logout.TabIndex = 7
         logout.UseVisualStyleBackColor = False
         ' 
@@ -143,7 +147,7 @@ Partial Class HomepageMonitor
         Panel3.Controls.Add(Salary)
         Panel3.Controls.Add(SalaryHistiory)
         Panel3.Font = New Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        Panel3.Location = New Point(644, 20)
+        Panel3.Location = New Point(632, 23)
         Panel3.Name = "Panel3"
         Panel3.Size = New Size(148, 44)
         Panel3.TabIndex = 5
@@ -180,7 +184,7 @@ Partial Class HomepageMonitor
         Panel4.BackColor = Color.FromArgb(CByte(250), CByte(129), CByte(18))
         Panel4.Controls.Add(Label1)
         Panel4.Controls.Add(lblUsername)
-        Panel4.Location = New Point(992, 20)
+        Panel4.Location = New Point(960, 20)
         Panel4.Name = "Panel4"
         Panel4.Size = New Size(235, 48)
         Panel4.TabIndex = 6
@@ -191,14 +195,36 @@ Partial Class HomepageMonitor
         View.BackColor = SystemColors.AppWorkspace
         View.Location = New Point(0, 83)
         View.Name = "View"
-        View.Size = New Size(1314, 701)
+        View.Size = New Size(1314, 668)
         View.TabIndex = 2
+        ' 
+        ' Panel6
+        ' 
+        Panel6.Anchor = AnchorStyles.Top
+        Panel6.Controls.Add(monitor)
+        Panel6.Location = New Point(357, 24)
+        Panel6.Name = "Panel6"
+        Panel6.Size = New Size(116, 44)
+        Panel6.TabIndex = 5
+        ' 
+        ' monitor
+        ' 
+        monitor.BackColor = Color.FromArgb(CByte(38), CByte(49), CByte(64))
+        monitor.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        monitor.ForeColor = Color.White
+        monitor.ImageAlign = ContentAlignment.MiddleLeft
+        monitor.Location = New Point(-9, -4)
+        monitor.Name = "monitor"
+        monitor.Size = New Size(136, 52)
+        monitor.TabIndex = 3
+        monitor.Text = "Attendance"
+        monitor.UseVisualStyleBackColor = False
         ' 
         ' HomepageMonitor
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1313, 782)
+        ClientSize = New Size(1313, 749)
         Controls.Add(Panel1)
         Controls.Add(View)
         Name = "HomepageMonitor"
@@ -211,6 +237,7 @@ Partial Class HomepageMonitor
         Panel3.ResumeLayout(False)
         Panel4.ResumeLayout(False)
         Panel4.PerformLayout()
+        Panel6.ResumeLayout(False)
         ResumeLayout(False)
     End Sub
     Friend WithEvents Panel2 As Panel
@@ -226,4 +253,6 @@ Partial Class HomepageMonitor
     Friend WithEvents logout As Button
     Friend WithEvents Salary As Button
     Friend WithEvents View As Panel
+    Friend WithEvents Panel6 As Panel
+    Friend WithEvents monitor As Button
 End Class

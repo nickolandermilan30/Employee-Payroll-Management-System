@@ -4,29 +4,29 @@ Imports Employee_Payroll_Management_System.Staff
 
 Public Class LogIn
 
-    ' =========================
-    ' DATABASE CONNECTION
-    ' =========================
-    Private Conn As New MySqlConnection(
-        "Server=127.0.0.1;Database=payroll_system;Uid=root;Pwd=;"
-    )
+    ' =========================
+    ' DATABASE CONNECTION
+    ' =========================
+    Private Conn As New MySqlConnection(
+    "Server=127.0.0.1;Database=payroll_system;Uid=root;Pwd=;"
+  )
 
-    ' =========================
-    ' LOGIN CONTROL VARIABLES
-    ' =========================
-    Private failedAttempts As Integer = 0
+    ' =========================
+    ' LOGIN CONTROL VARIABLES
+    ' =========================
+    Private failedAttempts As Integer = 0
     Private lockoutAttempts As Integer = 0
     Private cooldownSeconds As Integer = 15
 
-    ' =========================
-    ' TIMER CONTROL
-    ' =========================
-    Private WithEvents TimerLogin As New Timer()
+    ' =========================
+    ' TIMER CONTROL
+    ' =========================
+    Private WithEvents TimerLogin As New Timer()
 
-    ' =========================
-    ' FORM LOAD
-    ' =========================
-    Private Sub LogIn_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    ' =========================
+    ' FORM LOAD
+    ' =========================
+    Private Sub LogIn_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ClearFields()
 
         Password.UseSystemPasswordChar = True
@@ -37,17 +37,17 @@ Public Class LogIn
         Timer.Text = ""
     End Sub
 
-    ' =========================
-    ' FORM ACTIVATED (WHEN RETURNING)
-    ' =========================
-    Private Sub LogIn_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+    ' =========================
+    ' FORM ACTIVATED (WHEN RETURNING)
+    ' =========================
+    Private Sub LogIn_Activated(sender As Object, e As EventArgs) Handles Me.Activated
         ClearFields()
     End Sub
 
-    ' =========================
-    ' CLEAR TEXTBOXES
-    ' =========================
-    Private Sub ClearFields()
+    ' =========================
+    ' CLEAR TEXTBOXES
+    ' =========================
+    Private Sub ClearFields()
         Email.Text = ""
         Password.Text = ""
         Showpassword.Checked = False
@@ -60,54 +60,54 @@ Public Class LogIn
         Timer.Text = ""
     End Sub
 
-    ' =========================
-    ' EMAIL NAVIGATION
-    ' =========================
-    Private Sub Email_KeyDown(sender As Object, e As KeyEventArgs) Handles Email.KeyDown
+    ' =========================
+    ' EMAIL NAVIGATION
+    ' =========================
+    Private Sub Email_KeyDown(sender As Object, e As KeyEventArgs) Handles Email.KeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Down Then
             e.SuppressKeyPress = True
             Password.Focus()
         End If
     End Sub
 
-    ' =========================
-    ' PASSWORD NAVIGATION
-    ' =========================
-    Private Sub Password_KeyDown(sender As Object, e As KeyEventArgs) Handles Password.KeyDown
+    ' =========================
+    ' PASSWORD NAVIGATION
+    ' =========================
+    Private Sub Password_KeyDown(sender As Object, e As KeyEventArgs) Handles Password.KeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Down Then
             e.SuppressKeyPress = True
             Showpassword.Focus()
         End If
     End Sub
 
-    ' =========================
-    ' SHOW PASSWORD NAVIGATION
-    ' =========================
-    Private Sub Showpassword_KeyDown(sender As Object, e As KeyEventArgs) Handles Showpassword.KeyDown
+    ' =========================
+    ' SHOW PASSWORD NAVIGATION
+    ' =========================
+    Private Sub Showpassword_KeyDown(sender As Object, e As KeyEventArgs) Handles Showpassword.KeyDown
         If e.KeyCode = Keys.Enter Or e.KeyCode = Keys.Down Then
             e.SuppressKeyPress = True
             Signin.Focus()
         End If
     End Sub
 
-    ' =========================
-    ' SIGNIN ENTER KEY
-    ' =========================
-    Private Sub Signin_KeyDown(sender As Object, e As KeyEventArgs) Handles Signin.KeyDown
+    ' =========================
+    ' SIGNIN ENTER KEY
+    ' =========================
+    Private Sub Signin_KeyDown(sender As Object, e As KeyEventArgs) Handles Signin.KeyDown
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
             Signin.PerformClick()
         End If
     End Sub
 
-    ' =========================
-    ' SIGNIN CLICK
-    ' =========================
-    Private Sub Signin_Click(sender As Object, e As EventArgs) Handles Signin.Click
+    ' =========================
+    ' SIGNIN CLICK
+    ' =========================
+    Private Sub Signin_Click(sender As Object, e As EventArgs) Handles Signin.Click
 
         If TimerLogin.Enabled Then
             MessageBox.Show("Please wait for the cooldown to finish.", "Locked Out",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
@@ -116,16 +116,16 @@ Public Class LogIn
 
         If emailInput = "" Or passwordInput = "" Then
             MessageBox.Show("Please enter your email and password.", "Login Error",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
 
         Try
             Conn.Open()
 
-            ' ========== ADMIN LOGIN ==========
-            Using cmdAdmin As New MySqlCommand(
-                "SELECT username, password FROM users WHERE email=@Email LIMIT 1", Conn)
+            ' ========== ADMIN LOGIN ==========
+            Using cmdAdmin As New MySqlCommand(
+        "SELECT username, password FROM users WHERE email=@Email LIMIT 1", Conn)
 
                 cmdAdmin.Parameters.AddWithValue("@Email", emailInput)
 
@@ -145,51 +145,57 @@ Public Class LogIn
                 End Using
             End Using
 
-            ' ========== EMPLOYEE LOGIN ==========
-            Using cmdEmp As New MySqlCommand(
-     "SELECT fullname, password, status, position_level 
-     FROM employees 
-     WHERE email=@Email 
-     LIMIT 1", Conn)
+            ' ========== EMPLOYEE LOGIN ==========
+            ' ========== EMPLOYEE LOGIN ==========
+            Using cmdEmp As New MySqlCommand(
+  "SELECT fullname, password, status, position_level " &
+  "FROM employees " &
+  "WHERE email=@Email " &
+  "LIMIT 1", Conn)
 
                 cmdEmp.Parameters.AddWithValue("@Email", emailInput)
 
                 Using readerEmp = cmdEmp.ExecuteReader()
                     If readerEmp.Read() Then
 
-                        If readerEmp("status").ToString() = "Inactive" Then
+                        ' 1. Check Status
+                        If readerEmp("status").ToString() = "Inactive" Then
                             MessageBox.Show("Your account is inactive. Please contact admin.",
-                                            "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                              "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                             Return
                         End If
 
-                        If passwordInput = readerEmp("password").ToString() Then
-
+                        ' 2. Check Password
+                        If passwordInput = readerEmp("password").ToString() Then
                             Dim fullname As String = readerEmp("fullname").ToString()
                             Dim positionLevel As String = readerEmp("position_level").ToString()
 
-                            ' ===== CHECK POSITION LEVEL =====
-                            If positionLevel = "Extra" Then
+                            ' ===== REDIRECTION LOGIC =====
+
+                            ' Sila ang mga gagamit ng ExtraHomepage (Limited Access / Attendance Only)
+                            If positionLevel = "Attendance Staff" Or
+         positionLevel = "Extra" Or
+         positionLevel = "Part-time" Then
+
                                 Dim extraHome As New ExtraHomepage(fullname)
                                 extraHome.Show()
+
                             Else
-                                Dim staffHome As New HomepageMonitor(fullname)
+                                ' Para sa Regular, Teacher, at Faculties (Full Dashboard)
+                                Dim staffHome As New HomepageMonitor(fullname)
                                 staffHome.Show()
                             End If
 
                             Me.Hide()
                             failedAttempts = 0
                             Return
-
                         Else
                             HandleFailedAttempt()
                             Return
                         End If
                     Else
-                        ' Email not found in both tables
                         HandleFailedAttempt()
                     End If
-
                 End Using
             End Using
 
@@ -200,33 +206,33 @@ Public Class LogIn
         End Try
     End Sub
 
-    ' =========================
-    ' HANDLE FAILED ATTEMPTS
-    ' =========================
-    Private Sub HandleFailedAttempt()
+    ' =========================
+    ' HANDLE FAILED ATTEMPTS
+    ' =========================
+    Private Sub HandleFailedAttempt()
         failedAttempts += 1
 
         If failedAttempts >= 3 Then
-            ' Reset counter para sa susunod na batch ng attempts
-            failedAttempts = 0
+            ' Reset counter para sa susunod na batch ng attempts
+            failedAttempts = 0
 
             MessageBox.Show("Incorrect login 3 times. If you forgot your email, please use the Security Recovery.",
-                            "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
-            ' DIDIREKTA NA SA FORGOT EMAIL FORM
-            Dim forgotForm As New ForgotEmail()
+            ' DIDIREKTA NA SA FORGOT EMAIL FORM
+            Dim forgotForm As New ForgotEmail()
             forgotForm.Show()
             Me.Hide()
         Else
             MessageBox.Show("Incorrect email or password. Attempt: " & failedAttempts & "/3", "Login Failed",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
 
-    ' =========================
-    ' TIMER TICK (Para sa cooldown kung kailangan pa)
-    ' =========================
-    Private Sub TimerLogin_Tick(sender As Object, e As EventArgs) Handles TimerLogin.Tick
+    ' =========================
+    ' TIMER TICK (Para sa cooldown kung kailangan pa)
+    ' =========================
+    Private Sub TimerLogin_Tick(sender As Object, e As EventArgs) Handles TimerLogin.Tick
         cooldownSeconds -= 1
         Timer.Text = "Cooldown: " & cooldownSeconds & "s"
 
@@ -239,26 +245,26 @@ Public Class LogIn
         End If
     End Sub
 
-    ' =========================
-    ' SHOW / HIDE PASSWORD
-    ' =========================
-    Private Sub Showpassword_CheckedChanged(sender As Object, e As EventArgs) Handles Showpassword.CheckedChanged
+    ' =========================
+    ' SHOW / HIDE PASSWORD
+    ' =========================
+    Private Sub Showpassword_CheckedChanged(sender As Object, e As EventArgs) Handles Showpassword.CheckedChanged
         Password.UseSystemPasswordChar = Not Showpassword.Checked
     End Sub
 
-    ' =========================
-    ' SIGN UP
-    ' =========================
-    Private Sub Signup_Click(sender As Object, e As EventArgs) Handles Signup.Click
+    ' =========================
+    ' SIGN UP
+    ' =========================
+    Private Sub Signup_Click(sender As Object, e As EventArgs) Handles Signup.Click
         Dim registerForm As New Register()
         registerForm.Show()
         Me.Hide()
     End Sub
 
-    ' =========================
-    ' FORGOT PASSWORD
-    ' =========================
-    Private Sub forget_Click(sender As Object, e As EventArgs) Handles forget.Click
+    ' =========================
+    ' FORGOT PASSWORD
+    ' =========================
+    Private Sub forget_Click(sender As Object, e As EventArgs) Handles forget.Click
         Dim forgotForm As New ForgotPassword()
         forgotForm.Show()
         Me.Hide()

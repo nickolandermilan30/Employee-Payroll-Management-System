@@ -35,7 +35,6 @@ Partial Class EditEmployee
         save = New Button()
         Label15 = New Label()
         Label14 = New Label()
-        Panel4 = New Panel()
         Label12 = New Label()
         Label8 = New Label()
         email = New TextBox()
@@ -67,7 +66,9 @@ Partial Class EditEmployee
         semester = New ComboBox()
         Label18 = New Label()
         Tableperunit = New Panel()
-        Panel4.SuspendLayout()
+        Label20 = New Label()
+        Label21 = New Label()
+        mothersname = New TextBox()
         Panel3.SuspendLayout()
         Panel2.SuspendLayout()
         Panel1.SuspendLayout()
@@ -78,7 +79,7 @@ Partial Class EditEmployee
         ' sex
         ' 
         sex.FormattingEnabled = True
-        sex.Location = New Point(320, 133)
+        sex.Location = New Point(318, 172)
         sex.Name = "sex"
         sex.Size = New Size(222, 23)
         sex.TabIndex = 21
@@ -109,7 +110,7 @@ Partial Class EditEmployee
         Label9.BackColor = SystemColors.Control
         Label9.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label9.ForeColor = Color.Black
-        Label9.Location = New Point(320, 111)
+        Label9.Location = New Point(318, 150)
         Label9.Name = "Label9"
         Label9.Size = New Size(29, 16)
         Label9.TabIndex = 19
@@ -170,10 +171,10 @@ Partial Class EditEmployee
         save.ForeColor = SystemColors.Window
         save.Image = CType(resources.GetObject("save.Image"), Image)
         save.ImageAlign = ContentAlignment.MiddleLeft
-        save.Location = New Point(-7, -8)
+        save.Location = New Point(376, 277)
         save.Name = "save"
         save.Padding = New Padding(20, 0, 0, 0)
-        save.Size = New Size(164, 72)
+        save.Size = New Size(164, 47)
         save.TabIndex = 23
         save.Text = "Save"
         save.UseVisualStyleBackColor = False
@@ -201,14 +202,6 @@ Partial Class EditEmployee
         Label14.Size = New Size(31, 16)
         Label14.TabIndex = 25
         Label14.Text = "Php"
-        ' 
-        ' Panel4
-        ' 
-        Panel4.Controls.Add(save)
-        Panel4.Location = New Point(394, 236)
-        Panel4.Name = "Panel4"
-        Panel4.Size = New Size(148, 56)
-        Panel4.TabIndex = 24
         ' 
         ' Label12
         ' 
@@ -245,6 +238,10 @@ Partial Class EditEmployee
         ' Panel3
         ' 
         Panel3.BorderStyle = BorderStyle.FixedSingle
+        Panel3.Controls.Add(Label20)
+        Panel3.Controls.Add(Label21)
+        Panel3.Controls.Add(mothersname)
+        Panel3.Controls.Add(save)
         Panel3.Controls.Add(Status)
         Panel3.Controls.Add(showpassword)
         Panel3.Controls.Add(Label17)
@@ -252,11 +249,8 @@ Partial Class EditEmployee
         Panel3.Controls.Add(Passwordemployee)
         Panel3.Controls.Add(Label15)
         Panel3.Controls.Add(Label14)
-        Panel3.Controls.Add(Panel4)
-        Panel3.Controls.Add(sex)
         Panel3.Controls.Add(Label13)
         Panel3.Controls.Add(contactnumber)
-        Panel3.Controls.Add(Label9)
         Panel3.Controls.Add(datehired)
         Panel3.Controls.Add(Label10)
         Panel3.Controls.Add(Label11)
@@ -265,13 +259,13 @@ Partial Class EditEmployee
         Panel3.Controls.Add(position)
         Panel3.Location = New Point(28, 383)
         Panel3.Name = "Panel3"
-        Panel3.Size = New Size(574, 314)
+        Panel3.Size = New Size(574, 352)
         Panel3.TabIndex = 21
         ' 
         ' Status
         ' 
         Status.FormattingEnabled = True
-        Status.Location = New Point(318, 195)
+        Status.Location = New Point(318, 133)
         Status.Name = "Status"
         Status.Size = New Size(222, 23)
         Status.TabIndex = 33
@@ -279,7 +273,7 @@ Partial Class EditEmployee
         ' showpassword
         ' 
         showpassword.AutoSize = True
-        showpassword.Location = New Point(161, 265)
+        showpassword.Location = New Point(432, 221)
         showpassword.Name = "showpassword"
         showpassword.Size = New Size(108, 19)
         showpassword.TabIndex = 30
@@ -292,7 +286,7 @@ Partial Class EditEmployee
         Label17.BackColor = SystemColors.Control
         Label17.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label17.ForeColor = Color.Black
-        Label17.Location = New Point(318, 173)
+        Label17.Location = New Point(318, 111)
         Label17.Name = "Label17"
         Label17.Size = New Size(45, 16)
         Label17.TabIndex = 32
@@ -304,7 +298,7 @@ Partial Class EditEmployee
         Label16.BackColor = SystemColors.Control
         Label16.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         Label16.ForeColor = Color.Black
-        Label16.Location = New Point(20, 217)
+        Label16.Location = New Point(318, 173)
         Label16.Name = "Label16"
         Label16.Size = New Size(67, 16)
         Label16.TabIndex = 28
@@ -313,9 +307,9 @@ Partial Class EditEmployee
         ' Passwordemployee
         ' 
         Passwordemployee.BorderStyle = BorderStyle.FixedSingle
-        Passwordemployee.Location = New Point(20, 236)
+        Passwordemployee.Location = New Point(318, 192)
         Passwordemployee.Name = "Passwordemployee"
-        Passwordemployee.Size = New Size(249, 23)
+        Passwordemployee.Size = New Size(222, 23)
         Passwordemployee.TabIndex = 27
         ' 
         ' Label7
@@ -384,8 +378,10 @@ Partial Class EditEmployee
         Panel2.Controls.Add(Label6)
         Panel2.Controls.Add(Label5)
         Panel2.Controls.Add(email)
+        Panel2.Controls.Add(sex)
         Panel2.Controls.Add(Label4)
         Panel2.Controls.Add(fullname)
+        Panel2.Controls.Add(Label9)
         Panel2.Location = New Point(28, 104)
         Panel2.Name = "Panel2"
         Panel2.Size = New Size(574, 222)
@@ -563,6 +559,39 @@ Partial Class EditEmployee
         Tableperunit.Size = New Size(585, 541)
         Tableperunit.TabIndex = 0
         ' 
+        ' Label20
+        ' 
+        Label20.Anchor = AnchorStyles.Top
+        Label20.AutoSize = True
+        Label20.BackColor = SystemColors.Control
+        Label20.Font = New Font("Century Gothic", 8.25F, FontStyle.Italic, GraphicsUnit.Point, CByte(0))
+        Label20.ForeColor = Color.DarkOliveGreen
+        Label20.Location = New Point(19, 289)
+        Label20.Name = "Label20"
+        Label20.Size = New Size(151, 15)
+        Label20.TabIndex = 45
+        Label20.Text = "Backup question for email"
+        ' 
+        ' Label21
+        ' 
+        Label21.AutoSize = True
+        Label21.BackColor = SystemColors.Control
+        Label21.Font = New Font("Century Gothic", 9.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        Label21.ForeColor = Color.Black
+        Label21.Location = New Point(18, 238)
+        Label21.Name = "Label21"
+        Label21.Size = New Size(312, 16)
+        Label21.TabIndex = 44
+        Label21.Text = "What is your favorite book or movie character?"
+        ' 
+        ' mothersname
+        ' 
+        mothersname.BorderStyle = BorderStyle.FixedSingle
+        mothersname.Location = New Point(19, 263)
+        mothersname.Name = "mothersname"
+        mothersname.Size = New Size(249, 23)
+        mothersname.TabIndex = 43
+        ' 
         ' EditEmployee
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -580,7 +609,6 @@ Partial Class EditEmployee
         FormBorderStyle = FormBorderStyle.None
         Name = "EditEmployee"
         Text = "EditEmployee"
-        Panel4.ResumeLayout(False)
         Panel3.ResumeLayout(False)
         Panel3.PerformLayout()
         Panel2.ResumeLayout(False)
@@ -605,7 +633,6 @@ Partial Class EditEmployee
     Friend WithEvents save As Button
     Friend WithEvents Label15 As Label
     Friend WithEvents Label14 As Label
-    Friend WithEvents Panel4 As Panel
     Friend WithEvents Label12 As Label
     Friend WithEvents Label8 As Label
     Friend WithEvents email As TextBox
@@ -637,4 +664,7 @@ Partial Class EditEmployee
     Friend WithEvents Label19 As Label
     Friend WithEvents age As TextBox
     Friend WithEvents btnAddUnit2 As Button
+    Friend WithEvents Label20 As Label
+    Friend WithEvents Label21 As Label
+    Friend WithEvents mothersname As TextBox
 End Class

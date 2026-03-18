@@ -44,6 +44,8 @@ Partial Class MonitorAttendance
         Label11 = New Label()
         PictureBox4 = New PictureBox()
         Panel4 = New Panel()
+        checkout = New DateTimePicker()
+        checkin = New DateTimePicker()
         monthofdate = New DateTimePicker()
         Label10 = New Label()
         Label12 = New Label()
@@ -59,11 +61,8 @@ Partial Class MonitorAttendance
         Label19 = New Label()
         PictureBox7 = New PictureBox()
         viewemployeedata = New Panel()
-        save = New Button()
-        Panel9 = New Panel()
         Notification = New Button()
-        checkin = New DateTimePicker()
-        checkout = New DateTimePicker()
+        save = New Button()
         Panel1.SuspendLayout()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         Panel5.SuspendLayout()
@@ -78,7 +77,6 @@ Partial Class MonitorAttendance
         CType(PictureBox6, ComponentModel.ISupportInitialize).BeginInit()
         Panel7.SuspendLayout()
         CType(PictureBox7, ComponentModel.ISupportInitialize).BeginInit()
-        Panel9.SuspendLayout()
         SuspendLayout()
         ' 
         ' Employedropdown
@@ -337,6 +335,20 @@ Partial Class MonitorAttendance
         Panel4.Size = New Size(472, 183)
         Panel4.TabIndex = 15
         ' 
+        ' checkout
+        ' 
+        checkout.Location = New Point(234, 139)
+        checkout.Name = "checkout"
+        checkout.Size = New Size(173, 23)
+        checkout.TabIndex = 25
+        ' 
+        ' checkin
+        ' 
+        checkin.Location = New Point(45, 139)
+        checkin.Name = "checkin"
+        checkin.Size = New Size(173, 23)
+        checkin.TabIndex = 24
+        ' 
         ' monthofdate
         ' 
         monthofdate.Location = New Point(45, 81)
@@ -505,31 +517,6 @@ Partial Class MonitorAttendance
         viewemployeedata.Size = New Size(965, 166)
         viewemployeedata.TabIndex = 22
         ' 
-        ' save
-        ' 
-        save.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        save.BackColor = Color.FromArgb(CByte(208), CByte(39), CByte(82))
-        save.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        save.ForeColor = Color.White
-        save.Image = CType(resources.GetObject("save.Image"), Image)
-        save.ImageAlign = ContentAlignment.MiddleLeft
-        save.Location = New Point(-16, -6)
-        save.Name = "save"
-        save.Padding = New Padding(25, 0, 35, 0)
-        save.Size = New Size(265, 70)
-        save.TabIndex = 7
-        save.Text = "    Save Attendance"
-        save.UseVisualStyleBackColor = False
-        ' 
-        ' Panel9
-        ' 
-        Panel9.Anchor = AnchorStyles.Top
-        Panel9.Controls.Add(save)
-        Panel9.Location = New Point(796, 136)
-        Panel9.Name = "Panel9"
-        Panel9.Size = New Size(218, 61)
-        Panel9.TabIndex = 23
-        ' 
         ' Notification
         ' 
         Notification.Anchor = AnchorStyles.Top
@@ -537,33 +524,35 @@ Partial Class MonitorAttendance
         Notification.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         Notification.ForeColor = SystemColors.Window
         Notification.Image = CType(resources.GetObject("Notification.Image"), Image)
-        Notification.Location = New Point(546, 142)
+        Notification.Location = New Point(546, 125)
         Notification.Name = "Notification"
-        Notification.Size = New Size(54, 47)
+        Notification.Size = New Size(84, 70)
         Notification.TabIndex = 7
         Notification.UseVisualStyleBackColor = False
         ' 
-        ' checkin
+        ' save
         ' 
-        checkin.Location = New Point(45, 139)
-        checkin.Name = "checkin"
-        checkin.Size = New Size(173, 23)
-        checkin.TabIndex = 24
-        ' 
-        ' checkout
-        ' 
-        checkout.Location = New Point(234, 139)
-        checkout.Name = "checkout"
-        checkout.Size = New Size(173, 23)
-        checkout.TabIndex = 25
+        save.Anchor = AnchorStyles.None
+        save.BackColor = Color.FromArgb(CByte(208), CByte(39), CByte(82))
+        save.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        save.ForeColor = Color.White
+        save.Image = CType(resources.GetObject("save.Image"), Image)
+        save.ImageAlign = ContentAlignment.MiddleLeft
+        save.Location = New Point(707, 138)
+        save.Name = "save"
+        save.Padding = New Padding(25, 0, 35, 0)
+        save.Size = New Size(307, 59)
+        save.TabIndex = 7
+        save.Text = "    Save Attendance"
+        save.UseVisualStyleBackColor = False
         ' 
         ' MonitorAttendance
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1108, 723)
+        Controls.Add(save)
         Controls.Add(Notification)
-        Controls.Add(Panel9)
         Controls.Add(viewemployeedata)
         Controls.Add(Panel7)
         Controls.Add(Panel6)
@@ -600,7 +589,6 @@ Partial Class MonitorAttendance
         Panel7.ResumeLayout(False)
         Panel7.PerformLayout()
         CType(PictureBox7, ComponentModel.ISupportInitialize).EndInit()
-        Panel9.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -640,10 +628,9 @@ Partial Class MonitorAttendance
     Friend WithEvents PictureBox7 As PictureBox
     Friend WithEvents status As ComboBox
     Friend WithEvents viewemployeedata As Panel
-    Friend WithEvents save As Button
-    Friend WithEvents Panel9 As Panel
     Friend WithEvents monthofdate As DateTimePicker
     Friend WithEvents Notification As Button
     Friend WithEvents checkout As DateTimePicker
     Friend WithEvents checkin As DateTimePicker
+    Friend WithEvents save As Button
 End Class

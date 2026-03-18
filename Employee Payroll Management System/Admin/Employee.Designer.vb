@@ -28,11 +28,9 @@ Partial Class Employee
         employelist = New Panel()
         search = New TextBox()
         Role = New ComboBox()
-        Panel1 = New Panel()
         Refresh = New Button()
         Label3 = New Label()
         Label4 = New Label()
-        Panel1.SuspendLayout()
         SuspendLayout()
         ' 
         ' Label2
@@ -91,15 +89,6 @@ Partial Class Employee
         Role.Size = New Size(121, 23)
         Role.TabIndex = 8
         ' 
-        ' Panel1
-        ' 
-        Panel1.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        Panel1.Controls.Add(Refresh)
-        Panel1.Location = New Point(883, 50)
-        Panel1.Name = "Panel1"
-        Panel1.Size = New Size(148, 39)
-        Panel1.TabIndex = 9
-        ' 
         ' Refresh
         ' 
         Refresh.Anchor = AnchorStyles.Top Or AnchorStyles.Right
@@ -108,10 +97,10 @@ Partial Class Employee
         Refresh.ForeColor = Color.White
         Refresh.Image = CType(resources.GetObject("Refresh.Image"), Image)
         Refresh.ImageAlign = ContentAlignment.MiddleLeft
-        Refresh.Location = New Point(-4, -10)
+        Refresh.Location = New Point(788, 39)
         Refresh.Name = "Refresh"
         Refresh.Padding = New Padding(25, 0, 0, 0)
-        Refresh.Size = New Size(156, 59)
+        Refresh.Size = New Size(242, 59)
         Refresh.TabIndex = 10
         Refresh.Text = "Refresh"
         Refresh.UseVisualStyleBackColor = False
@@ -148,9 +137,9 @@ Partial Class Employee
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1108, 723)
+        Controls.Add(Refresh)
         Controls.Add(Label4)
         Controls.Add(Label3)
-        Controls.Add(Panel1)
         Controls.Add(Role)
         Controls.Add(search)
         Controls.Add(employelist)
@@ -159,7 +148,6 @@ Partial Class Employee
         FormBorderStyle = FormBorderStyle.None
         Name = "Employee"
         Text = "Employee"
-        Panel1.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -169,7 +157,6 @@ Partial Class Employee
     Friend WithEvents employelist As Panel
     Friend WithEvents search As TextBox
     Friend WithEvents Role As ComboBox
-    Friend WithEvents Panel1 As Panel
     Friend WithEvents Refresh As Button
     Friend WithEvents Label3 As Label
     Friend WithEvents Label4 As Label
